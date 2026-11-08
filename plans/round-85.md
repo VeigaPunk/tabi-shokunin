@@ -15,7 +15,7 @@ three legs with no transient activation and three after a real trusted click on 
 
 Predicate `C1-SHOWPICKER-R85`:
 - (a) the scored receipt scores `clean` at checkCount **87** under `scripts/check-showpicker-r85.mjs`
-  with every pin (driver `1690c63d…`, fixture `9b71a949…`, nonce `tabi-r85-l1-620623a43f74`);
+  with every pin (driver `1690c63d…`, fixture `0b012937…`, nonce `tabi-r85-l1-620623a43f74`);
 - (b) the battery (`scripts/negatives-showpicker-r85.mjs`) exits 0 with **175** cases, 0 failed and
   coverage **87/87**; kill power (`scripts/kill-power-r85.mjs`) kills **58** mutants with 0 survivors,
   0 crashed, 0 unapplied;
@@ -140,3 +140,11 @@ and mixed lists each need their own leg and their own answer bytes.
    still exits 0, because every `cross-tel-*` case mutates the tel leg. Narrowed: the six cases
    witness the weakening on ONE leg each; a law narrowed to that leg survives. Artifact:
    `w1/R85Mut1.md`.
+9. **The zero-chooser metric is a FILE-chooser metric.** R85Scout located that the spec's
+   "show the picker, if applicable" step and Chromium's type dispatch both key on the type, but that
+   Chromium's `TextFieldInputType` path still issues an embedder request for the datalist/autofill
+   dropdown (`OpenTextDataListChooser`). `Page.fileChooserOpened` counts FILE choosers only, so
+   "zero choosers" cannot distinguish "no popup of any kind" from "no file chooser". The r85 fixture
+   inputs carry no `list` attribute and the fixture has no `<datalist>`, so the measurement is
+   consistent with the sources — but the law is bounded to the file-chooser metric. Artifact:
+   `w1/R85Scout.md` §3.

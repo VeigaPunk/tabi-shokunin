@@ -74,3 +74,11 @@ class found.
 | 3 | same-origin tel/search/text contrast leg | landed twice (no-activation and activated arms), six legs, one new law `same-origin-no-picker-law` |
 | 4 | limit sentence printing the constant-offset escape | the r85 counter carries the sentence and the battery keeps `accept-retimed`; R85Exec3 measures the escape |
 | 5 | C2 Gate-prose reconciliation | `scripts/check-record-drift-r85.mjs` reads the accept-frontier sentence and the family witness numbers |
+
+## Corrections — record drift caught by the round's own wave (append-only)
+
+| # | record | stale statement | correction |
+|---|---|---|---|
+| 1 | `.ufo/waves/round-85/claims.json` C1 `doNothingControl` | "81 checks (not 87), 21 findings" | 21 findings at the D1 nonce, **22** at D2 (the in-tree scored receipt adds `prior-set-complete`); `controls/c1/noreceipt.txt` is the exit-2 control. Fixed in the field (record prose, not a predicate or pin) |
+| 2 | `plans/round-85.md:18` | predicate line pinned the superseded D1 fixture `9b71a949…` beside the D2 nonce | `0b012937…d252a` (the D2 receipt's fixture) |
+| 3 | `SCORECARD.md` capability row | "opens **no** chooser (no picker exists for tel/search/text on this platform)" | "fires **zero** `Page.fileChooserOpened` (a file-chooser metric); 'these types have no picker' stays an inference" — R85Review1 MEDIUM-3 and R85Scribe both measured the parenthetical as prose |

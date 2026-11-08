@@ -4130,7 +4130,7 @@ Capabilities (this round):
 
 | Capability | What it can now do | Evidence pointer | First-working round |
 |---|---|---|---|
-| `chromium-showpicker-linux` (generation r85) | As r84, and now: the same input type measured across origin AND activation — same-origin without transient activation throws `NotAllowedError`, same-origin with a trusted click returns `undefined` and opens **no** chooser (no picker exists for tel/search/text on this platform), cross-origin throws `SecurityError`; the error is origin-determined with activation held constant (24 legs, 87 checks) | `corpus/evidence/round85/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-85.md` | 79 |
+| `chromium-showpicker-linux` (generation r85) | As r84, and now: the same input type measured across origin AND activation — same-origin without transient activation throws `NotAllowedError`, same-origin with a trusted click returns `undefined` and fires **zero** `Page.fileChooserOpened` (a file-chooser metric; "these types have no picker" stays an inference), cross-origin throws `SecurityError`; the error is origin-determined with activation held constant (24 legs, 87 checks) | `corpus/evidence/round85/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-85.md` | 79 |
 | `battery-survivor-witnesses` | Six single-conjunct weakenings from R84Mut1's routed survivors are refused by a named battery case; the frozen r85 battery kills all six (the r84 D battery killed three) | `scripts/witness-families-r85.mjs`; `scored/witness-a.json`; `scored/battery-a.json` | 85 |
 
 Knowledge 97 → 98 (`corpus/knowledge/chromium-showpicker-runtime-round-85.md`). Registry 223 (no new
