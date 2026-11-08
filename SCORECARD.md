@@ -4222,3 +4222,38 @@ none.
 
 Scored (r87): 99 checks, battery 209/209, kill power 66/66, selftest 10/10 at D6, record drift 5 → 0.
 - Digests: D 3dd4b0802d67, nonce tabi-r87-l1-3dd4b0802d67. 99 checks, battery 209 cases, kill power 66 mutants.
+
+## Round 88 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r88 (MIME parameters, case variants, combined lists); C2 calibration, the r87 spot-check routed defects D1-D4
+
+Base `f16f992d`; scored receipt D **`86f1dcec`** (D1; probe run at D1 pins, `tabi-r88-probe1-probe0001`),
+nonce **`tabi-r88-l1-86f1dcec`**. Axes at start: all six at 9; C1 works a lowest axis and is a capability
+move (generation r88 of the r79 capability); C2 works calibration (record-vs-state mismatches).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r88 (sourced: S223/S219 re-opened) | `node scripts/check-showpicker-round88.mjs --lane <ABS lane> --receipt corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 <the scored receipt fixture sha256> --prior-set .ufo/waves/round-88/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R88`) | base `f16f992d`: no r88 receipt → exit 2 `receipt-unreadable`; the r87 scored receipt under the r88 counter → exit 1; after: the scored receipt → exit 0, `verdict clean`, **102 checks**, 0 findings; battery 212/0/coverage 102/102; kill power 69/69/0/0/0; selftest 10/10 | VERIFIED |
+| C2 calibration (9), the r87 spot-check routed defects D1-D4 (`scripts/check-record-drift-r88.mjs`, predicate `C2-RECORDDRIFT-R88`) | `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json` (exit 0 iff 4 claims, 0 mismatches) | before (base `f16f992d` worktree): **3 mismatches** (`scorecard-tallies`, `selftest-wording`, `quality161-sweep` — `scored/drift-before.json`); after: **0** of 4 (`scored/drift-a.json`); the drift gate's own `--selftest` runs isolated and exits 0 | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r88) | As r87, and now: the `accept` acceptance law holds over ten token forms — `IMAGE/PNG` ← png, `audio/*,video/*` ← txt, and `image/png;q=0.9` ← png all accept a programmatic answer with trusted input+change and page-read bytes, with each raw attribute read from the page (37 legs, 102 checks) | `corpus/evidence/round88/chromium-showpicker/receipt.json`; `corpus/knowledge/chromium-showpicker-runtime-round-88.md` | 79 |
+
+Knowledge 100 → 101 (`corpus/knowledge/chromium-showpicker-runtime-round-88.md`). Registry 223 (no new
+rows; S223/S219 re-opened; S221/S222 carried). SKILL.md `## Round 88 gate registry` registers the six
+r88 instruments; `scripts/selftest-r88-gates.mjs` runs them in order (10 gates, plus the four isolated
+`--selftest` modes as gate `gate-selftest`).
+
+Narrowings (`plans/round-88.md` §Narrowings): (1) acceptance is not filtering — the dialog is
+unmeasured; (2) ten token forms, not the whole grammar (the DOM-parsed normalization stays frontier);
+(3) the byte contents stay the inherited r83 marker under the r88 file names — names, sizes, types,
+hex and hashes are bound, never the content marker; (4) C2 counts four record statements, not every
+sentence; (5) the r87 selftest tally stays 10/10 at D6 — the D7 wording is withdrawn, not re-run.
+
+Planned (r89): the parser's whitespace/comma normalization read from the DOM rather than the raw
+string; a same-element origin comparison if the fixture can carry a `postMessage` proxy; a UI-side
+colour popup probe. Retired: none.
+
+Scored (r88): 102 checks, battery 212/212, kill power 69/69, selftest 10/10, record drift 3 → 0.
+- Digests: D 86f1dcec, nonce tabi-r88-l1-86f1dcec. 102 checks, battery 212 cases, kill power 69 mutants.

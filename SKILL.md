@@ -3334,3 +3334,12 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-r87.mjs ... --work <scratch> --json` (66 mutants, 66 killed, 0 survivors, 0 crashed).
 - Record drift: `node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json` (5 statements: the five lane-owned r86 spot-check record defects; 5 → 0 mismatches).
 - Self-test: `node scripts/selftest-r87-gates.mjs --lane <ABS lane> --work <scratch> --json` (10 gates).
+
+## Round 88 gate registry
+
+- `check-showpicker-round88` (102 checks): `node scripts/check-showpicker-round88.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r88-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Three new legs `sp88-accept-{case-png,audiovideo-text,mimeparam-png}`; the extended law `accept-grammar-law` now covers ten token forms (`image/*`, `image/png, .txt`, `application/pdf`, `audio/*`, `video/*`, `image/png,application/pdf`, the whitespace variant `"  image/png ,  .txt  "`, `IMAGE/PNG`, `audio/*,video/*`, `image/png;q=0.9`), each raw attribute read from the page; `accept` is not a validator on a programmatic answer — the dialog itself is unmeasured. Every gate carries an isolated `--selftest` (counter: `schema` exit 1; battery: case `accept-grammar-law-r88-case` red; kill power: mutant `accept-grammar-r88-case-dropped` killed; drift gate: the `scorecard-tallies` statement red on a fixture lane).
+- Driver: `scripts/chrome-cdp-showpicker-round88.mjs` (37 legs; new parent inputs `#ac` `accept="IMAGE/PNG"`, `#au` `accept="audio/*,video/*"`, `#amc` `accept="image/png;q=0.9"`).
+- Battery: `node scripts/negatives-showpicker-round88.mjs ... --work <scratch> --json` (212 cases, coverage 102/102; the three new legs carry their own per-leg cases and three grammar cases).
+- Kill power: `node scripts/kill-power-round88.mjs ... --work <scratch> --json` (69 mutants, 69 killed, 0 survivors, 0 crashed).
+- Record drift: `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json` (4 statements: the seven r87-swept SCORECARD tallies restored to 9/9, the D7 wording corrected to D6, every gate's isolated `--selftest`, QUALITY 161's SCORECARD scope; 3 → 0 mismatches).
+- Self-test: `node scripts/selftest-r88-gates.mjs --lane <ABS lane> --work <scratch> --json` (10 gates, plus the four isolated `--selftest` modes as gate `gate-selftest`).

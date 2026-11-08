@@ -4018,3 +4018,26 @@ Records: `corpus/knowledge/chromium-showpicker-runtime-round-87.md` (knowledge 9
 SKILL.md `## Round 87 gate registry`; QUALITY 161 (a narrowing sweeps every distilled copy); the
 round-86 spot-check's record defects 3/4/5/7 closed and defects 1–2 carried into this round's
 records; SOURCES §Search log round-86 entry; `.ufo/waves/round-86/lesson-proof/README.md`.
+
+## Round 88 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR88`. Base `f16f992d` (the round-87 verifier spot-check commit); scored receipt D
+`86f1dcec`, instrument freeze D1 `86f1dcec` (probe run at D1 pins); nonce
+`tabi-r88-l1-86f1dcec`. Claims: C1 coverage — capability `chromium-showpicker-linux`
+generation r88, the three remaining `accept` token forms (`IMAGE/PNG`, `audio/*,video/*`,
+`image/png;q=0.9`), 37 legs / 102 checks; C2 calibration — the round-87 non-author spot-check
+routed defects D1–D4, `check-record-drift-r88` 3 → 0.
+
+Instruments (pins in `.ufo/waves/round-88/freeze.txt`): `chrome-cdp-showpicker-round88.mjs`
+(37 legs), `check-showpicker-round88.mjs` (102 checks), `negatives-showpicker-round88.mjs`
+(212 cases, coverage 102/102), `kill-power-round88.mjs` (69 mutants, 69/69),
+`selftest-r88-gates.mjs` (10 gates), `check-record-drift-r88.mjs` (4 statements).
+Scored receipt `corpus/evidence/round88/chromium-showpicker/receipt.json` (0 failures).
+Do-nothing controls: `controls/c1/nowork-r87-under-r88.json` (exit 1, `schema`/`plan-frozen`
+among the findings) and `controls/c1/noreceipt.txt` (exit 2); the C2 before control is the
+same frozen gate on a base `f16f992d` worktree (3 mismatches, `scored/drift-before.json`).
+
+Records: `corpus/knowledge/chromium-showpicker-runtime-round-88.md` (knowledge 100 → 101);
+`corpus/lessons/round-88.md`; `plans/round-88.md`; SCORECARD round-88 section + capability row
+(plus the seven historical tallies restored to 9/9); SKILL.md `## Round 88 gate registry`;
+QUALITY 161 (scope extended to the SCORECARD tally set); SOURCES §Search log round-88 entry.
