@@ -28,7 +28,11 @@ The L1 re-opened the living WHATWG input page on 2026-11-08 (HTTP 200, 687,515 b
 - **S223** — the `accept` attribute's own sentence. Located quote: "attribute may be specified to
   provide user agents with a hint of what file types will be accepted." This is the normative ground
   for the seven-form acceptance law (a hint, not a validator on a programmatic answer).
-- **S219** — the `showPicker()` colour exemption, carried from r86 as the ground of the colour arm.
+- **S219** — the `showPicker()` colour exemption, re-opened this round as the ground of the colour
+  arm. Located quote (21 words, `printf '%s' … | wc -w`): "Throws a 'SecurityError' DOMException if
+  input is inside a cross-origin iframe, unless input is in the File Upload or Color states." (The
+  page's own quotation marks are straight double quotes; the nested single quotes here render the
+  inner DOMException name.)
 
 Identified 2 / screened 2 / included 0 / excluded 2 for NEW rows; no registry change.
 
@@ -95,8 +99,8 @@ as narrowings 14, not counted as a mistake of this round's process.
 |---|---|---|
 | 1 | R87Critic C1-2 / R87Review1 F4: `claims.json` C1 `countingCommand` carried the superseded D2 nonce and exited 1 | pointer corrected to `tabi-r87-l1-3dd4b0802d67` after the freeze; the command then exits 0 clean 99. A record fix, no predicate change (plans §Narrowings item 3). |
 | 2 | R87Critic C1-3: C1 leg (c) "selftest green" was false at the dispatched D3 pin (its receipt path named the r86 receipt) | the selftest runner was fixed and re-frozen (D4), and the selftest now scores the D3 receipt 10/10 at D6; the record says the leg is measured at the final freeze (D6), not at the D3 pin (plans §Re-freeze history). |
-| 3 | R87Critic C2-3: statement (4) said the ledger pointer resolves to a "headline item"; the row named item 1 | the round-86 ledger row was repointed to `§Narrowings item 9` (the headline item) and the gate now requires `item 9`; the row's claim/verdict/note are unchanged (r86 lesson Corrections row 8). |
-| 4 | R87Critic C2-4: statement (5) was a directionless token test | the gate's `report-corrections` check is now a directional regex (`says "39 findings"` … `committed control has **40**`) and is re-frozen at D5/D6. |
+| 3 | R87Critic C2-3 / R87Mut1 D07: statement (4) said the ledger pointer resolves to a "headline item" while the row named item 1; the first repair checked only the cell's text, so removing the item heading passed | the round-86 ledger row was repointed to `§Narrowings item 9` and the D7 gate now requires the `9. **The accept-headline` heading itself; shown able to fail (removing the heading yields `ledger-pointer`, restoring it passes). The row's claim/verdict/note are unchanged (r86 lesson Corrections row 8). |
+| 4 | R87Critic C2-4 / R87Mut1 D09: statement (5) was a directionless token test, and the D5 regex was satisfied by the corrections table's own description of it | the D7 gate scans ONLY the report-corrections bullet block for `says "39 findings"` … `committed control has **40**`; an inverted 39/40 bullet now fails it (`report-corrections`), the true bullet passes. |
 | 5 | R87Review2 F1/F2: the page-read act is not required and `fixture.patch.*` is unbound | the "read from the page" clause is receipt-level; narrowings 6–7 record that the counter enforces the descriptor/answer/read facts, not the act or the served-DOM source. |
 | 6 | R87Review1 F1: driver/fixture pins are declaration-level | narrowing 9 records that the counter compares receipt fields to CLI pins and never reads instrument bytes; provenance rests on the driver's own `driverSha256` and the reviewer's reproduction. |
 | 7 | R87Review1 F3: a `read` event's `isTrusted` is fixture-authored | narrowing 11 records that `trust-law` enforces the recorded literal, not a browser trust fact for the synthetic `read` event. |

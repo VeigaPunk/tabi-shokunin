@@ -54,6 +54,23 @@ frontier; this generation measures four more, one page input each.
 - **Secure-context state is not recorded.** The fixture is `http://127.0.0.1:<port>` (a
   potentially-trustworthy origin); nothing here measures a non-secure-context page.
 
+## Limits the wave established (r87)
+
+- **The pins are declaration-level in the counter.** `driver-pin` and `fixture-hash` compare receipt
+  fields to the CLI pins; the counter never opens the instrument bytes. R87Sentinel re-derived the
+  fixture (`10e444f7…`) and child (`bbb22189…`) hashes from the pinned driver + the r78 template +
+  this receipt's nonce/child port, so the fixture is verifiable out-of-band, not by the counter.
+- **Per-leg attribute copies are not separately witnessed.** The accept fact binds through the
+  top-level `fixtureInputs` snapshot (copied from the first leg's read); the honest receipt has 0/34
+  divergent per-leg copies, but a per-leg copy can disagree with no finding.
+- **The comma/whitespace normalization rules are not on the staged page.** They live on the two
+  linked pages the Scout opened; the whitespace leg measures the raw attribute string and nothing
+  about a user agent's tokenisation.
+- **The delivered bytes still carry an r83 marker** — the PNG body ends `tabi-r83-png\n` and the
+  text body is `tabi-r83-answer-alpha\n`, under the r87 file names `tabi-r87-b.png` /
+  `tabi-r87-a.txt`. The names and hashes are what the counter binds; the content marker is inherited
+  fixture bytes, not a wrong-generation artifact.
+
 ## Frontier (named, not held)
 
 - `accept` MIME parameters and case variants (`IMAGE/PNG`, `image/png;q=0.9`).

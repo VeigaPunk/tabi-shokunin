@@ -75,12 +75,22 @@ const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(de
   const scribeRow = ledger.split('\n').find((l) => /Scribe/i.test(l) && /accept/i.test(l));
   const pointer = scribeRow ? /plans\/round-86\.md §Narrowings item 9/i.test(scribeRow) : false;
   const section = (plan86.match(/## Narrowings[\s\S]*?(?=\n## |\n# |$)/) || [''])[0];
-  const item = /accept.headline|accept headline/i.test(section);
+  const item = /^\s*9\..*accept[- ]headline/im.test(section);
   claim('ledger-pointer', !!scribeRow && pointer && item, 'scribeRow=' + !!scribeRow + ' pointer=' + pointer + ' ledgerItem=' + item);
 }
 // 5. the round-86 report corrections are recorded
 {
-  const count = /says "39 findings"[^.]{0,120}committed control has\s+\*\*40\*\*/i.test(lesson87);
+  // scan ONLY the report-corrections bullet block, not the corrections table that quotes this check
+  const starts = [];
+  lesson87.split('\n').forEach((l, i) => { if (/Report corrections carried into this round/.test(l)) starts.push(i); });
+  let block = '';
+  if (starts.length === 1) {
+    const lines = lesson87.split('\n');
+    let end = lines.length;
+    for (let i = starts[0] + 1; i < lines.length; i++) if (/^#{2,4} /.test(lines[i])) { end = i; break; }
+    block = lines.slice(starts[0], end).join('\n');
+  }
+  const count = /says "39 findings"[^.]{0,200}committed control has\s+\*\*40\*\*/i.test(block);
   const sourcesFix = /S221\/S222/.test(lesson87) && /carried|not re-opened/i.test(lesson87);
   claim('report-corrections', count && sourcesFix, 'count=' + count + ' sources=' + sourcesFix);
 }

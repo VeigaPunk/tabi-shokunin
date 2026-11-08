@@ -190,3 +190,9 @@ Kill rule: after `mismatches != 0` or before `mismatches != 5` → NOT verified.
     construction inside the selftest; the round's identity is bound by the explicit-pins standalone
     run (`scored/counter-a.json`) and by `pins-match-freeze`. The harness self-reference is a
     known limit of "selftest green", not of the claim.
+- **D7 `c858c91ec04d`** (re-freeze, post-wave): the drift gate, answering R87Mut1's C2 survivors —
+  `ledger-pointer` now requires the `9. **The accept-headline` item heading itself (not just the
+  row's text), and `report-corrections` scans only the report-corrections bullet block, so the
+  corrections table's description of the check can no longer satisfy it. Both repairs were shown
+  able to fail (an inverted 39/40 bullet and a removed item 9 each produce the named mismatch); the
+  before-control stays 5. The selftest is re-run at D7 over the D3 receipt.

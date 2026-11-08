@@ -4187,9 +4187,10 @@ Scored (r86): 95 checks, battery 201/201, kill power 66/66, selftest 10/10, witn
 ## Round 87 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r87 (the remaining accept token forms); C2 calibration, the five lane-owned record defects of the r86 spot-check
 
 Base `24765dd9`; scored receipt D **`3dd4b0802d67`** (D1 `efbee055d6b4`, D2 `42a489b9d4be`
-superseded pre-report; D4 `b1d06cf8db57` re-froze only the selftest runner — path fix — and D5
-`c921658c6046` only the drift gate's ledger-pointer/directional checks; the scored receipt stays at
-D3; `plans/round-87.md` §Re-freeze history), nonce **`tabi-r87-l1-3dd4b0802d67`**. Axes at start: all six
+superseded pre-report; D4 `b1d06cf8db57` re-froze only the selftest runner — path fix — D5
+`c921658c6046` the drift gate's ledger-pointer/directional checks, D6 `6d4a63d29e0c` a tenth
+selftest gate and D7 `c858c91ec04d` the item-heading/directional-scope repairs; the scored receipt
+stays at D3; `plans/round-87.md` §Re-freeze history), nonce **`tabi-r87-l1-3dd4b0802d67`**. Axes at start: all six
 at 9; C1 works a lowest axis and is a capability move (generation r87 of the r79 capability); C2
 works calibration (record-vs-state mismatches).
 

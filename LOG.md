@@ -3994,9 +3994,11 @@ constant-offset forgery), R85Scout (sources), R85Scribe (note drafts), R85Connec
 
 ## Round 87 — 2026-11-08 (attempt 1, Linux host)
 
-L1 `TabiR87`. Base `24765dd9` (the round-86 verifier spot-check commit); D `3dd4b0802d67` (D1
-`efbee055d6b4`, D2 `42a489b9d4be` superseded pre-report, `plans/round-87.md` §Re-freeze history);
-nonce `tabi-r87-l1-3dd4b0802d67`. Claims: C1 coverage — capability `chromium-showpicker-linux`
+L1 `TabiR87`. Base `24765dd9` (the round-86 verifier spot-check commit); scored receipt D
+`3dd4b0802d67`, instrument freeze D7 `c858c91ec04d` (D1 `efbee055d6b4`, D2 `42a489b9d4be`
+superseded pre-report; D4 selftest path fix, D5 drift-gate direction, D6 tenth selftest gate, D7
+item-heading/directional-scope repairs — `plans/round-87.md` §Re-freeze history); nonce
+`tabi-r87-l1-3dd4b0802d67`. Claims: C1 coverage — capability `chromium-showpicker-linux`
 generation r87, the four remaining `accept` token forms (`audio/*`, `video/*`, a multi-MIME list,
 the whitespace variant), 34 legs / 99 checks; C2 calibration — the five lane-owned record defects of
 the round-86 non-author spot-check, `check-record-drift-r87` 5 → 0.
