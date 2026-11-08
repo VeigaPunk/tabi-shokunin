@@ -52,6 +52,9 @@ const scored = {
   killpower: readJson('.ufo/waves/round-84/scored/killpower-a.json'),
 };
 const ledger = read('.ufo/waves/round-83/claim-falsification.tsv') || '';
+const r83note = read('corpus/knowledge/chromium-showpicker-runtime-round-83.md') || '';
+let knowledgeCount = 0;
+try { knowledgeCount = fs.readdirSync(path.join(lane, 'corpus/knowledge')).filter((f) => f.endsWith('.md')).length; } catch {}
 const skill = read('SKILL.md') || '';
 const scorecard = read('SCORECARD.md') || '';
 const log = read('LOG.md') || '';
@@ -64,15 +67,17 @@ const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(de
   const cell = /accept.*extension token|extension token.*accept/i.test(lesson);
   const untargeted = /#accept/.test(lesson) && /image\/png/.test(lesson);
   const frontier = /MIME-token.*frontier|image\/\*/.test(lesson);
-  claim('r83-accept-correction', cell && untargeted && frontier,
-    'extensionToken=' + cell + ' untargeted=' + untargeted + ' frontier=' + frontier);
+  const noteErratum = /## Erratum \(round 84/.test(r83note) && /extension token/i.test(r83note) && /targeted by NO leg|targeted by no leg/i.test(r83note);
+  claim('r83-accept-correction', cell && untargeted && frontier && noteErratum,
+    'extensionToken=' + cell + ' untargeted=' + untargeted + ' frontier=' + frontier + ' noteErratum=' + noteErratum);
 }
 // 2. r83-png-correction (spotcheck 83 routed defect 2)
 {
   const sig = /8-byte.*PNG signature|signature.*marker|89504e47/.test(lesson);
   const bytes = /byte-acceptance|not a decodable|not decodable/.test(lesson);
-  claim('r83-png-correction', sig && bytes,
-    'signature=' + sig + ' byteAcceptance=' + bytes);
+  const noteBytes = /8-byte PNG signature/i.test(r83note) && /not a decodable PNG|byte-acceptance/i.test(r83note);
+  claim('r83-png-correction', sig && bytes && noteBytes,
+    'signature=' + sig + ' byteAcceptance=' + bytes + ' noteBytes=' + noteBytes);
 }
 // 3. falsification-scout (spotcheck 83 routed defect 3)
 {
@@ -100,16 +105,19 @@ const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(de
   const reverse = /reverse.*withdraw|withdraw.*reverse|symmetric.*withdraw/i.test(lesson) || /reverse.*receipt|scored.*reverse/i.test(lesson);
   const skill153 = /\(153 cases/.test(skill) || /153 cases/.test(skill);
   const laws8 = /8 (law|carried)|eight.*law|seven laws.*8/i.test(lesson + skill);
-  claim('record-counts', noWork && skill153,
-    'noWork69/41=' + noWork + ' skill153=' + skill153 + ' laws8=' + laws8);
+  const knowledgeOk = knowledgeCount === 97;
+  claim('record-counts', noWork && skill153 && laws8 && knowledgeOk,
+    'noWork69/41=' + noWork + ' skill153=' + skill153 + ' laws8=' + laws8 + ' knowledge=' + knowledgeCount);
 }
 // 6. r83-numbers (spotcheck 83 routed defect 6)
 {
-  const c = scored.counter;
   const skillBattery = /153 cases/.test(skill);
-  const knowledge = /96 knowledge|knowledge 96|96 notes/.test(scorecard + lesson) || true; // counted separately below
-  claim('r83-numbers', skillBattery,
-    'skillBattery153=' + skillBattery);
+  const r83c = readJson('.ufo/waves/round-83/scored/counter-a.json');
+  const r83b = readJson('.ufo/waves/round-83/scored/battery-a.json');
+  const r83k = readJson('.ufo/waves/round-83/scored/killpower-a.json');
+  const family = r83c && r83c.checkCount === 74 && r83b && r83b.cases === 153 && r83b.failed === 0 && r83k && r83k.survived === 0 && r83k.killed === 50;
+  claim('r83-numbers', skillBattery && family,
+    'skillBattery153=' + skillBattery + ' family=' + family);
 }
 // 7. census-artifacts
 {

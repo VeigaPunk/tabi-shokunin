@@ -3292,7 +3292,16 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 ## Round 83 gate registry
 
 - `check-showpicker-r83` (74 checks): `node scripts/check-showpicker-r83.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r83-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`
-- Battery: `node scripts/negatives-showpicker-r83.mjs ... --work <scratch> --json` (84 cases, coverage 74/74)
+- Battery: `node scripts/negatives-showpicker-r83.mjs ... --work <scratch> --json` (153 cases, coverage 74/74)
 - Kill power: `node scripts/kill-power-r83.mjs ... --work <scratch> --json` (50 mutants, 0 survivors)
 - Self-test: `node scripts/selftest-r83-gates.mjs --lane <ABS lane> --work <scratch> --json` (9/9)
 - Record drift: `node scripts/check-record-drift-r83.mjs --lane <ABS lane> --json` (7 claims, 0 mismatches)
+
+## Round 84 gate registry
+
+- `check-showpicker-r84` (80 checks): `node scripts/check-showpicker-r84.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r84-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`
+- Driver: `scripts/chrome-cdp-showpicker-round84.mjs` (18 legs: the r83 generation plus cross-origin `type=tel`/`search`/`text`)
+- Battery: `node scripts/negatives-showpicker-r84.mjs ... --work <scratch> --json` (162 cases, coverage 80/80)
+- Kill power: `node scripts/kill-power-r84.mjs ... --work <scratch> --json` (50 mutants, 50 killed, 0 survivors)
+- Self-test: `node scripts/selftest-r84-gates.mjs --lane <ABS lane> --work <scratch> --json` (9 gates)
+- Record drift: `node scripts/check-record-drift-r84.mjs --lane <ABS lane> --json` (10 claims, 0 mismatches)

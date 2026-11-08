@@ -4076,3 +4076,41 @@ Planned (r84): `type=tel`/`search`/`text` cross-origin legs; the full `accept` t
 
 Scored (r83): 74 checks, battery 153/153, kill power 50/50.
 - Digests: D b6496e6f5d4f, nonce tabi-r83-l1-b6496e6f5d4f. 74 checks, battery 153/153, kill power 50/50.
+
+## Round 84 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r84; C2 calibration, the eight r83 spot-check routed defects
+
+Base `a5d6ffbf`; freeze commit `84ebfa95` and identity commit `d90b7f55` (D1 `a5bdb15ec9a7`); re-freeze
+D2 **`31fc14c29f84`**, nonce **`tabi-r84-l1-31fc14c29f84`** (the battery repair that added the three
+new-leg cases; D1 superseded, never edited — `plans/round-84.md` §Re-freeze history). Axes at start:
+all six at 9; C1 works a lowest axis and is a capability move (generation r84 of the r79 capability).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r84 (sourced: S219/S220/S223 carried and re-opened) | `node scripts/check-showpicker-r84.mjs --lane <ABS lane> --receipt corpus/evidence/round84/chromium-showpicker/receipt.json --expect-driver-sha256 f436b229df3a9194f074d9489dbeed54a24081afaae3d3027ff46aad4198807e --expect-nonce tabi-r84-l1-31fc14c29f84 --expect-fixture-sha256 da8178f1f46731ade566ce023f4e71b1cc64b4ed0b9dd92e76d73fc11cb5df18 --prior-set .ufo/waves/round-84/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R84`) | base `a5d6ffbf`: no r84 receipt → exit 2 `receipt-unreadable`; the r83 receipt under the r84 counter → exit 1, 48 findings (schema, plan, 15 unknown legs, laws); after: **80 checks clean**, battery **162/162** (coverage 80/80), kill power **50/50**, selftest 9 gates | VERIFIED (narrowed: the three new legs measure the SecurityError and no chooser, not a distinct Chromium branch; kill power covers the frozen mutant list, not every single-conjunct weakening) |
+| C2 calibration (9), record drift (the r83 spot-check's eight routed defects) | `node scripts/check-record-drift-r84.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 10 claims incl. the r83-note erratum reads, `laws8`, the knowledge count and the r83 family retention) | before: exit 1, **8** mismatches on a clean mirror (`w1/c2-before.json`); after: exit 0, mismatches **0**; controls: a stale-rewritten mirror exits 1 on `r83-accept-correction` (`w1/c2-control.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r84) | As r83, and now: cross-origin `type=tel`, `type=search` and `type=text` inputs each throw SecurityError `showPicker() called from cross-origin iframe.`, open no chooser, and leave the parent unable to reach the child document (`contentDocument === null`) — the input-type surface the r83 note named as frontier, with every r83 leg carried (18 legs). | `corpus/evidence/round84/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-84.md` | 79 |
+
+Knowledge 96 → 97 (`corpus/knowledge/chromium-showpicker-runtime-round-84.md`) plus the append-only
+erratum on the r83 note. Registry 223 (no new rows; S219/S220/S223 re-opened). SKILL.md
+`## Round 84 gate registry` registers the five r84 instruments. `SKILL.md`'s r83 battery line
+corrected 84 → 153 cases.
+
+Narrowings (recorded in `plans/round-84.md`): (1) the three new legs do not distinguish a Chromium
+code path (R84Review1); (2) kill power 50/50 is the frozen list, not general conjunct resistance —
+R84Mut1's independent 123-mutant sweep leaves 51 case-level survivors, routed to r85; (3) C2's
+predicate covers the lesson/erratum/ledger/census halves and the r83 family, not the r83 spot-check's
+defect 5/6 Gate reconciliation (R84Critic); (4) battery cases witness refusal, not a single conjunct
+(32/159 also fire an allowlisted collateral — R84Review2).
+
+Planned (r85): battery witnesses for R84Mut1's survivor families (`childResult.message` unpinned,
+`childLate`, child event seq, `parentCrossAccess`, the three legs deleted from the loop); the
+`accept` MIME-token and `image/*` grammar legs; the same-origin tel/search/text contrast leg; a
+counter generation whose limit sentence prints the constant-offset escape. Retired: none.
+
+Scored (r84): 80 checks, battery 162/162, kill power 50/50, selftest 9/9.
+- Digests: D 31fc14c29f84, nonce tabi-r84-l1-31fc14c29f84. 80 checks, battery 162/162, kill power 50/50.

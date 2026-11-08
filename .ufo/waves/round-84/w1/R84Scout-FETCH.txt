@@ -1,0 +1,27 @@
+# R84Scout — round 84 / w1 fetch manifest (scratch receipt, copied out of scratch before the scratch dir was removed)
+
+Seat: R84Scout (scout, read-only). Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin.
+Scratch origin: $HYAKU_SCRATCH/tabi-r84/R84Scout/sources/ (default /fast/scratch/hyaku), removed after this copy.
+Fetched bytes are NOT kept in the lane; only this manifest and the quote->byte offsets in R84Scout.md are durable.
+
+Format: URL | http status | wire bytes | wire sha256 | decoded bytes | decoded lines | decoded sha256
+
+1) https://html.spec.whatwg.org/multipage/input.html
+   | 200 | 687515 | b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16 | 687515 | - | b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16
+   headers: content-length: 687515 | last-modified: Fri, 06 Nov 2026 22:04:01 GMT | etag: "6aee4ed1-a7d9b" | date: Sun, 08 Nov 2026 06:41:20 GMT
+   note: served as plain HTML (wire == decoded). Sections used: 4.10.5.4 Common input element APIs (raw line 5552); 4.10.5.1.17 File Upload state (raw line 4004).
+   matches S219/S223 row bytes+hash prefix (687,515 B, b0202de1c0b4) -> living page unchanged since the r83 fetch.
+
+2) https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/html/forms/html_input_element.cc?format=TEXT
+   | 200 | 135428 | 81b35d96184a983226f888faa5ac4f9a57be7aa882e9bb4b5d6d09650b7f1b10 | 101570 | 2818 | 405b52c70185820ead77b2338f054eb8220fdc7ef176de671db63c349282e96d
+   note: base64 wire; `base64 -d` gives the .cc. matches the S220 row ("fetched 135,428 B base64, decoded 2,818 lines, sha256 405b52c70185").
+
+3) https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/frame/local_frame.cc?format=TEXT
+   | 200 | 240040 | d5a9eacaef62ae4cd0873fefa83050c2ddb406f501819fd31cc5813c01e83898 | 180028 | 4599 | f314885f156e923a88eed7087b00c99aa0f55d13787aebb15398fc88fa5a9d7f
+   note: supporting read for LocalFrame::IsSameOrigin() (lines 4453-4460) -> compares against Tree().Top()'s origin (the TOP-level origin). Not a registry row.
+
+4) https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/html/forms/html_select_element.cc?format=TEXT
+   | 200 | 115240 | 66510d2d177ab6202c233477b65d1192b7c59e5a658861652b7282c6a1a4363d | 86429 | - | c7498d99eac696cb2ce8a0993080c0492ad7accbaf4b689c21cc10379908d19e
+   note: supporting read for HTMLSelectElement::showPicker (lines 1810-1847) -> same SecurityError on !IsSameOrigin(), no file/color exemption. Not a registry row.
+
+No SOURCES row was appended; corpus/SOURCES.md is untouched. No git/jj mutation was run. No tool was installed or upgraded.

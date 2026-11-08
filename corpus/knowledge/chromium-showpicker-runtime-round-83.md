@@ -49,3 +49,26 @@ receipt field path that carries it.
 - `type=tel`/`search`/`text` cross-origin legs.
 - A second answer leg whose bytes differ between first and second answers (id + bytes double attribution).
 - The full `accept` token grammar (extensions vs MIME vs `image/*` vs mixed lists).
+
+## Erratum (round 84, append-only — the frozen law text above is not rewritten)
+
+The r83 non-author spot-check (`corpus/lessons/round-83-verifier-spotcheck.md`, routed defects 1–2)
+found law 3 and the "real PNG" sentence overstated against the committed receipt. Corrected of record:
+
+1. **Law 3's accept token.** The answered input is `#k`, whose marker attribute is
+   `accept=".png"` — an EXTENSION token (`receipt.fixtureInputs`, `legs[8]`/`legs[13]`). `#accept`
+   (`accept="image/png"`, the MIME token) is targeted by NO leg of the r83 receipt; `image/png` in
+   the law is the delivered file's media type, not an `accept` token the leg exercised. The
+   MIME-token and `image/*` branches stay frontier (`R83Scout.md` §5.1;
+   `R83Scribe/knowledge-note.md:61-64`).
+2. **"A real PNG".** The delivered bytes are the 8-byte PNG signature `89 50 4e 47 0d 0a 1a 0a`
+   followed by the 13-byte ASCII marker `tabi-r83-png\n` (`legs[13].uploadPng.hex
+   89504e470d0a1a0a746162692d7238332d706e670a`), not a decodable PNG image. The measured law is
+   byte-acceptance of a non-empty file, not image validity.
+3. **The law-count sentence.** "The r82 seven laws are carried forward" names five clauses; the r84
+   counter carries eight law checks (`gesture`, `activation`, `mode`, `cross-origin-nonfile`,
+   `order`, `webkitdirectory-answer`, `accept-answer`, `click-while-open`) plus the r83 additions.
+   The number was a label, not a count of distinct checks.
+
+Generation r84 measures the frontier this note named (`type=tel`/`search`/`text`, every carried leg)
+— see `corpus/knowledge/chromium-showpicker-runtime-round-84.md`.

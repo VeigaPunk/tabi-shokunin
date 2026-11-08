@@ -3921,3 +3921,27 @@ kill power 50/50, selftest 9/9). C2 record drift for the r82 routed defects
 (direction-bound anchored `23 -> 20`, lesson `7 -> 4`, census start/end filed):
 before 4 mismatches, after 0. Digests D b6496e6f5d4f, nonce tabi-r83-l1-b6496e6f5d4f.
 Knowledge 94 → 95. Registry 223 unchanged (S219/S220 re-opened).
+
+## Round 84 (2026-11-08)
+
+Lane TabiR84. One v1 wave, 10 seats (4 attack roles: R84Review1, R84Review2, R84Critic,
+R84Mut1). C1 capability generation r84: cross-origin `type=tel`/`search`/`text` throw the
+SecurityError and open nothing, with every r83 leg carried (18 legs; 80 checks clean,
+battery 162/162 coverage 80/80, kill power 50/50, selftest 9/9). C2 record drift: the eight
+r83 spot-check routed defects corrected of record (`corpus/lessons/round-84.md` §Corrections
+and the r83 note's `## Erratum`); drift counter 8 → 0 mismatches with a stale-rewrite control
+flipping `r83-accept-correction`. Freeze D1 `a5bdb15ec9a7` was superseded by the battery repair
+(the three new legs had no refusal case — R84Review2/R84Mut1 measured the pinned battery failing
+the honest receipt: 156 cases, 3 failed, 74/80 covered); final D **31fc14c29f84**, nonce
+**tabi-r84-l1-31fc14c29f84**, receipt re-run at that nonce and the D1 receipt superseded, never
+edited. Knowledge 96 → 97 (+ the r83 note erratum). Registry 223 unchanged (S219/S220/S223
+re-opened by R84Scout, bytes unchanged). Census start/end exit 0, 223 rows.
+Wave findings reconciled: R84Review1 (legs non-discriminating — narrowed), R84Review2 (battery
+case coupling 32/159 + the freeze/worktree pin drift that forced D2), R84Critic (drift predicate
+scope — strengthened before D2), R84Mut1 (123 independent mutants, 51 case-level survivors — kill
+power narrowed and survivors routed to r85), R84Connector (20 siblings pinned, 0 contested on this
+surface), R84Scout (spec and Chromium agree with the three legs; accept grammar partly measured),
+R84Scribe (note + erratum drafts), R84Exec1 (two cold runs clean at 80/80), R84Exec2 (C2
+before/after/control), R84Exec3 (D1 battery/killpower/selftest run, pre-repair — superseded).
+
+- Round 84 digests: D 31fc14c29f84, nonce tabi-r84-l1-31fc14c29f84. 80 checks, battery 162/162, kill power 50/50.
