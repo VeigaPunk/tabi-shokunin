@@ -217,3 +217,8 @@ D1-derived nonce; every later freeze touches only non-receipt instruments and is
   is unmentioned; N5 the `TypeError` lives in `crossAccess.showPicker`; N6 `proxyLog.origin` is the
   sender (parent) origin on all 13 proxy legs; N7 the fixture sha256s are absent from the note;
   G1-G5 quote conventions and the "excluded 1 for a NEW row" mislabel. Read-only; nothing amended.
+- **Same-site is not OOPIF (R91Connector):** the cross-origin frame is `127.0.0.1` on a different
+  port, i.e. same-site but cross-origin; Chromium may not place it out of process, so the
+  cross-origin activation/origin laws are measured for same-site frames only. The driver also binds
+  the first `type=page` target without a `Target.*` enumeration — the r92 reuse pattern (kaidoku's
+  enumerate-targets-before-attach) and a scope narrowing for the capability row.
