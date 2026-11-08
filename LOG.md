@@ -4044,3 +4044,29 @@ Records: `corpus/knowledge/chromium-showpicker-runtime-round-88.md` (knowledge 1
 `corpus/lessons/round-88.md`; `plans/round-88.md`; SCORECARD round-88 section + capability row
 (plus the seven historical tallies restored to 9/9); SKILL.md `## Round 88 gate registry`;
 QUALITY 161 (scope extended to the SCORECARD tally set); SOURCES §Search log round-88 entry.
+
+## Round 89 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR89`. Base `5a901163` (the round-88 verifier spot-check commit); instrument freeze D1
+`7bde5e6c2f2d`, final freeze D **`061dec8a`** (D2 the battery `LEG_ALSO` repair, D3 the replay-limit
+consistency move into the limit block, D4 the kill-power from-string repair + `accept-domread-law-raw`,
+D5 the last from-string repair; `plans/round-89.md` §Re-freeze history); the scored receipt was
+produced once at the D1-derived nonce `tabi-r89-l1-7bde5e6c2f2d`, and every later freeze touched only
+non-receipt instruments. Claims: C1 coverage — capability `chromium-showpicker-linux` generation r89,
+the DOM-parsed token list (four new legs re-reading `window.__inputs()` at settle), 41 legs / 107 checks;
+C2 calibration — the round-88 non-author spot-check routed defects 1–2 (drift-fixture causality,
+the selftest fixture leak, the replay limit block), `check-record-drift-r89` 3 → 0.
+
+Instruments (pins in `.ufo/waves/round-89/freeze.txt`): `chrome-cdp-showpicker-round89.mjs`
+(41 legs), `check-showpicker-round89.mjs` (107 checks), `negatives-showpicker-round89.mjs`
+(223 cases, coverage 107/107), `kill-power-round89.mjs` (72 mutants, 72/72),
+`selftest-r89-gates.mjs` (11 gates), `check-record-drift-r89.mjs` (4 statements).
+Scored receipt `corpus/evidence/round89/chromium-showpicker/receipt.json` (0 failures).
+Do-nothing controls: `controls/c1/nowork-r88-under-r89.json` (exit 1, `schema`/`plan-frozen`
+among the findings) and `controls/c1/noreceipt.txt` (exit 2); the C2 before control is the
+same frozen gate on a base `5a901163` worktree (3 mismatches, `scored/drift-before.json`, measured).
+
+Records: `corpus/knowledge/chromium-showpicker-runtime-round-89.md` (knowledge 101 → 102);
+`corpus/lessons/round-89.md`; `plans/round-89.md`; SCORECARD round-89 section + capability row;
+SKILL.md `## Round 89 gate registry`; QUALITY 162 (a selftest fixture is causal and self-cleaning);
+SOURCES §Search log round-89 entry (S224 added, registry 223 → 224).

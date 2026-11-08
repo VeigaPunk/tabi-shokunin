@@ -224,7 +224,8 @@ const legMutators = {
   'sp88-accept-mimeparam-png': (r) => { evOf(r, 'sp88-accept-mimeparam-png')[5].files = [['a', 1, 'image/png', '']]; },
 };
 const LEG_ALSO = { 'sp85-same-origin-tel': ['no-selection-law'], 'sp85-same-origin-search': ['no-selection-law'], 'sp85-same-origin-text': ['no-selection-law'], 'sp85-same-origin-tel-activated': ['no-selection-law'], 'sp85-same-origin-search-activated': ['no-selection-law'], 'sp85-same-origin-text-activated': ['no-selection-law'], 'sp84-cross-origin-nonfile': ['no-selection-law'], 'sp84-cross-origin-nonfile-disabled': ['no-selection-law'], 'sp84-same-origin-nonfile-disabled': ['no-selection-law'], 'sp84-webkitdirectory-answer': ['no-selection-law', 'webkitdirectory-answer-law'], 'sp84-accept-answer': ['no-selection-law', 'accept-answer-law'], 'sp84-click-while-open': ['no-selection-law'], 'sp84-cross-origin-color': ['no-selection-law'], 'sp84-cross-origin-month': ['no-selection-law'], 'sp84-cross-origin-week': ['no-selection-law'], 'sp84-cross-origin-time': ['no-selection-law'], 'sp84-cross-origin-number': ['no-selection-law'], 'sp84-cross-origin-range': ['no-selection-law'], 'sp84-cross-origin-tel': ['no-selection-law'], 'sp84-cross-origin-search': ['no-selection-law'], 'sp84-cross-origin-text': ['no-selection-law'], 'sp84-multiple-mode': ['no-selection-law', 'multiple-mode-law'], 'sp84-accept-mime-answer': ['no-selection-law', 'accept-mime-answer-law'], 'sp84-second-chooser-answer': ['no-selection-law', 'second-chooser-answer-law'], 'sp86-accept-wildcard-text': ['no-selection-law', 'accept-grammar-law'], 'sp86-accept-wildcard-png': ['no-selection-law', 'accept-grammar-law'], 'sp86-accept-mixed-text': ['no-selection-law', 'accept-grammar-law'], 'sp86-accept-mixed-png': ['no-selection-law', 'accept-grammar-law'], 'sp86-accept-pdf-token-png': ['no-selection-law', 'accept-grammar-law'], 'sp86-same-origin-color-activated': ['no-selection-law', 'same-origin-color-law'] };
-for (const n of LEG_NAMES) add('leg-' + n, 'leg-' + n, legMutators[n] || ((r) => { legOf(r, n).stateAfter.sValue = 'x'; }), LEG_ALSO[n] || []);
+const DOMREAD_ALSO = { 'sp89-accept-domread-text': ['no-selection-law'], 'sp89-accept-domread-png': ['no-selection-law'], 'sp89-accept-domread-multimime': ['no-selection-law'], 'sp89-accept-domread-whitespace': ['no-selection-law'] };
+for (const n of LEG_NAMES) add('leg-' + n, 'leg-' + n, legMutators[n] || ((r) => { legOf(r, n).stateAfter.sValue = 'x'; }), LEG_ALSO[n] || DOMREAD_ALSO[n] || []);
 
 // law checks
 add('gesture-law', 'gesture-law', (r) => { legOf(r, 'sp84-webkitdirectory-answer').showPicker = { ok: false, name: 'NotAllowedError', message: 'x' }; }, ['intercept-law']);
@@ -305,6 +306,7 @@ const forgery = (ctx) => {
   return c;
 };
 add('replay-event-timeline', 'replay-event-timeline', (r, ctx) => { Object.assign(r, forgery(ctx)); }, ['send-log-allowlist', 'cdp-event-log-closed', 'replay-launch-token', 'replay-devtools-url']);
+
 add('replay-launch-token', 'replay-launch-token', (r, ctx) => { legOf(r, 'sp84-accept-answer').launchToken = arr(ctx.prior.legs)[0].launchToken; }, ['host-argv']);
 add('replay-devtools-url', 'replay-devtools-url', (r, ctx) => { legOf(r, 'sp84-accept-answer').devtoolsListening = clone(arr(ctx.prior.legs)[0].devtoolsListening); }, ['host-argv', 'devtools-port-binding']);
 
@@ -357,6 +359,7 @@ add('accept-grammar-law-r89-case', 'accept-grammar-law', (r) => { r.fixtureInput
 add('accept-grammar-law-r89-audiovideo', 'accept-grammar-law', (r) => { legOf(r, 'sp88-accept-audiovideo-text').stateAfter.au = []; }, ['leg-sp88-accept-audiovideo-text', 'no-selection-law']);
 add('accept-grammar-law-r89-mimeparam', 'accept-grammar-law', (r) => { r.fixtureInputs.find((d) => d.id === 'amc').accept = 'image/png'; }, ['fixture-descriptors']);
 add('accept-domread-law', 'accept-domread-law', (r) => { legOf(r, 'sp89-accept-domread-text').domRead.find((d) => d.id === 'aw').acceptTokens = ['image/png']; });
+add('accept-domread-law-raw', 'accept-domread-law', (r) => { legOf(r, 'sp89-accept-domread-text').domRead.find((d) => d.id === 'aw').accept = 'application/pdf'; });
 add('accept-domread-law-bytes', 'accept-domread-law', (r) => { legOf(r, 'sp89-accept-domread-png').pageEvents.find((e) => e.type === 'read').ret = 'hex:00'; }, ['leg-sp89-accept-domread-png']);
 add('accept-domread-law-state', 'accept-domread-law', (r) => { legOf(r, 'sp89-accept-domread-whitespace').stateAfter.aws = []; }, ['leg-sp89-accept-domread-whitespace', 'no-selection-law']);
 add('same-origin-color-law-opens', 'same-origin-color-law', (r) => { const l = legOf(r, 'sp86-same-origin-color-activated'); l.cdpEventLog.push({ method: 'Page.fileChooserOpened', params: { frameId: l.frameTree.mainFrameId, mode: 'selectSingle', backendNodeId: 9 }, afterSendId: l.triggerSendId }); }, ['plan-calls', 'leg-sp86-same-origin-color-activated', 'intercept-law', 'cdp-event-log-closed']);

@@ -3343,3 +3343,12 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-round88.mjs ... --work <scratch> --json` (69 mutants, 69 killed, 0 survivors, 0 crashed).
 - Record drift: `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json` (4 statements: the seven r87-swept SCORECARD tallies restored to 9/9, the D7 wording corrected to D6, every gate's isolated `--selftest`, QUALITY 161's SCORECARD scope; 3 → 0 mismatches).
 - Self-test: `node scripts/selftest-r88-gates.mjs --lane <ABS lane> --work <scratch> --json` (11 gates: the ten r87 gates plus `gate-selftest`, which executes the four isolated `--selftest` modes).
+
+## Round 89 gate registry
+
+- `check-showpicker-round89` (107 checks): `node scripts/check-showpicker-round89.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r89-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Four new legs `sp89-accept-domread-{text,png,multimime,whitespace}`; the new law `accept-domread-law` binds each domread leg's raw `accept` AND its DOM-parsed token list read from the page at settle (`domRead`), with the acceptance law carried over the parsed list.
+- Driver: `scripts/chrome-cdp-showpicker-round89.mjs` (41 legs; `window.__inputs()` returns `acceptTokens` — comma-split, trimmed, ASCII-lowercased — and each domread leg re-reads it at settle).
+- Battery: `node scripts/negatives-showpicker-round89.mjs ... --work <scratch> --json` (223 cases, coverage 107/107; the four new legs carry per-leg cases and four domread cases).
+- Kill power: `node scripts/kill-power-round89.mjs ... --work <scratch> --json` (72 mutants, 72 killed, 0 survivors, 0 crashed).
+- Record drift: `node scripts/check-record-drift-r89.mjs --lane <ABS lane> --json` (4 statements: the seven r88-swept SCORECARD tallies restored to 9/9, the D7 wording corrected to D6, every gate's isolated `--selftest`, QUALITY 161's SCORECARD scope; 3 → 0 mismatches).
+- Self-test: `node scripts/selftest-r89-gates.mjs --lane <ABS lane> --work <scratch> --json` (11 gates).

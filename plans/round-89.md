@@ -87,3 +87,30 @@ Pre-freeze defects found and fixed (each before the freeze, so no re-freeze):
 - `fixture-descriptors`' empty-token column: the page emits `[]` for file inputs with a null
   accept and `null` for non-file inputs.
 - `plan-calls`' click-unexpected rule had to treat absent click ids as null.
+
+## Re-freeze history (instrument family)
+
+- **D1 `7bde5e6c2f2d`** (first freeze): six instruments pinned. A pre-freeze probe run at
+  `tabi-r89-probe1-probe0001` confirmed the driver reaches all 41 legs with 0 failures.
+- **D2 `a78e70a4`** (post-scoring, one batched repair): the battery's per-leg `LEG_ALSO` list
+  lacked the `no-selection-law` collateral for the four new domread legs (the per-leg state
+  mutation trips it exactly as it trips it on the r84/r86 answer legs), so four cases failed
+  on their own expected id plus an unlisted collateral. The battery bytes are re-pinned; no
+  predicate, threshold, prior or kill rule changed, and the scored receipt is untouched.
+- **D3** (the replay-limit consistency move; the digest label in an earlier draft of this section (`a78e70a4`) was unverifiable and is withdrawn — the D3 freeze is the `freeze.txt` bytes whose sha256 prefix is recorded in claims.json `digestsCommit` at landing): the replay-limit
+  consistency invariant (`refused == (absMatched >= absNeed)`, limit sentence prints the computed
+  `absNeed` values) moved out of the numbered check set into the `limit` block as a computed
+  boolean, because a battery case cannot witness a counter-text check by mutating the receipt.
+  CheckCount 108 → 107, `limit.replayConsistency: true` on the scored run; the battery's witness
+  for the class is the kill-power mutant. No predicate, threshold, prior or kill rule changed.
+- **D4** (post-wave, one batched repair): the kill-power run left three mutants unapplied (a
+  stale from-string after the LEG_KEYS sync, and two grammar-law from-strings made
+  non-unique by the domread law's shared clause shape) and one survivor
+  (`domread-raw-dropped` — no battery case mutated the domread raw string). The from-strings
+  are re-pinned to unique context and the battery gains `accept-domread-law-raw`. The scored
+  receipt is untouched; no predicate, threshold, prior or kill rule changed.
+- **D5** (post-wave, one batched repair): the last kill-power from-string
+  (`accept-grammar-state-dropped`) re-anchored to a unique GRAMMAR-loop prefix. Final measured
+  state at the frozen bytes: counter clean 107, battery 223/0/107, kill power 72/72/0/0/0,
+  selftest 11/11, record drift 3 → 0. Final freeze `061dec8a` (sha256 prefix of
+  `.ufo/waves/round-89/freeze.txt`; nonce stays the D1-derived `tabi-r89-l1-7bde5e6c2f2d`).

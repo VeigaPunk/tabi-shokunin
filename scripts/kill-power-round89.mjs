@@ -110,7 +110,7 @@ const MUTANTS = [
   ['frame-tree-url-any', "ftree.mainFrameUrl === 'about:blank'", "typeof ftree.mainFrameUrl === 'string'"],
   ['plan-frozen-any', "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))", "legs.length === PLAN.length"],
   ['leg-order-any', "same(legs.map((l) => (isObj(l) ? l.name : null)), LEG_ORDER)", "legs.length === LEG_ORDER.length"],
-  ['leg-records-keys-open', "isObj(l) && same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name", "isObj(l) && Object.keys(l).length >= 40 && l.name === PLAN[i].name"],
+  ['leg-records-keys-open', "isObj(l) && (same(Object.keys(l).sort(), LEG_KEYS)", "isObj(l) && (Object.keys(l).length >= 40"],
   ['leg-marks-late-ignored', "l.lateAfterClose === 0", "num(l.lateAfterClose)"],
   ['send-method-any', "ALLOWED_METHODS.has(c.method)", "typeof c.method === 'string'"],
   ['plan-calls-any', "same(got.map((c) => ({ method: c.method, params: c.params })), want)", "got.length === want.length"],
@@ -160,8 +160,8 @@ const MUTANTS = [
   // round-87 additions: the accept grammar matrix (C1), the same-origin colour arm (C1) and the
   // leg-narrowing witnesses (C2)
   ['accept-grammar-accept-any', "isObj(desc) && desc.accept === accept", "isObj(desc)"],
-  ['accept-grammar-bytes-dropped', "arr(leg.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + f.hex", "typeof arr(leg.pageEvents).find((e) => e.type === 'read').ret === 'string'"],
-  ['accept-grammar-state-dropped', "same(st, [[f.name, f.size, f.type, '']])", "Array.isArray(st)"],
+  ['accept-grammar-bytes-dropped', "&& arr(leg.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + f.hex && isObj(desc) && desc.accept === accept;", "&& typeof arr(leg.pageEvents).find((e) => e.type === 'read').ret === 'string' && isObj(desc) && desc.accept === accept;"],
+  ['accept-grammar-state-dropped', "const ok = isObj(leg.answer) && same(leg.answer.files, [f.name]) && isObj(leg.answer.setParams) && arr(leg.answer.setParams.files).length === 1 && path.basename(leg.answer.setParams.files[0]) === f.name && leg.answer.setParams.backendNodeId === arr(nodeReport[name])[0] && same(leg.answer.setResult, {}) && leg.answer.setError === null && same(st, [[f.name, f.size, f.type, '']])", "const ok = isObj(leg.answer) && same(leg.answer.files, [f.name]) && isObj(leg.answer.setParams) && arr(leg.answer.setParams.files).length === 1 && path.basename(leg.answer.setParams.files[0]) === f.name && leg.answer.setParams.backendNodeId === arr(nodeReport[name])[0] && same(leg.answer.setResult, {}) && leg.answer.setError === null && Array.isArray(st)"],
   ['accept-grammar-r89-case-dropped', "['sp88-accept-case-png', 'ac', 'IMAGE/PNG', PNG]", "['sp88-accept-case-png', 'ac', 'image/png', PNG]"],
   ['accept-grammar-r89-audiovideo-dropped', "['sp88-accept-audiovideo-text', 'au', 'audio/*,video/*', ANSWER]", "['sp88-accept-audiovideo-text', 'au', 'audio/*', ANSWER]"],
   ['accept-grammar-r89-mimeparam-dropped', "['sp88-accept-mimeparam-png', 'amc', 'image/png;q=0.9', PNG]", "['sp88-accept-mimeparam-png', 'amc', 'image/png', PNG]"],

@@ -4262,3 +4262,46 @@ colour popup probe. Retired: none.
 
 Scored (r88): 102 checks, battery 215/215, kill power 69/69, selftest 11/11, record drift 4 → 0.
 - Digests: D abfd00a2, nonce tabi-r88-l1-86f1dcec. 102 checks, battery 215 cases, kill power 69 mutants.
+
+## Round 89 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r89 (the DOM-parsed token list); C2 calibration, the r88 spot-check routed defects 1-2
+
+Base `5a901163`; instrument freeze D1 `7bde5e6c2f2d`, final freeze D **`061dec8a`** (D2 the battery
+`LEG_ALSO` repair, D3 the replay-limit consistency move into the limit block, D4 the kill-power
+from-string repair + `accept-domread-law-raw`, D5 the last from-string repair; `plans/round-89.md`
+§Re-freeze history). The scored receipt was produced once at the nonce `tabi-r89-l1-7bde5e6c2f2d`
+(D1-derived; it names the receipt, not the freeze). Axes at start: all six at 9; C1 works a lowest axis and is a capability
+move (generation r89 of the r79 capability); C2 works calibration (record-vs-state mismatches).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r89 (sourced: S224 new; S223/S219 carried and re-opened) | `node scripts/check-showpicker-round89.mjs --lane <ABS lane> --receipt corpus/evidence/round89/chromium-showpicker/receipt.json --expect-driver-sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0 --expect-nonce tabi-r89-l1-7bde5e6c2f2d --expect-fixture-sha256 69acad5754e0effb480771dd68197c26815bf0aabd4e76afe63ce09ca462c5ed --prior-set .ufo/waves/round-89/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R89`) | base `5a901163`: no r89 receipt → exit 2 `receipt-unreadable`; the r88 scored receipt under the r89 counter → exit 1 (`schema` among findings); after: the scored receipt → exit 0, `verdict clean`, **107 checks**, 0 findings | VERIFIED |
+| C2 calibration (9), the r88 spot-check routed defects 1-2 (`scripts/check-record-drift-r89.mjs`, predicate `C2-RECORDDRIFT-R89`) | `node scripts/check-record-drift-r89.mjs --lane <ABS lane> --json` (exit 0 iff 4 claims, 0 mismatches) | before (base `5a901163` worktree): **3 mismatches** (`selftest-wording`, `gate-selftest`, `quality161-sweep` — `scored/drift-before.json`; `gate-selftest` is red at base because the r89 instruments do not exist there); after: **0** of 4 (`scored/drift-a.json`); the before-numeral was first declared as 2 and corrected to the measured 3 (disclosed) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r89) | As r88, and now: the `accept` acceptance law holds over a DOM-parsed token list read back from the page at settle — `image/*` ← txt, `image/png, .txt` ← png, `image/png,application/pdf` ← txt, and the whitespace variant `"  image/png ,  .txt  "` ← png all accept a programmatic answer with trusted input+change and page-read bytes, with each raw attribute AND each parsed token list read from the page (41 legs, 107 checks; the tokenization is the fixture's split-and-trim emulation of WHATWG §2.3.8, disclosed as such) | `corpus/evidence/round89/chromium-showpicker/receipt.json`; `corpus/knowledge/chromium-showpicker-runtime-round-89.md` | 79 |
+
+Knowledge 101 → 102 (`corpus/knowledge/chromium-showpicker-runtime-round-89.md`). Registry 223 → 224
+(S224 WHATWG §2.3.8 comma-separated tokens, opened 2026-11-08, `mined`; S223/S219 re-opened in place).
+SKILL.md `## Round 89 gate registry` registers the six r89 instruments; `scripts/selftest-r89-gates.mjs`
+runs them in order (11 gates: the ten r88 gates plus `gate-selftest`, which executes the four
+isolated `--selftest` modes).
+
+Narrowings (`plans/round-89.md` §Narrowings, as forced by the wave): (1) acceptance is not
+filtering — the dialog is unmeasured; (2) the token list is the fixture's normalization (comma-split,
+ASCII-trimmed, ASCII-lowercased), not Chromium's internal tokenization; (3) the settle re-read is
+driver-observed, not counter-enforced — the counter binds the `domRead` data, not the evaluate that
+produced it (R89Review2 F1); (4) the counter's replay limit block is the only self-asserting
+numeral (the sentence prints the computed `absNeed` values and `limit.replayConsistency` asserts
+their agreement, but no battery case can trip a counter-text check by mutating the receipt);
+(5) C2 counts four record statements, not every sentence; (6) the before-control's third red
+(`gate-selftest`) is an artifact of the control's own scoping, not a record drift.
+
+Planned (r90): a settle-evaluate requirement on domread legs (the counter's `plan-calls` would have to
+require the `window.__inputs()` evaluate); a kill-power mutant for the `absNeed` formula class; a
+same-element origin comparison; a UI-side colour popup probe. Retired: none.
+
+Scored (r89): 107 checks, battery 223/223, kill power 72/72, selftest 11/11, record drift 3 → 0.
+- Digests: D 061dec8a, nonce tabi-r89-l1-7bde5e6c2f2d. 107 checks, battery 223 cases, kill power 72 mutants.

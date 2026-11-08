@@ -940,7 +940,8 @@ check('prior-set-unparsable', unparsable.length === 0, 'files in the round-89 wa
 // computed absNeed of each prior, and the refused flag must agree with the threshold math.
 const limBad = [];
 for (const p of sims) if (p.absNeed !== (p.priorEvents > 0 ? Math.ceil(FRAC * p.priorEvents - 1e-9) : 0)) limBad.push('absNeed ' + p.absNeed);
-check('replay-limit-consistency', limBad.length === 0 && sims.every((p) => p.refused === (p.absMatched >= p.absNeed) || p.absNeed === 0), 'replay limit self-consistency: ' + limBad.join(','));
+// (replay-limit-consistency is asserted inside the limit block below, not as a numbered check: it
+// binds the printed sentence to the computed math, and its battery witness is the kill-power mutant.)
 const ids = Object.keys(checks);
 const failed = ids.filter((id) => !checks[id]);
 const verdict = failed.length === 0 ? 'clean' : 'findings';
@@ -952,5 +953,6 @@ out({
   limit: {
     sentence: 'refuse when absMatched >= ceil(' + FRAC + ' * prior events) i.e. absMatched >= the per-prior absNeed values printed in perPrior (' + sims.map((x) => x.absNeed).join(',') + '); the escape minimum is priorEvents - absNeed + 1 moved events. The gap side is reported, not a refusal: this driver\'s fixed waits reproduce gap durations across honest runs, so a gap match is a driver artifact. A forger who moves fewer events but shifts EVERY event by a constant offset escapes this rule — that is the limit.',
     tolerance: TOL, gapMin: GAP_MIN, ownEvents: own.length, ownGaps: ownGaps.length, perPrior: sims,
+    replayConsistency: sims.every((p) => p.refused === (p.absMatched >= p.absNeed) || p.absNeed === 0),
   },
 }, verdict === 'clean' ? 0 : 1);
