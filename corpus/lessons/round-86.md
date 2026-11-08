@@ -28,11 +28,14 @@ bytes, sha256 `b0202de1c0b4…`; staged at `.ufo/waves/round-86/sources/whatwg-i
   the File Upload or Color states." The same block's "Shows any applicable picker UI … If input does
   not support a picker, this method does nothing" bounds the colour law to "no FILE chooser".
 
-Identified 2 / screened 2 / included 0 / excluded 2 for NEW rows (carried rows S223, S219, S216, S221,
-S222 re-opened; no registry change — the round adds measured laws, not new sources).
+Identified 2 / screened 2 / included 0 / excluded 2 for NEW rows. Opened this round: S223 and S219
+(one fetch of the living page), with S216 anchoring the same page's algorithm. Carried, NOT re-opened:
+S221/S222 (the CDP Page/DOM domain documents — no `.pdl` was fetched this round). No registry
+change — the round adds measured laws, not new sources. (Corrected on R86Scribe's source-accounting
+finding, `w1/R86Scribe.md` §Divergences.)
 
-Admitted: `corpus/knowledge/chromium-showpicker-runtime-round-86.md` (cites S223, S219, S216, S221,
-S222).
+Admitted: `corpus/knowledge/chromium-showpicker-runtime-round-86.md` (cites S223, S219, S216 and,
+as carried context, S221/S222).
 
 Rejected (with flip conditions):
 
@@ -84,4 +87,7 @@ run them in order; no other class found.
 |---|---|---|---|
 | 1 | `plans/round-86.md` §C2 | the first draft declared three whole-law narrowing families and a before-value of 3 | rewritten to six conjunct-scoped families; the mechanism and both measured values are recorded above |
 | 2 | `.ufo/waves/round-86/claims.json` C2 `legs.a` | names the three survivors by family id | they are `narrow-tel-crossaccess`, `narrow-tel-childseq`, `narrow-tel-childact-before` — exactly R85Mut1's three |
-| 3 | `.ufo/waves/round-86/freeze.txt` + every record's nonce | D1 `0e7bb7e08cac` was frozen with a `check-record-drift-r86.mjs` that could not parse (`SyntaxError: Unexpected identifier`, its new `accept-grammar-measured` claim) | repaired counter re-frozen as **D2 `4bd89a80f439`**; the scored run and every gate re-run at D2's nonce; the file and the records cite D2, and `plans/round-86.md §Re-freeze history` keeps D1 named |
+| 3 | `corpus/knowledge/chromium-showpicker-runtime-round-86.md` law 1 headline | "`accept` is a dialog filter, never a validator" — wider than a receipt can show (the dialog is unmeasured) | narrowed to "`accept` is not a validator on a programmatic answer — for every token form measured", with the dialog reading marked unmeasurable (R86Scribe §Divergences; R86Critic Q1) |
+| 4 | this Gate's source accounting | "carried rows S223, S219, S216, S221, S222 re-opened" | opened this round: S223/S219 (+S216 anchoring the same page); S221/S222 **carried, not re-opened** — no `.pdl` was fetched (R86Scribe source-accounting finding) |
+| 5 | `.ufo/waves/round-86/controls/c1/nowork-r85-under-r86.json` | recorded 39 findings, all captured before the scored receipt and the two priors existed in the walked trees | regenerated in place after the wave: **40** findings, the new one `prior-set-complete` (the r86 receipts now in the tree); R86Sentinel F1 caught the stale artifact, and the number is now reproducible from the committed tree |
+| 6 | `.ufo/waves/round-86/freeze.txt` + every record's nonce | D1 `0e7bb7e08cac` was frozen with a `check-record-drift-r86.mjs` that could not parse (`SyntaxError: Unexpected identifier`, its new `accept-grammar-measured` claim) | repaired counter re-frozen as **D2 `4bd89a80f439`**; the scored run and every gate re-run at D2's nonce; the file and the records cite D2, and `plans/round-86.md §Re-freeze history` keeps D1 named |

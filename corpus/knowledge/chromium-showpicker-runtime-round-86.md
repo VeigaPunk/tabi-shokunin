@@ -13,7 +13,7 @@ frontier).
 
 ## The measured laws
 
-1. **`accept` is a dialog filter, never a validator — for every token form.** Five legs answer the
+1. **`accept` is not a validator on a programmatic answer — for every token form measured.** Five legs answer the
    programmatic chooser through `DOM.setFileInputFiles` on three page inputs whose `accept`
    attributes are read back from the page (`fixtureInputs` ids `aw`/`am`/`ap`):
    `accept="image/*"` answered with `text/plain` bytes (`sp86-accept-wildcard-text`) and with
@@ -24,8 +24,9 @@ frontier).
    `files` list with its bytes, fires trusted `input`+`change`, and the page reads the bytes back
    (`read` event `ret: 'hex:…'`); the `Page.fileChooserOpened` mode is `selectSingle` throughout.
    The r84 extension-token law (`.txt` into `accept=".png"`) is the control. Gated by
-   `accept-grammar-law`. The spec agrees about the attribute's nature: it "may be specified to
-   provide user agents with a hint of what file types will be accepted".
+   `accept-grammar-law`. The spec's own word for the attribute is "hint": it "may be specified to
+   provide user agents with a hint of what file types will be accepted". What a user's DIALOG would
+   offer or refuse is not measured by this receipt — the counter records that boundary.
 2. **A same-origin `type=color` `showPicker()` with transient activation returns `undefined`, consumes
    the activation, fires no `input`/`change`, and opens zero FILE choosers**
    (`sp86-same-origin-color-activated`: `showPicker` `{ok:true, ret:'undefined'}`,
@@ -58,6 +59,11 @@ frontier).
   `image/*`, `application/pdf` and the `image/png, .txt` list.
 - **The witness set is six conjunct-scoped mutants**, not every leg-scoped narrowing a mutation
   tester can write.
+- **The counter reads a receipt.** Its own printed `limit` names the escape: a forger who shifts
+  every page event by a constant offset passes the replay rule. The receipt's provenance is bound by
+  the driver pin, the fixture sha and the nonce; the browser's own execution is not re-derived.
+- **Secure-context state is not recorded.** The fixture is `http://127.0.0.1:<port>` (a
+  potentially-trustworthy origin); nothing here measures a non-secure-context page.
 
 ## Frontier (named, not held)
 

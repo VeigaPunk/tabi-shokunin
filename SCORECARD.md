@@ -4168,7 +4168,7 @@ Capabilities (this round):
 | `battery-leg-witnesses` | Every cross-origin law conjunct is witnessed on the tel, search AND text legs, and six conjunct-scoped tel-only narrowings that the r85 battery left alive are refused by the frozen r86 battery (3 → 0) | `scripts/witness-families-r86.mjs`; `scored/witness-a.json`; `scored/battery-a.json` | 86 |
 
 Knowledge 98 → 99 (`corpus/knowledge/chromium-showpicker-runtime-round-86.md`). Registry 223 (no new
-rows; S223/S219/S216/S221/S222 re-opened). SKILL.md `## Round 86 gate registry` registers the seven
+rows; S223/S219/S216 opened, S221/S222 carried). SKILL.md `## Round 86 gate registry` registers the seven
 r86 instruments; `scripts/selftest-r86-gates.mjs` runs them in order.
 
 Narrowings (recorded in `plans/round-86.md`): (1) the accept law is an ACCEPTANCE law —

@@ -113,3 +113,43 @@ Kill rule: `after.survivors != 0` or `before.survivors != 3` → NOT verified.
   repeated at D2's nonce and every gate re-run on that receipt; no claim predicate, counter byte, pin
   of another instrument, prior or threshold changed. Both nonces are recorded; the report and records
   cite D2.
+
+## Narrowings (post-wave, pre-report — every one reconciled before filing)
+
+1. **`accept-grammar-law` is receipt-level.** Its weakest conjunct is the receipt-level
+   `fixtureInputs[target].accept`; the leg's own descriptor copy is never read, and the delivered
+   `upload`/`uploadPng` hashes are not conjuncts of this law at all. What actually binds the payload
+   to a leg is `plan-calls` (the send log's `DOM.setFileInputFiles` files[0] against the frozen PLAN),
+   not the law. A forger who keeps the send log honest cannot swap the attribute, but a forger who
+   moves the frozen `GRAMMAR`/`FIXTURE_INPUTS` constants together would pass — that is a code change,
+   not a receipt forgery. Artifact: `w1/R86Review1.md` §(b), probe B2.
+2. **`showPicker` and `triggerResult.value` are unbound.** The colour law (and `gesture-law`) read the
+   `showPicker` field; no check cross-binds it to `triggerResult`. A receipt that types in
+   `{ok:true, ret:'undefined'}` while `triggerResult` says otherwise passes the colour law. The
+   zero-chooser and activation-consumed halves are well bound. Artifact: `w1/R86Review1.md` §(c).
+3. **The 12-case witness set is 4× minimal.** Three cases on one non-tel extras leg (e.g.
+   `cross-search-{crossaccess,childseq,childact-before}-dropped`) would move the claim's 3 → 0 with a
+   third of the cases; the full search+text set buys symmetry and defense-in-depth, not necessity.
+   The causal test agrees: the three survivors are exactly the three conjuncts for which the r85
+   battery carries no non-tel case. Artifacts: `w1/R86Critic.md` Q4, `w1/R86Exec3.md` §3.
+4. **Loop-leg conjuncts still unwitnessed.** No case exercises the `Page.fileChooserOpened`-count
+   zero-open conjunct on the nine loop legs, `childEvents.length === 5`, or `isTrusted` at all; the
+   month/week/time/number/range/color legs are witnessed only on `childResult`. A narrowing that
+   drops one of those conjuncts survives the battery. Artifact: `w1/R86Review2.md` §4.
+5. **29 whole-counter escapes in an independent sweep.** R86Mut1 authored 63 candidate mutants,
+   scored 62; 12 killed, 50 survived, of which 29 are demonstrated whole-counter escapes (an aimed
+   receipt mutation that the pristine counter refuses and the mutant accepts) and 21 are shadowed by
+   a named check. The frozen 66-mutant list is fully killed, so `kill power 66/66` means the FROZEN
+   list is killed by the FROZEN battery — it does not mean single-conjunct weakening is refused.
+   Escapes concentrate in `accept-answer-law`, the new-leg laws and the replay threshold margins.
+   Artifact: `w1/R86Mut1.md` §Survivors.
+6. **Cold runs are law-complete but not `clean`.** Two fresh-nonce cold runs agree on every law
+   check and fail only `prior-set-complete` (an undeclared in-tree receipt); leg (a)'s scored run is
+   the run under the exemption. Artifact: `w1/R86Exec1.md`.
+7. **The before-value's mechanism is narrower than "six unwitnessed conjuncts".** The r85 battery
+   already kills three of the six narrowings (childResult on search/text, `childLate` on text,
+   `childActivationAfter` on search); the honest before-value is 3, and the three survivors are the
+   conjuncts with no non-tel case. Artifacts: `w1/R86Critic.md` Q3, `w1/R86Exec3.md` §3.
+8. **Conjunct-completeness is not established.** Closing the tel-only gap for the nine loop legs does
+   not witness the number/range/month/week/time/color legs' non-`childResult` conjuncts; the same
+   mutant class remains alive there until they are witnessed.
