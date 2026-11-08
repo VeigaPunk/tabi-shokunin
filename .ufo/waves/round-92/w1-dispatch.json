@@ -1,0 +1,216 @@
+{
+  "schema": "ufo-swarm-wave-dispatch-v1",
+  "wave": "w1",
+  "policy": {
+    "source": "config",
+    "maxLanes": 256,
+    "minLanes": 8,
+    "waveMinLanes": 8,
+    "waveMaxLanes": 16,
+    "declaredMaxLanes": null,
+    "hardCeiling": 256,
+    "rampBatchSize": 5,
+    "rampIntervalMs": 700,
+    "globalRunnerCeiling": 1056
+  },
+  "counts": {
+    "spawn": 11,
+    "resume": 0,
+    "total": 11
+  },
+  "registry": {
+    "schema": "ufo-swarm-registry-v1",
+    "path": ".ufo/waves/round-92/w1/swarm-registry.json",
+    "reportDir": ".ufo/waves/round-92/w1",
+    "members": {
+      "R92Exec1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "coverage",
+          "operability"
+        ],
+        "milestone": "C1 cold reproduction"
+      },
+      "R92Exec2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "calibration",
+          "operability"
+        ],
+        "milestone": "append-only checker (mined-mistake fix)"
+      },
+      "R92Mut": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "mutation-tester",
+        "item": null,
+        "axes": [
+          "calibration",
+          "operability"
+        ],
+        "milestone": "counter mutation sweep"
+      },
+      "R92Critic1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "critic",
+        "item": null,
+        "axes": [
+          "coverage",
+          "calibration"
+        ],
+        "milestone": "wording vs counter"
+      },
+      "R92Critic2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "critic",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "real-browser counterexample hunt"
+      },
+      "R92ExecProbe": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "coverage",
+          "depth"
+        ],
+        "milestone": "limit-5 probe: answering on the other session"
+      },
+      "R92Reviewer": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "axes": [
+          "calibration",
+          "operability"
+        ],
+        "milestone": "freeze order, controls, code review"
+      },
+      "R92Scout": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scout",
+        "item": null,
+        "axes": [
+          "freshness",
+          "depth"
+        ],
+        "milestone": "sources S227/S228 and one candidate"
+      },
+      "R92Scribe": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scribe",
+        "item": null,
+        "axes": [
+          "depth",
+          "coverage"
+        ],
+        "milestone": "knowledge note draft"
+      },
+      "R92Connector": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "connector",
+        "item": null,
+        "axes": [
+          "adjacency"
+        ],
+        "milestone": "sibling overlap scan"
+      },
+      "R92Sentinel": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "sentinel",
+        "item": null,
+        "axes": [
+          "operability"
+        ],
+        "milestone": "scope and hygiene audit"
+      }
+    }
+  },
+  "compaction": {
+    "applied": false,
+    "mechanism": null,
+    "reason": null,
+    "savedBytes": 0,
+    "payloadBytesBefore": 0,
+    "payloadBytesAfter": 0
+  },
+  "taskCall": {
+    "context": "# Target\nTabi round 92, one v1 wave `w1`. L1 `TabiR92` holds the planner seat and is the sole integration owner. Lane /home/vgpnk/Projects/shokunin/tabi-shokunin; base bdf403ff; freeze commit 2bac104844eb (plans/round-92.md + /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/claims.json + instruments + pre-freeze controls in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/); scored commit a87c71766bc3 (scored live run /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/scored/c1-live.json: verdict clean, 93 checks, nonce tabi-r92-live-63a66abf7529; receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json).\nONE claim, C1 (coverage, capability `chromium-crosssite-iframe-chooser-linux`, predicate C1-IFRAME-CHOOSER-R92). Read the frozen wording in /home/vgpnk/Projects/shokunin/tabi-shokunin/plans/round-92.md §Claim and §Declared limits. Instruments (sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/instrument-sha256.txt): driver /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-iframe-chooser-round92.mjs (pin 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688), counter /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-iframe-chooser-round92.mjs, battery /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-iframe-chooser-round92.mjs. Claims are FROZEN: never edit a predicate, counter, driver, battery, pin or control file; attack them and report. The adversarial question for every attack seat: does any artifact you produce show the claim's STATED WORDING false or wider than what the counter enforces? Say so explicitly with a verdict line `VERDICT C1: falsifies-wording | falsifies-number | neutral` and the evidence path.\n\n# Contract\n- Scratch root: /fast/scratch/hyaku/tabi-r92/<your seat name>/ — mkdir -p it, pass it explicitly (TMPDIR, --scratch), and rm -rf it before you yield (copy receipts you cite into /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/ first). Never write under /tmp.\n- Every `Report:` trailer path is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin — write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>. Write only your own report file(s) under /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/ named after your seat (e.g. /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/<SeatName>.md plus optional <SeatName>-*.json); executors that are told to create a script may also write that one script path.\n- Leaf member: no subagent dispatch, no background jobs left running, no commits, no git/jj mutation anywhere, no edits outside your own output paths. A fixture repo is created as D=$(mktemp -d -p /fast/scratch/hyaku/tabi-r92/<seat>) && git -C \"$D\" init -q, and every later git call names -C \"$D\" after asserting `git -C \"$D\" rev-parse --show-toplevel` equals $D. Never pass an empty variable to git -C.\n- Chromium runs: use ONLY your assigned port triple (http,child,cdp) so seats never collide; every driver run must end with its chromium processes gone (check `pgrep -f \"remote-debugging-port=<your cdp port>\"` is empty before you yield; kill only processes carrying your own port). Never spin CPU burners, never touch other seats' processes.\n- Tooling authorization (operator, 2026-10-19): you may install or upgrade tools that help the task — first read /home/vgpnk/.omp/agent/RULES.md (official channels, update-safety gate, record tool/version/channel/reason in your report). ALL pacman transactions are PAUSED host-wide: install via `uv tool`/`npx`/an official binary in ~/.local/bin, or file the need in your report. Never -Sy/-Syu/-U/-R, never restart a host service, never mutate host sysctls, never run sudo.\n- Honesty: an unrun check has not passed; paste the exact commands and exit codes you ran. Keep the report under 150 lines.\n",
+    "tasks": [
+      {
+        "name": "R92Exec1",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\nReproduce C1 cold, twice, with the frozen counting command and your port triples 19101,19102,19103 then 19104,19105,19106, scratch /fast/scratch/hyaku/tabi-r92/R92Exec1:\nnode /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-iframe-chooser-round92.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688 --live --scratch /fast/scratch/hyaku/tabi-r92/R92Exec1/run1 --ports 19101,19102,19103 --json\n(and run2 with the second triple). Copy each counter JSON and the live-receipt.json it wrote to /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Exec1-run1.json, R92Exec1-run1-receipt.json (and run2). Then run the frozen battery on your run1 receipt: node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-iframe-chooser-round92.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Exec1-run1-receipt.json --expect-nonce <that receipt's nonce> --expect-driver-sha256 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688 --scratch /fast/scratch/hyaku/tabi-r92/R92Exec1/neg --json > /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Exec1-battery.json. Also verify sha256sum -c /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/instrument-sha256.txt (run from /home/vgpnk/Projects/shokunin/tabi-shokunin). Report rc of every command, checkCount, finding ids, and a VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: coverage, operability\nMilestone: C1 cold reproduction\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Exec1.md"
+      },
+      {
+        "name": "R92Exec2",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\nCreate ONE new script /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-append-only-round92.mjs (Node, no deps). Usage: node check-append-only-round92.mjs --lane <ABS lane> --base <rev> --tip <rev> [--json] -- <repo-relative path>... For each path: read bytes with `git -C <lane> show <rev>:<path>` (read-only git only); a path absent at base is `new` (ok); absent at tip is a finding `deleted`; otherwise the base bytes must be a byte-exact prefix of the tip bytes, else finding `rewritten` with the first differing byte offset and the 1-based line number of that offset in the base file. Output JSON {tool, base, tip, baseRev, tipRev (resolved full hashes), files:[{path,status,offset?,line?}], findings:n}; exit 0 iff no findings, 1 findings, 2 usage (missing lane/revs/paths, unresolvable rev). Add a `--selftest` mode that builds a fixture repo under a --scratch dir per the contract's fixture rule (mktemp under your scratch, assert toplevel) with an append (ok), an in-place edit (rewritten), a deletion (deleted) and a new file (new), and exits 0 iff all four classify as expected. Then demonstrate it able to fail and able to pass on the real lane (read-only): (a) --base b1d8f07b0d5895ffdd5bf9a143d2b591414fabea --tip 878bc9125b858653615516c804769ef292bb4b4f -- LOG.md corpus/QUALITY.md  (expected: rewritten findings — r91 rewrote both in place); (b) --base bdf403ff40d9a9a59a2730636f9626e1195b06e2 --tip master -- LOG.md corpus/QUALITY.md SCORECARD.md corpus/SOURCES.md corpus/lessons/round-89.md. Save outputs to /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Exec2-*.json with rc. Scratch /fast/scratch/hyaku/tabi-r92/R92Exec2. VERDICT C1 line: neutral unless you find something about C1.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: calibration, operability\nMilestone: append-only checker (mined-mistake fix)\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Exec2.md"
+      },
+      {
+        "name": "R92Mut",
+        "agent": "mutation-tester",
+        "task": "/skill:godspeed\n\nMeasure the kill power of the frozen battery over the frozen counter. In /fast/scratch/hyaku/tabi-r92/R92Mut: copy /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-iframe-chooser-round92.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-iframe-chooser-round92.mjs into a scratch mirror lane dir that also holds a copy of scripts/chrome-cdp-iframe-chooser-round92.mjs and corpus/evidence/round91/chromium-showpicker-proxy/receipt.json at the same relative paths (the battery resolves the counter and the r91 receipt relative to --lane; the counter reads `git rev-parse master` which may be null in the mirror — that is fine). Generate one mutant per `check(` call in the counter (negate its condition) plus at least 8 operator mutants (=== -> !==, length === 1 -> >= 1, && -> ||, drop the X/S branch, swap 'iframe'/'page', ANSWER size 22 -> 21, nonce check removed, leg-set sort removed). For each mutant run the battery against /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/receipt-positive.json (nonce tabi-r92-ctl-pos, pin 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688) and record killed/survived. NEVER edit the lane copies. Write /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Mut.md + R92Mut-results.json with the full mutant table and survivors; for each survivor say whether a real-browser behaviour named in the claim wording could be false while the counter stays green (that is a falsifies-wording finding) or it is only a battery gap. VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration, operability\nMilestone: counter mutation sweep\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Mut.md"
+      },
+      {
+        "name": "R92Critic1",
+        "agent": "critic",
+        "task": "/skill:godspeed\n\nAttack the frozen C1 wording (/home/vgpnk/Projects/shokunin/tabi-shokunin/plans/round-92.md §Claim + /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/claims.json statement) against what /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-iframe-chooser-round92.mjs actually enforces. Enumerate every clause of the wording; for each, cite the counter line(s) that enforce it or state that none does. For every unenforced or partially enforced clause, BUILD a receipt (clone /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/receipt-positive.json, nonce tabi-r92-ctl-pos, pin 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688) that violates that clause while the counter in --receipt mode still exits 0, and save it as /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Critic1-<case>.json with the counter output. Also judge whether the --live mode actually closes receipt forgery (the driver sha is checked before run; can the counter be made to read a different receipt than the driver wrote?). Scratch /fast/scratch/hyaku/tabi-r92/R92Critic1. Do not run chromium. Report a clause table and a VERDICT C1 line (falsifies-wording only if a clause of the STATED wording is unenforced in --live mode).\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, calibration\nMilestone: wording vs counter\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Critic1.md"
+      },
+      {
+        "name": "R92Critic2",
+        "agent": "critic",
+        "task": "/skill:godspeed\n\nHunt for a real-browser counterexample to the C1 wording on this host. Ports 19201,19202,19203 (one run at a time). Scratch /fast/scratch/hyaku/tabi-r92/R92Critic2. (1) Run the frozen driver directly with --reps 10: node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-iframe-chooser-round92.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --nonce tabi-r92-critic2-reps10 --scratch /fast/scratch/hyaku/tabi-r92/R92Critic2/d --out /fast/scratch/hyaku/tabi-r92/R92Critic2/r10.json --http-port 19201 --child-port 19202 --cdp-port 19203 --reps 10 ; then score it with the counter in --receipt mode passing --reps 10 (pin 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688). Any leg finding that is not a named setup failure is a falsifier of the 3-rep wording's generality — report it. (2) Run the counter --live twice more (ports above). (3) Look at whether the browser could report a second chooser later than 1500 ms or on another session: write your OWN probe script under your scratch (never edit lane files) that repeats an X leg with a 5000 ms window and records every Page.fileChooserOpened per session. Copy receipts/outputs you cite into /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Critic2-*.json. Ensure no chromium with your cdp port remains. VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: real-browser counterexample hunt\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Critic2.md"
+      },
+      {
+        "name": "R92ExecProbe",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\nHypothesis H (declared limit 5, NOT part of the claim): in the X arm, DOM.setFileInputFiles sent on the PAGE session with the backendNodeId from the iframe session's Page.fileChooserOpened does NOT deliver the file to the child input (error or no effect); and in the S arm there is no iframe session to answer on. Write your own probe script under /fast/scratch/hyaku/tabi-r92/R92ExecProbe (copy the driver's fixture approach from /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-iframe-chooser-round92.mjs; never edit lane files), ports 19301,19302,19303, 3 repetitions, fresh browser each, and record per rep: the error message (if any) of the page-session answer, the child's files afterwards, then the iframe-session answer result. Save the probe script and output as /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92ExecProbe-probe.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92ExecProbe-results.json. State H confirmed/refuted with the counts. Ensure no chromium with your cdp port remains. VERDICT C1 line (this probe can falsify the claim only if it shows a claim clause false).\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: coverage, depth\nMilestone: limit-5 probe: answering on the other session\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92ExecProbe.md"
+      },
+      {
+        "name": "R92Reviewer",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\n\nReview the round's freeze and instruments. (1) Freeze order: with read-only git in /home/vgpnk/Projects/shokunin/tabi-shokunin, show that commit 2bac104844eb (freeze: plan, claims.json, instruments, controls) precedes a87c71766bc3 (scored) and that the instrument bytes at a87c7176 and at master equal the sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/instrument-sha256.txt. (2) Re-run the pre-freeze controls exactly as in plans/round-92.md §Controls (receipt mode only, no chromium; pin 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688) and confirm each observed verdict. (3) Code-review the driver and counter for defects that would make the counter green while a leg statement is false (e.g. the S arm's child evaluation context selection, session kind mapping, events before the click mark, the 'attached' filter on sessionId), and for scratch/cleanup defects (the driver's per-leg profile removal, leftover chromium, ports). (4) Check that the counter's `revision` field and claims.json/plan wording are identical in substance. Scratch /fast/scratch/hyaku/tabi-r92/R92Reviewer. Findings numbered F1.., each with file:line and severity; VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration, operability\nMilestone: freeze order, controls, code review\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Reviewer.md"
+      },
+      {
+        "name": "R92Scout",
+        "agent": "scout",
+        "task": "/skill:godspeed\n\nOpen these sources yourself now and return, for each, URL, HTTP status, byte size, sha256 and one located quote of at most 25 words (with line/section): (a) https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Target.pdl?format=TEXT (base64; decode) — the setAutoAttach comment that names iframes; compare with the staged copy /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/sources/Target.pdl; (b) https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/docs/process_model_and_site_isolation.md?format=TEXT — the sentence defining sites as scheme plus eTLD+1 under site-per-process; compare with /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/sources/process-model.md; (c) find ONE more primary source on how CDP clients handle out-of-process iframes (e.g. Puppeteer's or Playwright's docs/source on OOPIF / auto-attach) and give a located quote; (d) one candidate you REJECT (generic blog / non-primary / stale) with reason and flip condition. Save fetched bytes you cite under /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Scout-sources/ and write /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Scout.md. Scratch /fast/scratch/hyaku/tabi-r92/R92Scout. VERDICT C1 line (neutral unless a source contradicts a claim clause).\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: freshness, depth\nMilestone: sources S227/S228 and one candidate\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Scout.md"
+      },
+      {
+        "name": "R92Scribe",
+        "agent": "scribe",
+        "task": "/skill:godspeed\n\nDraft the round's knowledge note as /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Scribe-note.md (the L1 integrates it into corpus/knowledge/; do NOT write into corpus/). Read the frozen claim and limits (/home/vgpnk/Projects/shokunin/tabi-shokunin/plans/round-92.md), the scored receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json, the controls in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/controls/, and the sources staged in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/sources/ (Target.pdl, process-model.md). Follow the shape of the lane's newest note /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md (front matter, sources cited by S-id: S227 = Target.pdl setAutoAttach at tag 155.0.8059.84; S228 = process_model_and_site_isolation.md at that tag; S221 = Page.pdl fileChooserOpened; S222 = DOM.pdl setFileInputFiles). Content: the measured decision table (arm X vs S: attached iframe targets, getTargets iframe targets, chooser session, answer session, child files, click), with every number taken from the receipt (cite JSON paths), the operational rule for automation authors (enable interception and answer on the session the chooser arrives on; enumerate targets with flatten auto-attach), and the limits copied verbatim from the plan. Mark explicitly what is NOT measured. Max 120 lines. Scratch /fast/scratch/hyaku/tabi-r92/R92Scribe.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: depth, coverage\nMilestone: knowledge note draft\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Scribe.md"
+      },
+      {
+        "name": "R92Connector",
+        "agent": "connector",
+        "task": "/skill:godspeed\n\nSibling-overlap scan for the C1 surface (CDP Target auto-attach / cross-site iframe file chooser). Read-only grep across /home/vgpnk/Projects/shokunin/*-shokunin/corpus/knowledge and */SCORECARD.md (exclude tabi-shokunin) for: setAutoAttach, attachedToTarget, OOPIF, out-of-process iframe, site-per-process, fileChooserOpened, setFileInputFiles. For each hit give path:line and whether it overlaps, contradicts, or is merely adjacent to the tabi C1 claim (read the claim in /home/vgpnk/Projects/shokunin/tabi-shokunin/plans/round-92.md). Also check the tabi lane's own earlier knowledge (/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/) for any prior claim that a cross-origin iframe's chooser arrives on the page session (that would be contradicted by this round's X arm). Write /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-92/w1/R92Connector.md with a table and counts. Scratch /fast/scratch/hyaku/tabi-r92/R92Connector. VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: adjacency\nMilestone: sibling overlap scan\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Connector.md"
+      },
+      {
+        "name": "R92Sentinel",
+        "agent": "sentinel",
+        "task": "/skill:godspeed\n\nAudit the round's new instruments for hygiene and scope: /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-iframe-chooser-round92.mjs, check-iframe-chooser-round92.mjs, negatives-iframe-chooser-round92.mjs. Check: (a) no hardcoded /tmp, scratch honoured; (b) HTTP servers bind 127.0.0.1 only; the `localhost` child URL resolves to loopback (check `getent hosts localhost`; if it can resolve to ::1 first, does the driver still work? reason about it and, if you can, run ONE driver leg set with ports 19401,19402,19403 --reps 1 and report); (c) chromium processes and profiles are cleaned up per leg (run once, then `pgrep -af remote-debugging-port=19403` must be empty and the scratch leg dirs gone); (d) the counter's --live path cannot be redirected to a stale receipt (it rm's live-receipt.json before running?) — cite lines; (e) any secrets/credential material in committed receipts (there should be none). Scratch /fast/scratch/hyaku/tabi-r92/R92Sentinel. Findings F1.. with file:line; VERDICT C1 line.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: operability\nMilestone: scope and hygiene audit\n\nReport: write your scoped findings to .ufo/waves/round-92/w1/R92Sentinel.md"
+      }
+    ]
+  },
+  "resumeSends": [],
+  "note": "Issue exactly one batched task call with taskCall ({context, tasks}); never split a wave into multiple task calls (one-swarm-per-wave). Then one hub send per resumeSends entry: hub send --to <entry.resume> --message <entry.message> (entry.name is bookkeeping, not a hub field)."
+}
