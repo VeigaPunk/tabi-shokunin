@@ -1,0 +1,104 @@
+{
+  "seat": "R92Scout",
+  "round": 92,
+  "claim": "C1",
+  "predicate": "C1-IFRAME-CHOOSER-R92",
+  "capability": "chromium-crosssite-iframe-chooser-linux",
+  "buildTag": "155.0.8059.84",
+  "buildTagCommit": "5869fe313571d75152b77813cf0a4ee26a4e6df0",
+  "verdict": "neutral",
+  "sources": [
+    {
+      "id": "a",
+      "role": "S227 re-open",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Target.pdl?format=TEXT",
+      "httpStatus": 200,
+      "bytesBase64": 19796,
+      "bytesDecoded": 14847,
+      "sha256Base64": "5b6c218b1ca4048421ea1e8677cf866d5498a84efc9d0ae0ca8bcff2ff459c09",
+      "sha256Decoded": "136ca4a240e64aa727e0b261cbe7ac853748154aaa8c4a86fe818d7c522535d6",
+      "quote": "Controls whether to automatically attach to new targets which are considered to be directly related to this one (for example, iframes or workers).",
+      "quoteLocation": "Target.pdl decoded lines 229-230, setAutoAttach command comment",
+      "stagedCopy": ".ufo/waves/round-92/sources/Target.pdl",
+      "stagedEqualsFresh": true,
+      "stagedSha256": "136ca4a240e64aa727e0b261cbe7ac853748154aaa8c4a86fe818d7c522535d6"
+    },
+    {
+      "id": "b",
+      "role": "S228 re-open",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/docs/process_model_and_site_isolation.md?format=TEXT",
+      "httpStatus": 200,
+      "bytesBase64": 44780,
+      "bytesDecoded": 33585,
+      "sha256Base64": "c320175dd741b46784f706e269e26c8b7975f2cd9776ed624ba4fbedc4c43060",
+      "sha256Decoded": "5a371fa56628822f38946d32ef5ce291e07ff74c1fb5a53b1eaac0249fe41bab",
+      "quote": "Sites are defined as scheme plus eTLD+1, since different origins within a given site may have synchronous access to each other if they each modify their document.domain.",
+      "quoteLocation": "process_model_and_site_isolation.md decoded lines 146-148, section 'Full Site Isolation (site-per-process)'",
+      "stagedCopy": ".ufo/waves/round-92/sources/process-model.md",
+      "stagedEqualsFresh": true,
+      "stagedSha256": "5a371fa56628822f38946d32ef5ce291e07ff74c1fb5a53b1eaac0249fe41bab"
+    },
+    {
+      "id": "c",
+      "role": "candidate third primary source (CDP client handling OOPIF)",
+      "url": "https://raw.githubusercontent.com/microsoft/playwright/a1f35e1955976e84411f9c10358228a80b763ebe/packages/playwright-core/src/server/chromium/crPage.ts",
+      "pin": "tag v1.65.0 = commit a1f35e1955976e84411f9c10358228a80b763ebe",
+      "httpStatus": 200,
+      "bytes": 59431,
+      "sha256": "918f0f9beed354c579d00f5656662e36264043b3b59c420d4369fd15b119dd99",
+      "quote": "Note: OOPIF frame has been already attached in the parent session, so skip it.",
+      "quoteLocation": "crPage.ts line 637, in _handleFrameTree (isOopif branch)",
+      "stagedCopy": ".ufo/waves/round-92/w1/R92Scout-sources/playwright-crPage-v1.65.0.ts"
+    },
+    {
+      "id": "d",
+      "role": "REJECTED candidate",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy",
+      "httpStatus": 200,
+      "bytes": 167208,
+      "sha256": "c7b964588ca84ed881edf72959cceee4debf7b153db2788cd8b59576a47c4cd9",
+      "rejectReason": "generic secondary docs; page text contains zero occurrences of 'eTLD', 'site isolation', 'OOPIF', 'out-of-process', 'registrable' or 'DevTools'; it describes the same-origin policy, not Chromium's CDP target model nor site-per-process",
+      "flipCondition": "admit only if a round's claim rested on the web-platform same-origin concept itself (a spec-level site/origin law rather than a Chromium CDP-target law); the WHATWG spec text would still be primary and MDN only a pointer",
+      "stagedCopy": ".ufo/waves/round-92/w1/R92Scout-sources/mdn-same-origin-policy.html"
+    }
+  ],
+  "supportingChromiumSources": [
+    {
+      "file": "chromium-content-browser-site_info.cc",
+      "path": "content/browser/site_info.cc",
+      "httpStatus": 200,
+      "bytes": 64273,
+      "sha256": "036030868f6d525c71fde7bc08aa07aa56b177739a9b74a13e76b5bdaecb6bc5",
+      "quote": "std::string domain = net::registry_controlled_domains::GetDomainAndRegistry(origin, net::registry_controlled_domains::INCLUDE_PRIVATE_REGISTRIES); return SchemeAndHostToSite(origin.scheme(), domain.empty() ? origin.host() : domain);",
+      "quoteLocation": "site_info.cc lines 1282-1285, SiteInfo::GetSiteForOrigin"
+    },
+    {
+      "file": "chromium-registry_controlled_domain.cc",
+      "path": "net/base/registry_controlled_domains/registry_controlled_domain.cc",
+      "httpStatus": 200,
+      "bytes": 23568,
+      "sha256": "3e09184e44db80d710f7e88fde9d17a97b0f64c1233ea6b0c00582cc763e0e4b",
+      "quote": "if (canon_host.empty() || host_info.IsIPAddress()) { return std::string(); }",
+      "quoteLocation": "registry_controlled_domain.cc lines 518-520, GetDomainAndRegistry(host, filter)"
+    },
+    {
+      "file": "chromium-devtools_agent_host_impl.cc",
+      "path": "content/browser/devtools/devtools_agent_host_impl.cc",
+      "httpStatus": 200,
+      "bytes": 21192,
+      "sha256": "108ffb6c3660072d42ef10d1fa6a7d16edc623cbf083bde8d8f4a45c2e4602bc",
+      "quote": "const char DevToolsAgentHost::kTypeFrame[] = \"iframe\";",
+      "quoteLocation": "devtools_agent_host_impl.cc line 142"
+    },
+    {
+      "file": "chromium-render_frame_devtools_agent_host.cc",
+      "path": "content/browser/devtools/render_frame_devtools_agent_host.cc",
+      "httpStatus": 200,
+      "bytes": 45899,
+      "sha256": "69f117e21aabaf417d856665c6fcd5b28d956d9011976f3cbfe1313f5a0a5b0e",
+      "quote": "bool RenderFrameDevToolsAgentHost::ShouldCreateDevToolsForHost(RenderFrameHostImpl* rfh) { ... return rfh->is_local_root(); }",
+      "quoteLocation": "render_frame_devtools_agent_host.cc lines 226-231"
+    }
+  ],
+  "toolingInstalled": "none"
+}

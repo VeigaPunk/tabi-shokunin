@@ -4389,3 +4389,48 @@ executed non-author counterexamples recorded above; the round is an honest stop 
 operator to rule, and no predicate, counter, battery, kill rule, prior or receipt was changed after
 data.
 - Digests: D1 `1d073adc0b8d`, nonce `tabi-r91-l1-1d073adc0b8d`. 30 checks, 44 battery cases, 32 mutants.
+
+## Correction — round 91 capability row `chromium-showpicker-proxy-linux` (round-92; append-only)
+
+The round-91 capability row above says the proxy reaches the input shapes "in a same-origin and a
+cross-origin iframe". The cross-origin iframe was served from `127.0.0.1` on another port: it is
+cross-origin but **same-site**, it has no `iframe` target of its own, and the r91 driver bound the
+first `type=page` target without `Target.*` enumeration (r91 spot-check §8 item 4). Read the row's
+"cross-origin" as "same-site cross-origin (in the parent's target)". Round 92 measures the split:
+a same-site child has zero `iframe` targets and its chooser arrives on the page session; a
+cross-site child (`localhost`) is its own `iframe` target and its chooser arrives on that target's
+session (`corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json`, S arm vs X arm).
+The row above is not rewritten.
+
+## Round 92 (2026-11-08, Linux host) — C1 capability `chromium-crosssite-iframe-chooser-linux` (new)
+
+Base `bdf403ff` (the round-91 verifier spot-check commit). ONE claim. Freeze commit `2bac1048`
+(plan, `claims.json`, driver/counter/battery bytes, pre-freeze controls); scored commit `a87c7176`
+(`--live` run, nonce `tabi-r92-live-63a66abf7529`). Axes at start: all six at 9. C1 works coverage
+(a lowest tie at 9) and is a capability acquisition: the CDP target/session on which an iframe's
+file chooser is reported and answered — a surface no earlier lane instrument enumerated.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-crosssite-iframe-chooser-linux` (sourced: S227/S228) | `node scripts/check-iframe-chooser-round92.mjs --lane <ABS lane> --expect-driver-sha256 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688 --live --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-IFRAME-CHOOSER-R92`, exit 0 iff 0 findings) | before (base `bdf403ff`): the command does not exist (`git cat-file -e` rc 128); the r91 receipt under the frozen counter → rc 1, 21 finding ids. Controls at freeze: wrong-site live run rc 1 (`iframe-target-count`, `browser-iframe-targets`, `chooser-session`, …), positive rc 0, battery 31/31. After (`a87c7176`): rc 0, `clean`, 93 checks, 0 findings, 6 legs; reproduced clean by R92Exec1 ×2, R92Critic2 ×2 (+ 10-rep 289 checks), R92Sentinel ×1 | **VERIFIED** on the frozen predicate; the wave's 11 artifacts are all `neutral` in `.ufo/waves/round-92/claim-falsification.tsv` |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round; see the convention
+note at the top), plus one capability row below. Measured commit: `a87c71766bc3` (scored run); the
+counting command records the revision it ran at in `revision`.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-crosssite-iframe-chooser-linux` | On Chromium 155.0.8059.84 `--headless=new`, tell a cross-site iframe (own `iframe` target under the page session's flatten auto-attach, targetId = child frame id) from a same-site cross-origin one (no target), and receive and answer a clicked file input's chooser on the session it arrives on — the iframe session for the cross-site child, the page session for the same-site child — with the answer file read back in the child | `corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json`; `.ufo/waves/round-92/scored/c1-live.json`; `corpus/knowledge/chromium-crosssite-iframe-chooser-round-92.md` | 92 |
+
+Knowledge 104 → 105. Registry 226 → 230 (S227 Target.pdl auto-attach, S228 site-per-process,
+S229 WHATWG obtain-a-site, S230 Playwright OOPIF handling). `SKILL.md` `## Round 92 gate registry`. Limits: `plans/round-92.md` §Declared limits
+1-6 and §Wave clarifications W1-W5 (procedure clauses bound by the pinned driver under `--live`;
+default `--reps 3`; the launcher's user flags; a killed driver reports `receipt-unreadable`).
+
+Planned (r93): battery cases for the R92Critic1 forgeries and R92Mut survivors (two-iframe receipt,
+`reps`/`answer`/`parent-url` identity, click point, `backendNodeId`); counter binds per-leg
+`browserVersion`; driver kills its chromium process group on exit and the counter reports a missing
+receipt after a driver usage refusal as `setup`; the limit-5 cross-session answer failure (probed by
+R92ExecProbe, 3/3) as a claimed law. Retired: none.

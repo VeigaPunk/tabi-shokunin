@@ -116,3 +116,36 @@ Mined mistake (lesson `## Mistakes`): r91 repaired append-only records by in-pla
 `scripts/check-append-only-round92.mjs` (base bytes must be a byte prefix of tip bytes for the named
 files), shown able to fail on `b1d8f07b..878bc912` (LOG.md, corpus/QUALITY.md) and passing on this
 round's range.
+
+## Wave clarifications (after the wave; no predicate, counter, driver, battery, pin or control changed)
+
+Recorded from the w1 artifacts; each names what the frozen counting command enforces and where.
+
+- **W1 (R92Critic1 clause table).** The predicate's procedure clauses — flatten auto-attach on the
+  page session, the click sent on the page session at `#s`'s centre, the answer sent with the
+  event's `backendNodeId` on the event's session, the 1500 ms window, a fresh browser and profile
+  per leg — are fixed by the pinned driver bytes (sha256 checked before the driver runs, counter
+  lines 65-67); the counter checks the outcome clauses from the receipt. Under `--live` both hold
+  by construction; under `--receipt` the procedure clauses are not checked (declared limit 6). The
+  claim's "exactly one attached target of type `iframe`" counts `iframe`-type attachments only; the
+  scored and reproduced receipts attach no other type.
+- **W2 (R92Critic1 forgeries A–G, R92Mut 7/63 survivors).** All are `--receipt`-mode gaps (limit 6)
+  or battery omissions (two-iframe receipt, reps/answer/parent-url identity, leg order, non-object
+  leg); battery additions are routed to round 93.
+- **W3 (R92Sentinel F6).** "3 repetitions … 6 legs" is the frozen counting command's default
+  `--reps 3`; the counter accepts `--reps 1..10`, and a run with another value covers other legs.
+  The scored run and every reproduction cited for C1 used the default (93 checks, 6 legs).
+- **W4 (R92Sentinel F7).** `/usr/bin/chromium` is the Arch launcher, which adds the host user's
+  `~/.config/chromium-flags.conf` flags (Wayland ozone, one `--load-extension`, `--disable-features=Vulkan`);
+  "this host's Chromium (`/usr/bin/chromium`)" includes them. The counter binds the launcher's
+  `--version` banner, not the per-leg DevTools `browserVersion` (every leg reads
+  `Chrome/155.0.8059.84`).
+- **W5 (R92Sentinel F3, R92Reviewer F5).** A driver killed mid-leg leaves its chromium alive and a
+  later `--live` on the same ports reports `receipt-unreadable` (a finding, exit 1) instead of a
+  setup refusal; the kill rule already excludes "a setup/port/host-resource failure named as such".
+- **W6 (R92Scout depth findings 1-3).** §Claim's sourcing line says S228 makes `localhost` vs
+  `127.0.0.1` cross-site through "scheme plus eTLD+1". Neither host has a registrable domain, so
+  both sites come from the scheme-and-host fallback (WHATWG obtain-a-site, admitted as S229;
+  Chromium `site_info.cc:1282-1285`); S228 supplies the site-per-process locking. The predicate
+  does not cite a site rule and declared limit 2 already says "no registrable domain"; the
+  sourcing sentence above is superseded by this note, not rewritten.

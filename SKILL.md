@@ -3370,3 +3370,10 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-proxy-round91.mjs --lane <ABS lane> --real <receipt.json> --expect-* ... --prior-set <file> --work <scratch> --json` (32 counter mutants; the battery is the oracle).
 - Record drift: `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (8 statements: the six lane-measurable r90 spot-check §8 defects + `gate-selftest` + `scorecard-tallies`).
 - Self-test: `node scripts/selftest-r91-gates.mjs --lane <ABS lane> --work <scratch> --json` (five gates; writes `.ufo/waves/round-91/scored/selftest.json`).
+
+## Round 92 gate registry
+
+- `check-iframe-chooser-round92` (93 checks at the default 3 reps): `node scripts/check-iframe-chooser-round92.mjs --lane <ABS lane> --expect-driver-sha256 <hex> --live --scratch <ABS dir> --ports <http,child,cdp> --json` (predicate `C1-IFRAME-CHOOSER-R92`; `--receipt <file> --expect-nonce <n>` checks a written receipt, forgeable by construction).
+- Driver: `scripts/chrome-cdp-iframe-chooser-round92.mjs` (arms X `localhost` / S `127.0.0.1`, fresh browser per leg, flatten auto-attach on the page session, interception on page + iframe sessions, click on the page session, answer on the chooser's own session).
+- Battery: `node scripts/negatives-iframe-chooser-round92.mjs --lane <ABS lane> --receipt <file> --expect-nonce <n> --expect-driver-sha256 <hex> --scratch <ABS dir> --json` (31 cases: 1 positive, the r91 receipt as the no-work control, 29 forged receipts each expecting a named finding id).
+- Append-only: `node scripts/check-append-only-round92.mjs --lane <ABS lane> --base <rev> --tip <rev> -- <paths>` (base bytes must be a byte prefix of tip bytes; `--selftest --scratch <ABS dir>`).

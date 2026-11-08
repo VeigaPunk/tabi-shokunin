@@ -40,3 +40,14 @@ the parent stays empty; direct cross-origin access is `contentDocument:null` + `
 lane-measurable record defects the round-90 spot-check routed (§8 items 1, 2, 3, 5, 7, 8) and
 counts them with `scripts/check-record-drift-round91.mjs` (8 statements, 8 → 0); §8 items 4 and 6
 are fleet-report/process items, disclosed and not counted.
+
+## Round 92 coverage
+
+The new capability `chromium-crosssite-iframe-chooser-linux` measures on which CDP session an
+iframe's file chooser is reported and answered: a child on a different site (`localhost` under a
+`127.0.0.1` parent) is its own `iframe` target under the page session's flatten auto-attach (its
+targetId is the child frame id) and its `Page.fileChooserOpened` arrives on that iframe session,
+where `DOM.setFileInputFiles` answers it; a same-site child (`127.0.0.1`, other port) has no target
+of its own and its chooser arrives on, and is answered on, the page session (6 legs, 93 checks,
+battery 31 cases; `corpus/knowledge/chromium-crosssite-iframe-chooser-round-92.md`). The r91
+"cross-origin" arm is thereby shown to be same-site (appended SCORECARD correction).

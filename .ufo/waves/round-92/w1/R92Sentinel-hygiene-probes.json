@@ -1,0 +1,202 @@
+{
+  "seat": "R92Sentinel",
+  "scope": "hygiene+scope audit of round-92 instruments",
+  "ports": {
+    "http": 19401,
+    "child": 19402,
+    "cdp": 19403
+  },
+  "host": {
+    "getent hosts localhost": "::1             localhost",
+    "/etc/hosts": [
+      "127.0.0.1        localhost",
+      "::1              localhost"
+    ],
+    "chromium --version": "Chromium 155.0.8059.84 Arch Linux",
+    "/usr/lib/chromium/chromium --version": "Chromium 155.0.8059.84",
+    "/usr/bin/chromium is ELF launcher size bytes": 14424
+  },
+  "a_scratch": {
+    "hardcoded_tmp_in_instruments": "none (grep for /tmp,TMPDIR,tmpdir,mktemp,os.tmp,homedir -> 0 matches)",
+    "driver scratch guard": "driver:55 --scratch must be absolute; driver writes only under scratch (80-81 answer file,119 profile,206 leg dir rm)",
+    "counter scratch guard": "counter:62 --live needs absolute --scratch; counter:75 rm scratch/driver",
+    "battery scratch guard": "battery:16 lane+scratch absolute; battery:60 case receipts written under scratch only",
+    "lane_writes_by_battery": "none (git status --porcelain sha256 identical before/after battery run)"
+  },
+  "b_binding": {
+    "listen_sockets_during_run": [
+      "LISTEN 127.0.0.1:19401",
+      "LISTEN 127.0.0.1:19402",
+      "LISTEN 127.0.0.1:19403"
+    ],
+    "non_loopback": "none observed",
+    "node ::1 connect to 127.0.0.1-bound server": "ECONNREFUSED",
+    "chromium address used for http://localhost:19401/": "source 127.0.0.1, Host header localhost:19401 (IPv4 preferred by chromium despite getent listing ::1 first)",
+    "driver_reps1_run": {
+      "cmd": "node scripts/chrome-cdp-iframe-chooser-round92.mjs --lane <lane> --nonce tabi-r92-sentinel-a1 --scratch S/leg1 --out S/leg1/receipt.json --http-port 19401 --child-port 19402 --cdp-port 19403 --reps 1",
+      "exitCode": 0,
+      "stdout": {
+        "out": "S/leg1/receipt.json",
+        "legs": 2,
+        "failures": 0
+      },
+      "X-1": {
+        "attached iframe": 1,
+        "browserIframeTargets": 1,
+        "chooserSession": "iframe",
+        "answerError": null,
+        "childFiles": [
+          [
+            "tabi-r92-answer.txt",
+            22
+          ]
+        ]
+      },
+      "S-1": {
+        "attached iframe": 0,
+        "browserIframeTargets": 0,
+        "chooserSession": "page",
+        "answerError": null,
+        "childFiles": [
+          [
+            "tabi-r92-answer.txt",
+            22
+          ]
+        ]
+      }
+    }
+  },
+  "c_cleanup": {
+    "after_normal_run": {
+      "pgrep remote-debugging-port=19403": "empty",
+      "ss listening 19401-19403": "none",
+      "leg profile dirs": "removed by driver:206"
+    },
+    "driver_killed_midleg": {
+      "method": "SIGTERM then SIGKILL the driver only (finally block never runs)",
+      "orphaned_chromium_on_19403": 8,
+      "orphan_profile_dirs": 1,
+      "next_live_run_on_same_triple": {
+        "exitCode": 1,
+        "verdict": "findings",
+        "driverRun.status": 2,
+        "driverRun.stderr": "free-port precheck: port 19403 busy",
+        "findingIds": [
+          "receipt-unreadable"
+        ]
+      }
+    }
+  },
+  "d_live_cannot_use_stale_receipt": {
+    "counter_lines": [
+      "49 live==receipt refused",
+      "70 receiptPath fixed to <scratch>/live-receipt.json",
+      "72 rm live-receipt.json before driver runs",
+      "69 fresh random nonce"
+    ],
+    "planted_stale_receipt": {
+      "planted_nonce": "tabi-r92-live-63a66abf7529",
+      "counter_exit": 0,
+      "verdict": "clean",
+      "counter_nonce": "tabi-r92-live-3636af4d5daf",
+      "file_nonce_after": "tabi-r92-live-3636af4d5daf",
+      "note": "stale content never read; overwritten by fresh run"
+    },
+    "planted_symlink": {
+      "link": "live-receipt.json -> stale-target.json",
+      "counter_exit": 0,
+      "verdict": "clean",
+      "target_file_nonce_after": "tabi-r92-live-63a66abf7529 (untouched)",
+      "link_replaced_by_regular_file": true
+    },
+    "planted_directory": {
+      "counter_exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+        "receipt-unreadable"
+      ],
+      "note": "fail-closed"
+    },
+    "driver_refused_before_writing": {
+      "exitCode": 1,
+      "verdict": "findings",
+      "driverRun.status": 2,
+      "findingIds": [
+        "receipt-unreadable"
+      ],
+      "note": "driver setup refusal surfaces as findings, not setup"
+    },
+    "wrong_pin_gate": {
+      "exitCode": 1,
+      "findingIds": [
+        "driver-pin"
+      ],
+      "browser_started": false
+    },
+    "live_plus_receipt": {
+      "exitCode": 2,
+      "verdict": "setup"
+    },
+    "receipt_without_nonce": {
+      "exitCode": 2,
+      "verdict": "setup"
+    }
+  },
+  "e_secrets": {
+    "grep_token_secret_password_apikey_authorization_bearer_cookie_privatekey": "0 matches in .ufo/waves/round-92 and corpus/evidence/round92",
+    "host_paths_in_committed_artifacts": [
+      ".ufo/waves/round-92/scored/c1-live.json -> /fast/scratch/hyaku/tabi-r92/l1/scored/live-receipt.json",
+      ".ufo/waves/round-92/claims.json -> absolute lane path"
+    ],
+    "host_paths_in_corpus_receipt": "none"
+  },
+  "full_frozen_counting_command": {
+    "cmd": "node scripts/check-iframe-chooser-round92.mjs --lane <lane> --expect-driver-sha256 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688 --live --scratch S/full --ports 19401,19402,19403 --json",
+    "exitCode": 0,
+    "verdict": "clean",
+    "checkCount": 93,
+    "findings": [],
+    "legs": 6,
+    "nonce": "tabi-r92-live-344d73f4e0bd",
+    "scratch_after": [
+      "S/full/counter.json",
+      "S/full/err.txt",
+      "S/full/live-receipt.json"
+    ]
+  },
+  "reps_parameterisation": {
+    "counter_line": "44 reps=opt('reps')||3 (1..10 allowed)",
+    "run_reps_1": {
+      "exitCode": 0,
+      "verdict": "clean",
+      "checkCount": 37,
+      "legs": [
+        "X-1",
+        "S-1"
+      ]
+    },
+    "note": "counter verdict 'clean' does not itself attest 6 legs; 6 legs is bound only by the frozen command's default reps=3"
+  },
+  "browser_version_binding": {
+    "counter_line": "93 checks receipt.chromium only",
+    "driver_line": "111 receipt.chromium = /usr/bin/chromium --version banner",
+    "wrapper_banner": "Chromium 155.0.8059.84 Arch Linux",
+    "leg_browserVersion_in_receipt": "Chrome/155.0.8059.84",
+    "counter_checks_leg_browserVersion": false,
+    "user_controlled_flags_injected_by_wrapper": [
+      "--ozone-platform=wayland",
+      "--ozone-platform-hint=wayland",
+      "--enable-features=TouchpadOverscrollHistoryNavigation",
+      "--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url",
+      "--disable-features=Vulkan"
+    ],
+    "flags_source": "/home/vgpnk/.config/chromium-flags.conf (user-owned, outside the sha256 pin)"
+  },
+  "battery_rerun": {
+    "exitCode": 0,
+    "cases": 31,
+    "ok": 31,
+    "failed": []
+  },
+  "tools_installed": "none (no installs, no sudo, no pacman transactions, no service restarts)"
+}

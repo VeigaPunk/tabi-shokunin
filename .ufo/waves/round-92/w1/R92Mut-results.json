@@ -1,0 +1,1026 @@
+{
+  "seat": "R92Mut",
+  "lane_mirror": "/fast/scratch/hyaku/tabi-r92/R92Mut/lane-mirror",
+  "pristine_counter_sha256": "d4d84f92be292911aef9591da8888f7a59aa07384c32f755961046a5a410efc5",
+  "restored_counter_sha256": "d4d84f92be292911aef9591da8888f7a59aa07384c32f755961046a5a410efc5",
+  "restoration_ok": true,
+  "baseline_battery": "31/31 on pristine (verified separately)",
+  "mutants": [
+    {
+      "mutant": "neg-schema",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "do-nothing-r91-receipt"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "2488d44c0eda90e772be048c50afa20be6f49a2bc3ab906ca5cb81e8b784084c",
+      "note": "negate schema check",
+      "old": "check('schema', receipt.schema === SCHEMA,",
+      "new": "check('schema', !(receipt.schema === SCHEMA),"
+    },
+    {
+      "mutant": "neg-nonce",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "wrong-nonce"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "ad39310164c592fdc0b242d462769d9494b3792023ca66c675fb87e057c731fb",
+      "note": "negate nonce check",
+      "old": "check('nonce', receipt.nonce === expectNonce,",
+      "new": "check('nonce', !(receipt.nonce === expectNonce),"
+    },
+    {
+      "mutant": "neg-driver-pin",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "driver-sha-forged"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "feb9df685dbe4663ae076e41633cb31a5dffb6bb8d1c8ea108917d6d5be9d7ce",
+      "note": "negate pin check",
+      "old": "check('driver-pin', receipt.driverSha256 === pin && driverSha === pin,",
+      "new": "check('driver-pin', !(receipt.driverSha256 === pin && driverSha === pin),"
+    },
+    {
+      "mutant": "neg-chromium",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "chromium-other"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "4be64e7f425623f28732f648ce526de8089de969b60a733f14cd0c1e636718e8",
+      "note": "negate chromium check",
+      "old": "check('chromium', typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG),",
+      "new": "check('chromium', !(typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG)),"
+    },
+    {
+      "mutant": "neg-cross-host",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "cross-host-same-site"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "dfdedc3f61b38c2935ddd9b0fc43027c25b14acf20b071c6447a4ff7df8bf191",
+      "note": "negate cross-host check",
+      "old": "check('cross-host', receipt.crossHost === 'localhost',",
+      "new": "check('cross-host', !(receipt.crossHost === 'localhost'),"
+    },
+    {
+      "mutant": "neg-reps",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "fb1b2f702def15666e2d9b60126ffe7551b695ab4c274a802e4dec715e6e9a1f",
+      "note": "negate reps check",
+      "old": "check('reps', receipt.reps === reps,",
+      "new": "check('reps', !(receipt.reps === reps),"
+    },
+    {
+      "mutant": "neg-answer",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "dfb24347d97cc5d1a88764a87a90ec4bf227a20aeb9622f921eb79af7c071fa1",
+      "note": "negate global answer check",
+      "old": "check('answer', eq(receipt.answer, { name: ANSWER[0], size: ANSWER[1] }),",
+      "new": "check('answer', !(eq(receipt.answer, { name: ANSWER[0], size: ANSWER[1] })),"
+    },
+    {
+      "mutant": "neg-failures",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "positive",
+        "failures-listed"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "38fcbfdda2d1857184e0d9a993a2f3cafff6652d145cb93fc955e4c7a5e4cc2e",
+      "note": "negate failures check",
+      "old": "check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0,",
+      "new": "check('failures', !(Array.isArray(receipt.failures) && receipt.failures.length === 0),"
+    },
+    {
+      "mutant": "neg-leg-set",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 28,
+      "failed_cases": [
+        "positive",
+        "drop-leg",
+        "dup-leg"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "5577ce1c687b556c1455d88cd79c14dd50e1f80c8766443684a635f2ace4d2fd",
+      "note": "negate leg-set check",
+      "old": "check('leg-set', eq(legs.map((l) => l && l.leg).sort(), want.slice().sort()),",
+      "new": "check('leg-set', !(eq(legs.map((l) => l && l.leg).sort(), want.slice().sort())),"
+    },
+    {
+      "mutant": "neg-leg-shape",
+      "kind": "negate",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "1107810019befc9feba9fb65c875854a50991a7689f6d9c44d7a4ea9c5e05873",
+      "note": "leg-shape: false->true (negation==neutralization)",
+      "old": "check('leg-shape', false,",
+      "new": "check('leg-shape', true,"
+    },
+    {
+      "mutant": "neg-leg-arm",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "34d10890cd60f967b1c7d7775220e1916789f4316d018c2b159a0f18cf0e5c89",
+      "note": "negate arm check",
+      "old": "check('leg-arm', l.arm === arm && (arm === 'X' || arm === 'S'),",
+      "new": "check('leg-arm', !(l.arm === arm && (arm === 'X' || arm === 'S')),"
+    },
+    {
+      "mutant": "neg-leg-error",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "a3171b718e2a3e5acf68a749186a3f65fcdf3f3114b39a0c68802aa4f573a292",
+      "note": "negate leg-error check",
+      "old": "check('leg-error', l.error === null,",
+      "new": "check('leg-error', !(l.error === null),"
+    },
+    {
+      "mutant": "neg-child-host",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "c15665fd2c682d4903b33fc67b490f8e7b9e7622daf775045998aa55a3e4127b",
+      "note": "negate child-host check",
+      "old": "check('child-host', l.childHost === host,",
+      "new": "check('child-host', !(l.childHost === host),"
+    },
+    {
+      "mutant": "neg-child-url",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "368ac8f7ff958cb2d2727da3e34196040b912616e85b0d7508effa7cf078755f",
+      "note": "negate child-url check",
+      "old": "check('child-url', !!cu && cu.hostname === host && Number(cu.port) === ports.child && cu.pathname === '/child.html',",
+      "new": "check('child-url', !(!!cu && cu.hostname === host && Number(cu.port) === ports.child && cu.pathname === '/child.html'),"
+    },
+    {
+      "mutant": "neg-parent-url",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "ac7d85028cd1ed0bc47dcb5379a95169f28d68670bb5743a1724939b3c1f774c",
+      "note": "negate parent-url check",
+      "old": "check('parent-url', !!pu && pu.hostname === '127.0.0.1' && Number(pu.port) === ports.http && pu.pathname === '/parent.html',",
+      "new": "check('parent-url', !(!!pu && pu.hostname === '127.0.0.1' && Number(pu.port) === ports.http && pu.pathname === '/parent.html'),"
+    },
+    {
+      "mutant": "neg-xtarget-count",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "adccd35fae2ab059d7783ea7c8198595186a9c2fb98c7c6d73021a0ef3e12a16",
+      "note": "negate X iframe-target-count",
+      "old": "check('iframe-target-count', !!attachedIframes && attachedIframes.length === 1 && !!targets && targets.length === 1,",
+      "new": "check('iframe-target-count', !(!!attachedIframes && attachedIframes.length === 1 && !!targets && targets.length === 1),"
+    },
+    {
+      "mutant": "neg-xbrowser-targets",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "4e2eaf4dbe94c15624fb0cf474a76e70123cd6c5eceb08a704ef5f75be63d5a7",
+      "note": "negate X browser-iframe-targets",
+      "old": "check('browser-iframe-targets', Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 1 && !!attachedIframes && attachedIframes.length === 1 && l.browserIframeTargets[0].targetId === attachedIframes[0].targetId && l.browserIframeTargets[0].url === l.childUrl,",
+      "new": "check('browser-iframe-targets', !(Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 1 && !!attachedIframes && attachedIframes.length === 1 && l.browserIframeTargets[0].targetId === attachedIframes[0].targetId && l.browserIframeTargets[0].url === l.childUrl),"
+    },
+    {
+      "mutant": "neg-x-target-url",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "9b2f9d5284257410b8b3ac0fd0d28f74c90e57fec75a27c2899b6f6057236846",
+      "note": "negate X iframe-target-url",
+      "old": "check('iframe-target-url', !!t0 && t0.url === l.childUrl,",
+      "new": "check('iframe-target-url', !(!!t0 && t0.url === l.childUrl),"
+    },
+    {
+      "mutant": "neg-x-target-frame",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "39cae38060bbda4b9b16aaa980b9f2c627263d18bbf076f2d007eceb4447711a",
+      "note": "negate X iframe-target-frame",
+      "old": "check('iframe-target-frame', !!t0 && !!attachedIframes && attachedIframes.length === 1 && t0.targetId === attachedIframes[0].targetId && t0.targetId === l.childFrameId,",
+      "new": "check('iframe-target-frame', !(!!t0 && !!attachedIframes && attachedIframes.length === 1 && t0.targetId === attachedIframes[0].targetId && t0.targetId === l.childFrameId),"
+    },
+    {
+      "mutant": "neg-starget-count",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "bccfd312ada75e445f7d49eacdb1b0f6473db658664317d439267d2fac927b29",
+      "note": "negate S iframe-target-count",
+      "old": "check('iframe-target-count', !!attachedIframes && attachedIframes.length === 0 && !!targets && targets.length === 0,",
+      "new": "check('iframe-target-count', !(!!attachedIframes && attachedIframes.length === 0 && !!targets && targets.length === 0),"
+    },
+    {
+      "mutant": "neg-sbrowser-targets",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "98e34b55e8bb0f0bb23c423922da6cc40b4aa5087076b5ae7104f3221a0d36b3",
+      "note": "negate S browser-iframe-targets",
+      "old": "check('browser-iframe-targets', Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 0,",
+      "new": "check('browser-iframe-targets', !(Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 0),"
+    },
+    {
+      "mutant": "neg-chooser-count",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "62456a7099de48f432b33d8dfcee5e9f1f5e755f41185b999f0478662e625e69",
+      "note": "negate chooser-count",
+      "old": "check('chooser-count', choosers.length === 1,",
+      "new": "check('chooser-count', !(choosers.length === 1),"
+    },
+    {
+      "mutant": "neg-chooser-session",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "6e63ad0c0e1ff8297728bea7bdb89a88d985a2dab6fd4297f0cbf4f5b932c8b8",
+      "note": "negate chooser-session",
+      "old": "check('chooser-session', choosers.length === 1 && c0.session === session,",
+      "new": "check('chooser-session', !(choosers.length === 1 && c0.session === session),"
+    },
+    {
+      "mutant": "neg-chooser-frame",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "cdf2d8db649e373a3d6debb6bdcd818c9bac10863f56a8f88f5121e5e505cddb",
+      "note": "negate chooser-frame",
+      "old": "check('chooser-frame', choosers.length === 1 && typeof l.childFrameId === 'string' && l.childFrameId.length > 0 && c0.frameId === l.childFrameId,",
+      "new": "check('chooser-frame', !(choosers.length === 1 && typeof l.childFrameId === 'string' && l.childFrameId.length > 0 && c0.frameId === l.childFrameId),"
+    },
+    {
+      "mutant": "neg-answer-session",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "c3a881e1b433307fe755be9f944502312d75f76cabae58dfbbe4347130db0f0d",
+      "note": "negate answer-session",
+      "old": "check('answer-session', isObj(l.answer) && l.answer.session === session && l.answer.error === null,",
+      "new": "check('answer-session', !(isObj(l.answer) && l.answer.session === session && l.answer.error === null),"
+    },
+    {
+      "mutant": "neg-child-files",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "2f382e41252cb9fa41d0f1b856728c43031c6b540efa657a56267f8b744c6596",
+      "note": "negate child-files",
+      "old": "check('child-files', eq(l.childFiles, [ANSWER]),",
+      "new": "check('child-files', !(eq(l.childFiles, [ANSWER])),"
+    },
+    {
+      "mutant": "neg-child-click",
+      "kind": "negate",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "c9a63bc8811a41f25cc512a020892b0dc7cf3ef8cba9520ec73d3cb04802e263",
+      "note": "negate child-click",
+      "old": "check('child-click', eq(l.childClicks, [{ target: 's', isTrusted: true }]),",
+      "new": "check('child-click', !(eq(l.childClicks, [{ target: 's', isTrusted: true }])),"
+    },
+    {
+      "mutant": "neu-schema",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "do-nothing-r91-receipt"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "31f80066fb4259897d8d41385e67f9cd59dfe680198755f44146f4df5447015f",
+      "note": "drop schema check (condition->true)",
+      "old": "check('schema', receipt.schema === SCHEMA,",
+      "new": "check('schema', true,"
+    },
+    {
+      "mutant": "neu-nonce",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "wrong-nonce"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "71453abe7865878c3cac833dc1a5e7c8a78b907554ecbd1a6492ded4fb444efb",
+      "note": "drop nonce check",
+      "old": "check('nonce', receipt.nonce === expectNonce,",
+      "new": "check('nonce', true,"
+    },
+    {
+      "mutant": "neu-driver-pin",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "driver-sha-forged"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "18243a55b079ee30baf1a2c6e6618c9ebcf4975d1c0f7088f6a0a9143ba0aeed",
+      "note": "drop pin check",
+      "old": "check('driver-pin', receipt.driverSha256 === pin && driverSha === pin,",
+      "new": "check('driver-pin', true,"
+    },
+    {
+      "mutant": "neu-chromium",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "chromium-other"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "6bd089cf3bf12299a33c70b8b1eb6bba251092a39b409ff3ef29c05f1aa5c77e",
+      "note": "drop chromium check",
+      "old": "check('chromium', typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG),",
+      "new": "check('chromium', true,"
+    },
+    {
+      "mutant": "neu-cross-host",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "cross-host-same-site"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "506406646b5ad405ea8495a6d2ac4612f06ed4a1aa6f737d1e3954c389ce2de0",
+      "note": "drop cross-host check",
+      "old": "check('cross-host', receipt.crossHost === 'localhost',",
+      "new": "check('cross-host', true,"
+    },
+    {
+      "mutant": "neu-reps",
+      "kind": "neutralize",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "05dfe7aab5d7838a6eee28fe1605bf8d0e227e5effc52034d6935a80710f5d98",
+      "note": "drop reps check",
+      "old": "check('reps', receipt.reps === reps,",
+      "new": "check('reps', true,"
+    },
+    {
+      "mutant": "neu-answer",
+      "kind": "neutralize",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "9e7a2c6f79f424b2fd560fb3dca4207510f2a8051f959fe034fb60726c3c7571",
+      "note": "drop global answer check",
+      "old": "check('answer', eq(receipt.answer, { name: ANSWER[0], size: ANSWER[1] }),",
+      "new": "check('answer', true,"
+    },
+    {
+      "mutant": "neu-failures",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "failures-listed"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "a949d8123da82c3bba659b144dd36f25e00d438810de8fe0c3091000a3435db2",
+      "note": "drop failures check",
+      "old": "check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0,",
+      "new": "check('failures', true,"
+    },
+    {
+      "mutant": "neu-leg-set",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "drop-leg",
+        "dup-leg"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "2029298f20bad9c98ece07e103317c64632b232e39f1c3e43f706c62d5bbb38e",
+      "note": "drop leg-set check",
+      "old": "check('leg-set', eq(legs.map((l) => l && l.leg).sort(), want.slice().sort()),",
+      "new": "check('leg-set', true,"
+    },
+    {
+      "mutant": "neu-leg-arm",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "arm-relabel"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "2455538be63fc6b4138a34944bfff7b6efbfff5b2884f3900296b05acb4750fb",
+      "note": "drop leg-arm check",
+      "old": "check('leg-arm', l.arm === arm && (arm === 'X' || arm === 'S'),",
+      "new": "check('leg-arm', true,"
+    },
+    {
+      "mutant": "neu-leg-error",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "leg-error"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "a245362c71555ac8f92a5ee0faffbfc062888205194b8eb4776ab783deff34dd",
+      "note": "drop leg-error check",
+      "old": "check('leg-error', l.error === null,",
+      "new": "check('leg-error', true,"
+    },
+    {
+      "mutant": "neu-child-host",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-child-host-same-site"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "c4dfdac40a6cebbfeb4b78ec91409e973b1b486df404ac411fdef4a700ed8f18",
+      "note": "drop child-host check",
+      "old": "check('child-host', l.childHost === host,",
+      "new": "check('child-host', true,"
+    },
+    {
+      "mutant": "neu-child-url",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-child-url-same-site"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "ce364967fbc8cdcc6c70cbf2fde31c10898636776613af46905ee84b17cb0f2c",
+      "note": "drop child-url check",
+      "old": "check('child-url', !!cu && cu.hostname === host && Number(cu.port) === ports.child && cu.pathname === '/child.html',",
+      "new": "check('child-url', true,"
+    },
+    {
+      "mutant": "neu-parent-url",
+      "kind": "neutralize",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "0f121da995c8d2714394887094c62fdf30b18824be995671ba1d7ac67f506136",
+      "note": "drop parent-url check",
+      "old": "check('parent-url', !!pu && pu.hostname === '127.0.0.1' && Number(pu.port) === ports.http && pu.pathname === '/parent.html',",
+      "new": "check('parent-url', true,"
+    },
+    {
+      "mutant": "neu-xtarget-count",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-no-iframe-target"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "873323920dd99c93f446fd50149155ee06b1cb542e35676ccef51a434a14806d",
+      "note": "drop X iframe-target-count",
+      "old": "check('iframe-target-count', !!attachedIframes && attachedIframes.length === 1 && !!targets && targets.length === 1,",
+      "new": "check('iframe-target-count', true,"
+    },
+    {
+      "mutant": "neu-xbrowser-targets",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-browser-no-iframe-target"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "508f18fda9d507b4acc904ce5a0b110ea06946b0c01a93f30ddf221b93a968cd",
+      "note": "drop X browser-iframe-targets",
+      "old": "check('browser-iframe-targets', Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 1 && !!attachedIframes && attachedIframes.length === 1 && l.browserIframeTargets[0].targetId === attachedIframes[0].targetId && l.browserIframeTargets[0].url === l.childUrl,",
+      "new": "check('browser-iframe-targets', true,"
+    },
+    {
+      "mutant": "neu-x-target-url",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-target-url-wrong"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "b258d8239021bb23a7d046c0e4aadf9963f52d1455bd1b130ff9bf827f6e3b68",
+      "note": "drop X iframe-target-url",
+      "old": "check('iframe-target-url', !!t0 && t0.url === l.childUrl,",
+      "new": "check('iframe-target-url', true,"
+    },
+    {
+      "mutant": "neu-x-target-frame",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "x-target-not-child-frame"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "0f56b614106f0ea7aa3931486befaeac7ffcd804fb823d2ae4389f235a3dd060",
+      "note": "drop X iframe-target-frame",
+      "old": "check('iframe-target-frame', !!t0 && !!attachedIframes && attachedIframes.length === 1 && t0.targetId === attachedIframes[0].targetId && t0.targetId === l.childFrameId,",
+      "new": "check('iframe-target-frame', true,"
+    },
+    {
+      "mutant": "neu-starget-count",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "s-has-iframe-target"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "7881f68e3a5b750744a8a4d93f57cdc80f64f853906933616211db2f81290db2",
+      "note": "drop S iframe-target-count",
+      "old": "check('iframe-target-count', !!attachedIframes && attachedIframes.length === 0 && !!targets && targets.length === 0,",
+      "new": "check('iframe-target-count', true,"
+    },
+    {
+      "mutant": "neu-sbrowser-targets",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "s-browser-iframe-target"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "cde949308334cbbf4b5d802d6e673d423b586409f59dfc2db586862c9d5c3fb2",
+      "note": "drop S browser-iframe-targets",
+      "old": "check('browser-iframe-targets', Array.isArray(l.browserIframeTargets) && l.browserIframeTargets.length === 0,",
+      "new": "check('browser-iframe-targets', true,"
+    },
+    {
+      "mutant": "neu-chooser-count",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "dup-chooser",
+        "no-chooser"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "354299ac7be991e8f38532b2e497cdca9b1f37ed608dc7db3974cfb613687e2c",
+      "note": "drop chooser-count",
+      "old": "check('chooser-count', choosers.length === 1,",
+      "new": "check('chooser-count', true,"
+    },
+    {
+      "mutant": "neu-chooser-session",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "x-chooser-on-page",
+        "s-chooser-on-iframe"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "6ba0efa4347d13345b72ff306541325ab06f7b7ea424515a8a13c5e9f4a8fb92",
+      "note": "drop chooser-session",
+      "old": "check('chooser-session', choosers.length === 1 && c0.session === session,",
+      "new": "check('chooser-session', true,"
+    },
+    {
+      "mutant": "neu-chooser-frame",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "chooser-wrong-frame"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "eb8ae9497574097ce5cd54cc3fef416a8a16186a1e99e2c4d75600d57a0a313e",
+      "note": "drop chooser-frame",
+      "old": "check('chooser-frame', choosers.length === 1 && typeof l.childFrameId === 'string' && l.childFrameId.length > 0 && c0.frameId === l.childFrameId,",
+      "new": "check('chooser-frame', true,"
+    },
+    {
+      "mutant": "neu-answer-session",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "answer-error",
+        "x-answer-on-page"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "87ff0f332856b18eb723090f9c4ab4ed717d9d978778ffa6856a9ba8d53194ac",
+      "note": "drop answer-session",
+      "old": "check('answer-session', isObj(l.answer) && l.answer.session === session && l.answer.error === null,",
+      "new": "check('answer-session', true,"
+    },
+    {
+      "mutant": "neu-child-files",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 28,
+      "failed_cases": [
+        "empty-files",
+        "extra-file",
+        "wrong-size"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "ab93f8f4e1f215a1df56b2d13ba2eeb5296fd9aff4e358d54e456918091a6f68",
+      "note": "drop child-files",
+      "old": "check('child-files', eq(l.childFiles, [ANSWER]),",
+      "new": "check('child-files', true,"
+    },
+    {
+      "mutant": "neu-child-click",
+      "kind": "neutralize",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "click-untrusted",
+        "click-missed-child"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "4d35a158035ae97ce83121fd904abe5871da5e131a14d17f1e08fc492745851f",
+      "note": "drop child-click",
+      "old": "check('child-click', eq(l.childClicks, [{ target: 's', isTrusted: true }]),",
+      "new": "check('child-click', true,"
+    },
+    {
+      "mutant": "op-targetid-contradict",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "1b387e1f3dea6f44334d049427393d3095dbe46789467640d901f48c11c76dfd",
+      "note": "=== -> !== on targetId equality",
+      "old": "t0.targetId === attachedIframes[0].targetId && t0.targetId === l.childFrameId",
+      "new": "t0.targetId !== attachedIframes[0].targetId && t0.targetId === l.childFrameId"
+    },
+    {
+      "mutant": "op-count-ge1",
+      "kind": "operator",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "f55470751a5ff4438b35404a771ec154e77d475921b3348a4f1dfc5df063c4d9",
+      "note": "length === 1 -> >= 1 (X target count)",
+      "old": "attachedIframes.length === 1 && !!targets && targets.length === 1",
+      "new": "attachedIframes.length >= 1 && !!targets && targets.length >= 1"
+    },
+    {
+      "mutant": "op-pin-or",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "driver-sha-forged"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "94aaff50e373284e657c72c6945a6f70f343afb4924e2467e504cbd88f089464",
+      "note": "&& -> || in driver-pin",
+      "old": "receipt.driverSha256 === pin && driverSha === pin",
+      "new": "receipt.driverSha256 === pin || driverSha === pin"
+    },
+    {
+      "mutant": "op-session-always-page",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "8d6e64f64b61e75a476b718197bd540f6d05e6c5f038f659e042ed9c290c5d47",
+      "note": "drop X/S session branch (always page)",
+      "old": "const session = arm === 'X' ? 'iframe' : 'page';",
+      "new": "const session = 'page';"
+    },
+    {
+      "mutant": "op-session-swap",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "45d7b854c8b5e2aa06d86df12b78643c1bf428716d7a7c6e3c5c51003b5920f0",
+      "note": "swap 'iframe'/'page'",
+      "old": "const session = arm === 'X' ? 'iframe' : 'page';",
+      "new": "const session = arm === 'X' ? 'page' : 'iframe';"
+    },
+    {
+      "mutant": "op-answer-size-21",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 30,
+      "failed_cases": [
+        "positive"
+      ],
+      "positive_clean": false,
+      "mutant_sha256": "253105bac6488e33094ff9696626349135b6ef24c762d4dfd1855f1d98e50ac8",
+      "note": "ANSWER size 22 -> 21",
+      "old": "const ANSWER = ['tabi-r92-answer.txt', 22];",
+      "new": "const ANSWER = ['tabi-r92-answer.txt', 21];"
+    },
+    {
+      "mutant": "op-legset-nosort",
+      "kind": "operator",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "61b2265235e7775cfa8cda69a8cddff5b75084ab3d052165e50b05012963bf6c",
+      "note": "leg-set sort removed",
+      "old": "eq(legs.map((l) => l && l.leg).sort(), want.slice().sort())",
+      "new": "eq(legs.map((l) => l && l.leg), want)"
+    },
+    {
+      "mutant": "op-chooser-session-or",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "x-chooser-on-page",
+        "s-chooser-on-iframe"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "b053e9c4968a16557a7f7d5b37997f87813a9d473656e1e676cbe93afff5b2fc",
+      "note": "&& -> || in chooser-session",
+      "old": "choosers.length === 1 && c0.session === session",
+      "new": "choosers.length === 1 || c0.session === session"
+    },
+    {
+      "mutant": "op-childurl-or",
+      "kind": "operator",
+      "verdict": "KILLED",
+      "battery_rc": 1,
+      "cases": 31,
+      "ok": 29,
+      "failed_cases": [
+        "do-nothing-r91-receipt",
+        "x-child-url-same-site"
+      ],
+      "positive_clean": true,
+      "mutant_sha256": "2083d0ad8ad906aef3456c1056212f37a3e2d1c3ebfde4a5b77f01446c805e24",
+      "note": "&& -> || in child-url",
+      "old": "!!cu && cu.hostname === host && Number(cu.port) === ports.child && cu.pathname === '/child.html'",
+      "new": "!!cu && cu.hostname === host || Number(cu.port) === ports.child || cu.pathname === '/child.html'"
+    },
+    {
+      "mutant": "op-reps-ge",
+      "kind": "operator",
+      "verdict": "SURVIVED",
+      "battery_rc": 0,
+      "cases": 31,
+      "ok": 31,
+      "failed_cases": [],
+      "positive_clean": true,
+      "mutant_sha256": "25a4485174336693a7c584729bf96ad28fd9a2cf599a79873a9129a47f560569",
+      "note": "reps === -> >=",
+      "old": "receipt.reps === reps",
+      "new": "receipt.reps >= reps"
+    }
+  ],
+  "summary": {
+    "KILLED": 56,
+    "SURVIVED": 7,
+    "INCONCLUSIVE": 0
+  }
+}

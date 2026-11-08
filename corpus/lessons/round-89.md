@@ -138,3 +138,14 @@ records the corrections here; the round-89 text above stays byte-unchanged.
    whitespace"), which the round-90 scout re-located at the `id=set-of-comma-separated-tokens` dfn
    (2026-11-08, 121,595 B, sha256 `2e9e2cbbe1ed`). The over-length original is marked here, not
    rewritten.
+
+## Corrections carried by round 92 (append-only; the round-89 records above are not rewritten)
+
+1. **Item 6 "(the committer time)" (r91 spot-check §8 item 6, lane half).** Correction item 6 of
+   the round-90 block above (line 117 at `bdf403ff`) says the round-90 report commit "uses a clean
+   author date (the committer time)". That is inexact: fleet commit `e2c976b3` has author date
+   2026-11-08 12:12:09 -03:00 and committer date 12:12:37 -03:00 (`git log --format='%ad %cd'
+   --date=iso -1 e2c976b3` in the fleet repo), and the author date still precedes the lane lesson
+   commit `3e6cf40f` (12:12:23) it cites. The accurate statement: the round-90 report's author date
+   precedes one commit it cites; only the committer time follows it. The original wording is
+   marked here, not rewritten.

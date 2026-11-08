@@ -4181,3 +4181,51 @@ Wave handoff (after attempt 3 filed): the orchestrator wrote `.ufo/waves/round-9
 at 13:36 (-03) — all 13 seats, their outputs and the wave metadata. It is committed here as wave
 evidence. The report and the ledger accounting above were built from the seats' filed reports and
 the direct messages, not from this file, which did not exist at filing.
+
+## Correction — rounds 90/91 LOG entries rewritten in place (round 92; append-only)
+
+Round-91 commit `249b7d0c` rewrote three lines of the round-90 entry above (`LOG.md:4079-4080` the
+`plan-calls … forbids it elsewhere` attribution, `:4086` the battery count 225 → "226 at the final
+D6 freeze") instead of appending a correction; commits `a60d2f75` and `7c59b264` then rewrote five
+lines each of the round-91 entry (seat counts and the filing account). The rewritten text stands
+as the current record; the pre-edit bytes are `git show b1d8f07b:LOG.md` and `git show
+a60d2f75~1:LOG.md`. From round 92 on, `scripts/check-append-only-round92.mjs` gates LOG.md,
+corpus/QUALITY.md, SCORECARD.md and lessons as byte-prefix appends (QUALITY 165; round-92 lesson
+`## Mistakes`).
+
+## Round 92 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR92`. Base `bdf403ff` (the round-91 verifier spot-check commit; lane clean). ONE claim:
+C1 coverage — the NEW capability `chromium-crosssite-iframe-chooser-linux`: on which CDP session an
+iframe's file chooser is reported and answered, for a cross-site child (`localhost` under a
+`127.0.0.1` parent: its own `iframe` target, chooser on the iframe session) versus a same-site
+child (`127.0.0.1`, other port: no target, chooser on the page session). Sourced by S227 (Target.pdl
+auto-attach), S228 (site-per-process), S229 (WHATWG obtain-a-site: no registrable domain →
+(scheme, host)) and S230 (Playwright's OOPIF handling), all opened this round.
+
+Freeze commit `2bac1048`: `plans/round-92.md` (claim, limits 1-6, controls, counting command),
+`.ufo/waves/round-92/claims.json`, the driver `chrome-cdp-iframe-chooser-round92.mjs` (pin
+`0feca90ba027`), counter `check-iframe-chooser-round92.mjs`, battery
+`negatives-iframe-chooser-round92.mjs`, and the executed controls (`controls/`: base has no counter
+rc 128; r91 receipt rc 1; wrong-site live run rc 1 with behaviour ids; positive rc 0 at 93 checks;
+battery 31/31). Scored commit `a87c7176`: `--live` rc 0, clean, 93 checks, nonce
+`tabi-r92-live-63a66abf7529`; receipt copied to `corpus/evidence/round92/chromium-crosssite-iframe-chooser/`.
+
+Round shape: ONE v1 wave `w1`, 11 seats (3 executor, 2 critic, 1 mutation-tester, 1 reviewer,
+1 scout, 1 scribe, 1 connector, 1 sentinel; 4 protocol attack seats = 36 %; the validator refused
+`labrat` as a swarm role, so the limit-5 probe rode an executor seat; the L1 holds the planner seat).
+Wave outcome: every seat's verdict on C1 is `neutral`; two cold reproductions (R92Exec1) and three
+more (R92Critic2, one at 10 reps / 289 checks) and one (R92Sentinel) are clean; R92Critic1's clause
+table and 7 receipt-mode forgeries fall under limit 6; R92Mut kills 56/63 (7 battery gaps);
+R92Reviewer confirms freeze-before-score and re-runs every control; R92ExecProbe confirms limit-5's
+hypothesis outside the claim (page-session answer in the cross-site arm: `Node is not a file input
+element`, 3/3). Clarifications W1-W5 appended to the plan; no predicate, counter, driver, battery,
+pin or control changed after data.
+
+Records: knowledge 104 → 105 (`corpus/knowledge/chromium-crosssite-iframe-chooser-round-92.md`);
+registry 226 → 230 (S228's `teaches` narrowed and the WHATWG exclusion reversed before commit, on
+R92Scout's finding); `corpus/lessons/round-92.md`; SCORECARD round-92 section, capability row and the
+appended r91 capability-row correction; QUALITY 165; `corpus/lessons/round-89.md` §Corrections
+carried by round 92; README `## Round 92 coverage`; SKILL `## Round 92 gate registry`; the
+append-only gate `scripts/check-append-only-round92.mjs` (R92Exec2). **C1 VERIFIED on its frozen
+predicate.**
