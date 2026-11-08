@@ -3966,3 +3966,27 @@ R85Exec1 (two cold runs), R85Exec2 (battery/kill power/selftest), R85Exec3 (fami
 constant-offset forgery), R85Scout (sources), R85Scribe (note drafts), R85Connector (sibling heads).
 
 - Round 85 digests: D 620623a43f74, nonce tabi-r85-l1-620623a43f74. 87 checks, battery 175 cases, kill power 58 mutants.
+
+## Round 86 — 2026-11-08 (Linux host)
+
+- Claims: C1 coverage — capability `chromium-showpicker-linux` generation r86 (the `accept` token
+  grammar matrix: wildcard, mixed list and a non-matching MIME token; and the same-origin
+  `type=color` activated arm); C2 operability — the six tel-only conjunct narrowings (R85Mut1's
+  routed defect 3). D `4bd89a80f439`, nonce `tabi-r86-l1-4bd89a80f439` (freeze pins in
+  `.ufo/waves/round-86/freeze.txt`; claims in `.ufo/waves/round-86/claims.json`).
+- Landed instruments: `scripts/chrome-cdp-showpicker-round86.mjs` (30 legs; four new page inputs
+  `#aw`/`#am`/`#ap`/`#cos` and six new legs), `check-showpicker-r86.mjs` (95 checks, two new laws
+  `accept-grammar-law` and `same-origin-color-law`), `negatives-showpicker-r86.mjs` (201 cases:
+  the per-leg loop, five accept-grammar cases, five colour cases, and 12 search/text conjunct
+  witnesses), `kill-power-r86.mjs` (66 mutants), `selftest-r86-gates.mjs` (10 gates),
+  `check-record-drift-r86.mjs` (8 record claims), `witness-families-r86.mjs` (12 families).
+- Scored: counter clean **95** checks; battery **201** cases / 0 failed / coverage 95/95; kill power
+  **66** mutants / 66 killed / 0 survivors / 0 crashed; witness families before **3** survivors
+  (narrow-tel-crossaccess, narrow-tel-childseq, narrow-tel-childact-before) → after **0**.
+- Do-nothing controls: `controls/c1/nowork-r85-under-r86.json` (the r85 receipt under the r86
+  counter: exit 1, 89 checks, 39 findings incl. `schema`, `plan-frozen`) and
+  `controls/c1/noreceipt.txt` (exit 2 `receipt-unreadable`).
+- Knowledge 98 → 99 (`corpus/knowledge/chromium-showpicker-runtime-round-86.md`). Registry 223 (no
+  new rows; S223/S219/S216/S221/S222 re-opened; located quotes 18 and 21 words).
+- Mistake mined: `witness-polarity` + `guard-inversion` (whole-law vs conjunct-scoped narrowing,
+  and the inverted guard) and `kill-power-reach` (three battery cases added) — `corpus/lessons/round-86.md`.

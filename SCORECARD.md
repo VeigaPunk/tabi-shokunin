@@ -4148,3 +4148,38 @@ a same-element origin comparison; a `type=color` same-origin activated arm. Reti
 
 Scored (r85): 87 checks, battery 175/175, kill power 58/58, selftest 9/9, family witnesses 3 → 0.
 - Digests: D 620623a43f74, nonce tabi-r85-l1-620623a43f74. 87 checks, battery 175 cases, kill power 58 mutants.
+
+## Round 86 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r86 (the `accept` token grammar and the same-origin colour arm); C2 operability, the six tel-only conjunct narrowings
+
+Base `57265864`; D **`4bd89a80f439`**, nonce **`tabi-r86-l1-4bd89a80f439`**. Axes at start: all six at 9;
+C1 works a lowest axis and is a capability move (generation r86 of the r79 capability); C2 works
+operability (a frozen battery's refusal reach across legs).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r86 (sourced: S223/S219 carried and re-opened, 18- and 21-word located quotes) | `node scripts/check-showpicker-r86.mjs --lane <ABS lane> --receipt corpus/evidence/round86/chromium-showpicker/receipt.json --expect-driver-sha256 5a435da6dae0d2eba1add83e51903ae954801fb67bca6186f2ad5787e94a313d --expect-nonce tabi-r86-l1-4bd89a80f439 --expect-fixture-sha256 94421dc0cceba84082aa3e75d501e14876b7eac6942c809f98f7fef6b774a3a1 --prior-set .ufo/waves/round-86/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R86`) | base `57265864`: no r86 receipt → exit 2 `receipt-unreadable`; the r85 scored receipt under the r86 counter → exit 1, 89 checks, 39 findings incl. `schema`/`plan-frozen`; after: the scored receipt → exit 0, **95** checks clean; battery 201/0/coverage 95/95; kill power 66/66 | VERIFIED |
+| C2 operability (9), the six tel-only conjunct narrowings (`scripts/witness-families-r86.mjs`, predicate `C2-FAMILYWITNESS-R86`) | `node scripts/witness-families-r86.mjs --lane <ABS lane> --work <ABS scratch> --json` (exit 0 iff after 0 survivors and before exactly 3) | before (frozen r85 battery): **3 of 12 families survive** (`narrow-tel-crossaccess`, `narrow-tel-childseq`, `narrow-tel-childact-before`); after (frozen r86 battery): **0 survive**, 12 killed, 0 crashed, 0 unapplied (`scored/witness-a.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r86) | As r85, and now: `accept` measured as a dialog hint, never a validator — `image/*`, a mixed list (`image/png, .txt`) and a non-matching MIME token (`application/pdf`) all accept programmatically delivered bytes with trusted input+change and page-read bytes; and a same-origin `type=color` `showPicker()` with transient activation returns `undefined`, consumes the activation, fires no input/change and opens zero FILE choosers (30 legs, 95 checks) | `corpus/evidence/round86/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-86.md` | 79 |
+| `battery-leg-witnesses` | Every cross-origin law conjunct is witnessed on the tel, search AND text legs, and six conjunct-scoped tel-only narrowings that the r85 battery left alive are refused by the frozen r86 battery (3 → 0) | `scripts/witness-families-r86.mjs`; `scored/witness-a.json`; `scored/battery-a.json` | 86 |
+
+Knowledge 98 → 99 (`corpus/knowledge/chromium-showpicker-runtime-round-86.md`). Registry 223 (no new
+rows; S223/S219/S216/S221/S222 re-opened). SKILL.md `## Round 86 gate registry` registers the seven
+r86 instruments; `scripts/selftest-r86-gates.mjs` runs them in order.
+
+Narrowings (recorded in `plans/round-86.md`): (1) the accept law is an ACCEPTANCE law —
+`DOM.setFileInputFiles` bypasses the dialog, so what a user's dialog filters is unmeasured; (2) the
+colour arm's zero-open is a FILE-chooser metric, not a popup probe; (3) three token forms, not the
+whole grammar; (4) C2's six families are conjunct-scoped, and the r85 battery already killed three of
+them because it carries search/text childResult, text childLate and search childActivationAfter cases.
+
+Planned (r87): the remaining `accept` token forms (`audio/*`, `video/*`, multi-MIME, whitespace
+variants) one leg each; a same-element origin comparison via a `postMessage` proxy; a UI-side colour
+popup probe. Retired: none.
+
+Scored (r86): 95 checks, battery 201/201, kill power 66/66, selftest 10/10, witness families 3 → 0.
+- Digests: D 4bd89a80f439, nonce tabi-r86-l1-4bd89a80f439. 95 checks, battery 201 cases, kill power 66 mutants.
