@@ -3912,3 +3912,4 @@ legs); C2 calibration — the ten r80 routed defects plus the self-drift identit
 Scored (r81): battery 62/62, kill power 46/46, 56 checks.
 
 - Round 82: C1 generation r82 (type=color exempt; month/week/time SecurityError; 64 checks, battery 70/70, kill power 46/46); C2 drift (quote-count 23 → 20 directional, wave files committed, dead seats R81Exec3/R81Drift named, report lands-last via fleet-commit.sh). Census exit 0. Knowledge 93 → 94. Registry 223 (no new rows).
+- Round 82 digests: D 5204a0581de5, nonce tabi-r82-l1-5204a0581de5 (claims.json). 64 checks.

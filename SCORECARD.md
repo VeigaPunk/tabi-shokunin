@@ -4050,3 +4050,4 @@ Planned (r83): `type=number`/`range` cross-origin legs; answer attribution for t
 the `accept` token grammar. Retired: none.
 
 Scored (r82): 64 checks, battery 70/70, kill power 46/46.
+- Digests: D 5204a0581de5, nonce tabi-r82-l1-5204a0581de5. 64 checks, battery 70/70, kill power 46/46.

@@ -82,3 +82,4 @@ refuses it).
 (To be integrated after WAVE-DONE.)
 
 Scored (r82): counter 64 checks, battery 70/70, kill power 46/46, selftest 9/9.
+- Round 82 digests: D 5204a0581de5, nonce tabi-r82-l1-5204a0581de5.

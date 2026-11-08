@@ -3287,3 +3287,4 @@ coverage 64/64), `scripts/kill-power-r82.mjs` (46 mutants; 46 killed), `scripts/
 (C2: 8 record claims). Scored: 64 checks, battery 70/70, kill power 46/46. The r82 laws: a
 cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no chooser); cross-origin
 `type=month`/`week`/`time` inputs throw SecurityError; the r81 six laws are carried forward.
+- Round 82 digests: D 5204a0581de5, nonce tabi-r82-l1-5204a0581de5. 64 checks.
