@@ -1,0 +1,49 @@
+R82Exec1 ledger — Leg (b) two cold runs
+Driver: scripts/chrome-cdp-showpicker-round82.mjs sha256 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1
+Counter: scripts/check-showpicker-r82.mjs sha256 d0d26fe59b6f5067b6a8021d6e7e039466e6ded46bb4cd4f5eda6f07b444d62e
+Assignment expected driver pin: e35e63c11052a7b48efd765541618495d8a2301dbfb36f3250b763dc3c97c669 (MISMATCH — actual frozen driver sha is 2085c2a7...)
+Prior set: .ufo/waves/round-82/controls/c1/prior-set.txt (prior1.json)
+Scored receipt existed at run time: corpus/evidence/round82/chromium-showpicker/receipt.json (nonce tabi-r82-scored1, fixture 7373c60896dc0238e46b864f735454b42ae515df7bd3339ef47ed1791ef42b4d, driverSha 2085c2a7...) — used as --prior per assignment (no need for probe fallback; probe2.json does not exist)
+
+DRIVER RUNS:
+cold1: node scripts/chrome-cdp-showpicker-round82.mjs --lane ... --nonce tabi-r82-cold1-5204a0581de5 --scratch /fast/scratch/hyaku/tabi-r82/R82Exec1 --out .ufo/waves/round-82-seats/R82Exec1/cold1.json --http-port 19260 --cdp-port 19261 --child-port 19262
+  exit: 0
+  legs: 10, failures: []
+  nonce: tabi-r82-cold1-5204a0581de5
+  fixture.sha256: f15a1c6a1141befbf21512cbf1e4701fcb99f90838781c3c5dd2506c52a2b4d7
+  driverSha256: 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1
+  ports: http 19260, cdp 19261, child 19262
+cold2: node scripts/chrome-cdp-showpicker-round82.mjs --lane ... --nonce tabi-r82-cold2-5204a0581de5 --scratch /fast/scratch/hyaku/tabi-r82/R82Exec1 --out .ufo/waves/round-82-seats/R82Exec1/cold2.json --http-port 19263 --cdp-port 19264 --child-port 19265
+  exit: 0
+  legs: 10, failures: []
+  nonce: tabi-r82-cold2-5204a0581de5
+  fixture.sha256: 78ae937b5c125bfa9070c2bf3c9fd4c6d5baaca81f7654b9f48f896105bbfd87
+  driverSha256: 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1
+  ports: http 19263, cdp 19264, child 19265
+
+COUNTER SCORING (with --expect-driver-sha256 e35e63c1... per assignment):
+cold1 score: node scripts/check-showpicker-r82.mjs --receipt .../cold1.json --expect-driver-sha256 e35e63c1... --expect-nonce tabi-r82-cold1-5204a0581de5 --expect-fixture-sha256 f15a1c6a... --prior-set .../prior-set.txt --prior .../corpus/evidence/round82/chromium-showpicker/receipt.json
+  exit: 1
+  verdict: findings, checkCount 64, 63/64 pass
+  REFUSAL finding id: driver-pin
+  detail: driverSha256 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1 expected e35e63c11052a7b48efd765541618495d8a2301dbfb36f3250b763dc3c97c669
+  All other checks true (fixture-hash true, all leg laws true, prior-set checks true)
+
+cold2 score: node scripts/check-showpicker-r82.mjs --receipt .../cold2.json --expect-driver-sha256 e35e63c1... --expect-nonce tabi-r82-cold2-5204a0581de5 --expect-fixture-sha256 78ae937b... --prior-set .../prior-set.txt --prior .../corpus/evidence/round82/chromium-showpicker/receipt.json
+  exit: 1
+  verdict: findings, checkCount 64, 63/64 pass
+  REFUSAL finding id: driver-pin
+  detail: driverSha256 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1 expected e35e63c11052a7b48efd765541618495d8a2301dbfb36f3250b763dc3c97c669
+  All other checks true
+
+SCORED RECEIPT RE-VALIDATION:
+node scripts/check-showpicker-r82.mjs --receipt corpus/evidence/round82/chromium-showpicker/receipt.json --expect-driver-sha256 2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1 --expect-nonce tabi-r82-scored1 --expect-fixture-sha256 7373c60896dc0238e46b864f735454b42ae515df7bd3339ef47ed1791ef42b4d --prior-set .../prior-set.txt --prior .../cold1.json
+  exit: 0
+  verdict: clean, checkCount 64, 64/64 pass, findings []
+  Proves prior set (with cold1 as additional prior) still accepts the scored receipt.
+  Note: driver pin used here is the actual 2085c2a7... hash (the e35e63c1... pin from the assignment does not match the frozen driver file).
+
+CONCLUSION:
+- Leg behavior is correct: all 10 legs pass their laws in both cold runs (SecurityError cross-origin, InvalidStateError same-origin disabled, webkitdirectory with webkitRelativePath + trusted input/change, .txt into accept=.png accepted, second chooser on click-while-open). Zero behavioral failures.
+- Counter verdicts for both cold runs are REFUSALS solely on driver-pin: the assignment's pinned hash e35e63c1... does not equal the frozen driver file's actual sha256 2085c2a7.... This is an honest refusal to report, not a behavioral failure. The scored receipt itself carries driverSha 2085c2a7..., confirming the frozen driver is 2085c2a7...
+- With the true driver sha the scored receipt scores clean (exit 0, 64 checks).
