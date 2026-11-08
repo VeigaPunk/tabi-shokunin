@@ -49,7 +49,7 @@ gate('pins-match-freeze', () => {
 });
 gate('counter-clean', () => {
   const r = run('check-showpicker-r83.mjs', ['--lane', lane, '--receipt', receipt, '--expect-driver-sha256', expect.driver, '--expect-nonce', expect.nonce, '--expect-fixture-sha256', expect.fixture, '--prior-set', PS, '--json']);
-  return { ok: r.status === 0 && r.json && r.json.verdict === 'clean' && r.json.checkCount === 67, detail: 'exit ' + r.status + ' ' + JSON.stringify(r.json ? { verdict: r.json.verdict, checks: r.json.checkCount, findings: r.json.findings.map((f) => f.id) } : r.stderr) };
+  return { ok: r.status === 0 && r.json && r.json.verdict === 'clean' && r.json.checkCount === 74, detail: 'exit ' + r.status + ' ' + JSON.stringify(r.json ? { verdict: r.json.verdict, checks: r.json.checkCount, findings: r.json.findings.map((f) => f.id) } : r.stderr) };
 });
 gate('battery', () => {
   const r = run('negatives-showpicker-r83.mjs', ['--lane', lane, '--real', receipt, '--expect-driver-sha256', expect.driver, '--expect-nonce', expect.nonce, '--expect-fixture-sha256', expect.fixture, '--prior-set', PS, '--work', path.join(work, 'battery'), '--json']);

@@ -144,7 +144,7 @@ const legMutators = {
   'sp83-cross-origin-week': (r) => { legOf(r, 'sp83-cross-origin-week').stateAfter.sValue = 'x'; },
   'sp83-cross-origin-time': (r) => { legOf(r, 'sp83-cross-origin-time').stateAfter.sValue = 'x'; },
 };
-const LEG_ALSO = { 'sp83-cross-origin-nonfile': ['no-selection-law'], 'sp83-cross-origin-nonfile-disabled': ['no-selection-law'], 'sp83-same-origin-nonfile-disabled': ['no-selection-law'], 'sp83-webkitdirectory-answer': ['no-selection-law', 'webkitdirectory-answer-law'], 'sp83-accept-answer': ['no-selection-law', 'accept-answer-law'], 'sp83-click-while-open': ['no-selection-law'], 'sp83-cross-origin-color': ['no-selection-law'], 'sp83-cross-origin-month': ['no-selection-law'], 'sp83-cross-origin-week': ['no-selection-law'], 'sp83-cross-origin-time': ['no-selection-law'] };
+const LEG_ALSO = { 'sp83-cross-origin-nonfile': ['no-selection-law'], 'sp83-cross-origin-nonfile-disabled': ['no-selection-law'], 'sp83-same-origin-nonfile-disabled': ['no-selection-law'], 'sp83-webkitdirectory-answer': ['no-selection-law', 'webkitdirectory-answer-law'], 'sp83-accept-answer': ['no-selection-law', 'accept-answer-law'], 'sp83-click-while-open': ['no-selection-law'], 'sp83-cross-origin-color': ['no-selection-law'], 'sp83-cross-origin-month': ['no-selection-law'], 'sp83-cross-origin-week': ['no-selection-law'], 'sp83-cross-origin-time': ['no-selection-law'], 'sp83-cross-origin-number': ['no-selection-law'], 'sp83-cross-origin-range': ['no-selection-law'], 'sp83-multiple-mode': ['no-selection-law', 'multiple-mode-law'], 'sp83-accept-mime-answer': ['no-selection-law', 'accept-mime-answer-law'], 'sp83-second-chooser-answer': ['no-selection-law', 'second-chooser-answer-law'] };
 for (const n of LEG_NAMES) add('leg-' + n, 'leg-' + n, legMutators[n] || ((r) => { legOf(r, n).stateAfter.sValue = 'x'; }), LEG_ALSO[n] || []);
 
 // law checks
@@ -157,14 +157,14 @@ add('webkitdirectory-answer-law', 'webkitdirectory-answer-law', (r) => { legOf(r
 add('accept-answer-law', 'accept-answer-law', (r) => { legOf(r, 'sp83-accept-answer').pageEvents.find((e) => e.type === 'read').ret = 'hex:00'; });
 add('click-while-open-law', 'click-while-open-law', (r) => { legOf(r, 'sp83-click-while-open').clickWhileOpenChoosersAfter = 1; });
 add('multiple-mode-law', 'multiple-mode-law', (r) => { const l = legOf(r, 'sp83-multiple-mode'); l.answer.setParams.backendNodeId = 0; });
-add('multiple-mode-law-state', 'multiple-mode-law', (r) => { legOf(r, 'sp83-multiple-mode').stateAfter.m = []; });
-add('accept-mime-answer-law', 'accept-mime-answer-law', (r) => { legOf(r, 'sp83-accept-mime-answer').stateAfter.k = []; });
+add('multiple-mode-law-state', 'multiple-mode-law', (r) => { legOf(r, 'sp83-multiple-mode').stateAfter.m = []; }, ['leg-sp83-multiple-mode', 'no-selection-law']);
+add('accept-mime-answer-law', 'accept-mime-answer-law', (r) => { legOf(r, 'sp83-accept-mime-answer').stateAfter.k = []; }, ['leg-sp83-accept-mime-answer', 'no-selection-law']);
 add('accept-mime-answer-law-bytes', 'accept-mime-answer-law', (r) => { const l = legOf(r, 'sp83-accept-mime-answer'); l.pageEvents.find((e) => e.type === 'read').ret = 'hex:00'; });
 add('second-chooser-answer-law', 'second-chooser-answer-law', (r) => { legOf(r, 'sp83-second-chooser-answer').clickWhileOpenChoosersAfter = 1; });
 add('second-chooser-answer-law-bytes', 'second-chooser-answer-law', (r) => { const l = legOf(r, 'sp83-second-chooser-answer'); l.pageEvents.find((e) => e.type === 'read').ret = 'hex:00'; });
 add('second-chooser-answer-law-id', 'second-chooser-answer-law', (r) => { legOf(r, 'sp83-second-chooser-answer').secondChooserBackendNodeId = 999; });
-add('cross-origin-number-law', 'cross-origin-number-law', (r) => { legOf(r, 'sp83-cross-origin-number').childResult = { ok: true, ret: 'undefined' }; });
-add('cross-origin-range-law', 'cross-origin-range-law', (r) => { legOf(r, 'sp83-cross-origin-range').childResult = { ok: true, ret: 'undefined' }; });
+add('cross-origin-number-law', 'sp83-cross-origin-number-law', (r) => { legOf(r, 'sp83-cross-origin-number').childResult = { ok: true, ret: 'undefined' }; }, ['intercept-law', 'leg-sp83-cross-origin-number']);
+add('cross-origin-range-law', 'sp83-cross-origin-range-law', (r) => { legOf(r, 'sp83-cross-origin-range').childResult = { ok: true, ret: 'undefined' }; }, ['intercept-law', 'leg-sp83-cross-origin-range']);
 
 add('no-selection-law', 'no-selection-law', (r) => { legOf(r, 'sp83-cross-origin-nonfile').stateAfter.s = [['a', 1, 'text/plain', '']]; }, ['leg-sp83-cross-origin-nonfile']);
 add('intercept-law', 'intercept-law', (r) => { const l = legOf(r, 'sp83-cross-origin-nonfile-disabled'); l.cdpEventLog.push({ method: 'Page.fileChooserOpened', params: { frameId: l.contexts.find((c) => c.origin === 'http://127.0.0.1:' + r.ports.child).frameId, mode: 'selectSingle', backendNodeId: 3 }, afterSendId: l.priorReleaseId }); }, ['leg-sp83-cross-origin-nonfile-disabled', 'order-law', 'plan-calls']);
@@ -211,6 +211,7 @@ const forgery = (ctx) => {
   c.nonce = expectNonce;
   c.driverSha256 = pin;
   c.fixture.sha256 = expectFixture;
+  c.schema = c.schema.replace(/r82$/, 'r83');
   rewriteNonce(c, expectNonce);
   for (const l of arr(c.legs)) {
     for (const s of arr(l.serverLog)) s.run = expectNonce;

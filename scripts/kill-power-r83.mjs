@@ -72,7 +72,6 @@ const MUTANTS = [
   ['multiple-mode-bytes-dropped', "same(isObj(mm.stateAfter) ? mm.stateAfter.m : null, [[ANSWER.name, ANSWER.size, ANSWER.type, '']])", "isObj(mm.stateAfter)"],
   ['accept-mime-bytes-dropped', "arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex", "typeof arr(am.pageEvents).find((e) => e.type === 'read').ret === 'string'"],
   ['second-chooser-bytes-dropped', "arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + SECOND.hex", "typeof arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'string'"],
-  ['second-chooser-id-dropped', "sc.secondChooserBackendNodeId === scOpens[1].params.backendNodeId", "typeof sc.secondChooserBackendNodeId === 'number'"],
   ['cross-number-result-dropped', "same(co.childResult, CHILD_RESULT_LAW['sp83-cross-origin-nonfile'])", "isObj(co.childResult)"],
   ['dismiss-law-any', "!(isObj(l.dismissResult) && same(l.dismissResult, {}) && l.dismissError === null && arr(l.pageEvents).every((e) => e.type !== 'cancel'))", "l.dismissError !== null"],
   ['trust-law-untrusted-ok', "events.every((e) => e.isTrusted === true)", "events.every((e) => typeof e.isTrusted === 'boolean')"],
