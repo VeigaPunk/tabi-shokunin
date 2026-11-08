@@ -232,6 +232,180 @@ add('prior-set-unparsable', 'prior-set-unparsable', () => {}, []);
 accept('accept-real', (r) => r);
 accept('accept-retimed', (r, ctx) => { const c = clone(ctx.real); for (const l of arr(c.legs)) for (const e of arr(l.pageEvents)) { e.ts = Math.round((e.ts + 1) * 10) / 10; e.at = Math.round((e.at + 1) * 10) / 10; } Object.assign(r, c); });
 
+
+// ---- imported R82Mut1 witnesses (spotcheck routed defect 2), each a receipt mutation with its expected id ----
+// The helper names are the witness set's own (leg/evs/open/PTR_EV/renumber) bound to this battery's helpers.
+const leg = (r, n) => legOf(r, n);
+const evs = (r, n) => arr(leg(r, n).pageEvents);
+const open = (r, n) => openOf(r, n);
+const PTR_EV = (r, n, type) => evs(r, n).find((e) => e.type === type);
+const renumber = (r, n) => {
+  const l = leg(r, n);
+  for (const c of l.cdpSendLog) c.id += 100;
+  for (const k of ['interceptSendId', 'triggerSendId', 'trigger2SendId', 'dismissSendId', 'clickPressId', 'clickReleaseId', 'priorPressId', 'priorReleaseId', 'armSendId']) {
+    if (typeof l[k] === 'number') l[k] += 100;
+  }
+  if (l.answer && l.answer.setSendId) l.answer.setSendId += 100;
+  for (const e of l.cdpEventLog) if (typeof e.afterSendId === 'number') e.afterSendId += 100;
+  return l;
+};
+add("w-accept-upload-any", "accept-answer-law", ((r) => { leg(r, 'sp83-accept-answer').upload.size = 999; }));
+add("w-argv-browserid-any", "host-argv", ((r) => { leg(r, 'sp83-accept-answer').devtoolsListening.browserId = 'zzz'; }));
+add("w-argv-devtools-url-any", "host-argv", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    l.devtoolsListening.url = 'ws://evil/x';
+    l.stderrHead = 'DevTools listening on ws://evil/x';
+  }));
+add("w-argv-profile-dropped", "host-argv", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const i = l.argv.findIndex((a) => typeof a === 'string' && a.startsWith('--user-data-dir='));
+    l.argv[i] = '--user-data-dir=' + l.argv[i].replace(/profile-[0-9a-f]{12}$/, 'profile-zzzzzzzzzzzz');
+  }));
+add("w-argv-stderr-binding-dropped", "host-argv", ((r) => { leg(r, 'sp83-accept-answer').stderrHead = 'DevTools listening on ws://127.0.0.1:1/devtools/browser/other'; }));
+add("w-cdp-aftersendid-any", "cdp-event-log-closed", ((r) => { leg(r, 'sp83-accept-answer').cdpEventLog.find((e) => e.method === 'Page.frameNavigated').afterSendId = 'x'; }));
+add("w-cdp-nav-count-loosened", "cdp-event-log-closed", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const nav = l.cdpEventLog.find((e) => e.method === 'Page.frameNavigated');
+    l.cdpEventLog.push(JSON.parse(JSON.stringify(nav)));
+  }));
+add("w-cdp-nav-url-dropped", "cdp-event-log-closed", ((r) => { leg(r, 'sp83-accept-answer').cdpEventLog.find((e) => e.method === 'Page.frameNavigated').params.url = 'http://127.0.0.1:1/'; }));
+add("w-cdp-open-backendnode-nonpositive-ok", "cdp-event-log-closed", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const o = open(r, 'sp83-accept-answer');
+    o.params.backendNodeId = 0;
+    l.answer.setParams.backendNodeId = 0;
+    l.cdpSendLog.find((c) => c.method === 'DOM.setFileInputFiles').params.backendNodeId = 0;
+  }));
+add("w-cdp-open-keys-open", "cdp-event-log-closed", ((r) => { open(r, 'sp83-accept-answer').params.extra = 1; }));
+add("w-childserver-404-dropped", "child-server-log-binding", ((r) => { leg(r, 'sp83-accept-answer').childServerLog.push({ path: '/other', status: 200, run: r.nonce }); }));
+add("w-childserver-min-dropped", "child-server-log-binding", ((r) => { leg(r, 'sp83-cross-origin-nonfile').childServerLog = []; }));
+add("w-click-element-any", "click-while-open-law", ((r) => { leg(r, 'sp83-click-while-open').clickWhileOpenElement = 'q'; }));
+add("w-cross-nonfile-child-act-dropped", "cross-origin-nonfile-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile').childEvents[0].act = false; }));
+add("w-cross-nonfile-childact-after-dropped", "cross-origin-nonfile-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile').childActivationAfter = { isActive: false, hasBeenActive: false }; }));
+add("w-cross-nonfile-childact-before-dropped", "cross-origin-nonfile-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile').childActivationBefore = { isActive: true, hasBeenActive: true }; }));
+add("w-cross-nonfile-childlate-dropped", "cross-origin-nonfile-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile').childLate = 1; }));
+add("w-ctx-childid-dropped", "context-binding", ((r) => {
+    const l = leg(r, 'sp83-cross-origin-nonfile');
+    l.childContextId = 'CTX-BOGUS';
+    for (const c of l.cdpSendLog) if (c.method === 'Runtime.evaluate' && c.params.contextId !== undefined) c.params.contextId = 'CTX-BOGUS';
+  }));
+add("w-ctx-default-dropped", "context-binding", ((r) => {
+    const l = leg(r, 'sp83-cross-origin-nonfile');
+    const c = l.contexts.find((x) => x.origin === 'http://127.0.0.1:' + r.ports.child && x.isDefault === true);
+    c.isDefault = false;
+  }));
+add("w-ctx-frameid-unique-dropped", "context-binding", ((r) => {
+    const l = leg(r, 'sp83-cross-origin-nonfile');
+    const c = l.contexts.find((x) => x.origin === 'http://127.0.0.1:' + r.ports.child && x.isDefault === true);
+    c.frameId = l.frameTree.mainFrameId;
+  }));
+add("w-ctx-unexpected-dropped", "context-binding", ((r) => { leg(r, 'sp83-accept-answer').childContextId = 'CTX-EXTRA'; }));
+add("w-dismiss-error-dropped", "dismiss-law", ((r) => { leg(r, 'sp83-accept-answer').dismissError = { code: 1, message: 'x' }; }));
+add("w-event-ret-any", "event-types", ((r) => { PTR_EV(r, 'sp83-accept-answer', 'click').ret = 5; }));
+add("w-event-window-lower-dropped", "event-leg-window", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const pre = l.marks.find((m) => m.name === 'pre').at;
+    evs(r, 'sp83-accept-answer')[0].at = Math.round((pre - 1) * 10) / 10;
+  }));
+add("w-event-window-order-dropped", "event-leg-window", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const pre = l.marks.find((m) => m.name === 'pre').at;
+    const e = evs(r, 'sp83-accept-answer');
+    const held = e[1].at;
+    let back = Math.round((held - 0.1) * 10) / 10;
+    if (back < pre) back = Math.round((pre + 0.1) * 10) / 10;
+    if (back >= held) return;
+    e[2].at = back;
+  }));
+add("w-event-window-start-leg-dropped", "event-leg-window", ((r) => { evs(r, 'sp83-accept-answer').filter((e) => e.type === 'input')[0].leg = 'start'; }));
+add("w-extras-child-act-dropped", "sp83-cross-origin-month-law", ((r) => { leg(r, 'sp83-cross-origin-month').childEvents[0].act = false; }));
+add("w-fixture-childkeys-open", "fixture-hash", ((r) => { r.fixture.child.extra = 1; }));
+add("w-fixture-childsha-any", "fixture-hash", ((r) => { r.fixture.child.sha256 = 'zz'; }));
+add("w-fixture-viewport-dropped", "fixture-hash", ((r) => { r.fixture.viewport = { width: 800, height: 600 }; }));
+add("w-frame-binding-url-dropped", "frame-binding", ((r) => { leg(r, 'sp83-accept-answer').frameTree.mainFrameUrl = 'http://127.0.0.1:1/'; }));
+add("w-frame-tree-id-any", "frame-tree", ((r) => { r.frameTree.mainFrameId = 'not-a-frame-id'; }));
+add("w-frame-tree-keys-open", "frame-tree", ((r) => { r.frameTree.extra = 1; }));
+add("w-gesture-ret-dropped", "gesture-law", ((r) => { leg(r, 'sp83-click-while-open').showPicker.ret = 'x'; }));
+add("w-gesture-unexpected-dropped", "gesture-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile').showPicker = { ok: true, ret: 'undefined' }; }));
+add("w-host-product-dropped", "host-chromium", ((r) => { r.host.cdpProduct = 'Chrome/154.0.0.0'; }));
+add("w-host-protocol-dropped", "host-chromium", ((r) => { r.host.cdpProtocolVersion = '1.2'; }));
+add("w-intercept-error-dropped", "leg-records", ((r) => { leg(r, 'sp83-accept-answer').interceptError = { note: 1 }; }));
+add("w-leg-errors-open", "leg-records", ((r) => { leg(r, 'sp83-accept-answer').errors.push('x'); }));
+add("w-leg-wait-unbounded", "leg-records", ((r) => { leg(r, 'sp83-accept-answer').chooserWaitMs = 5000; }));
+add("w-marks-closedat-dropped", "leg-marks", ((r) => { leg(r, 'sp83-accept-answer').closedAt = 'x'; }));
+add("w-marks-grid-dropped", "leg-marks", ((r) => { leg(r, 'sp83-accept-answer').marks[0].at = 1.23456; }));
+add("w-marks-monotonic-dropped", "leg-marks", ((r) => { const m = leg(r, 'sp83-accept-answer').marks; m[1].at = m[0].at - 5; }));
+add("w-marks-name-type-dropped", "leg-marks", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    const at = l.marks[1].at + 0.1;
+    l.marks.splice(2, 0, { name: 5, at });
+  }));
+add("w-marks-settle-dropped", "leg-marks", ((r) => { const m = leg(r, 'sp83-accept-answer').marks; m[m.length - 1].name = 'done'; }));
+add("w-marks-start-labels-dropped", "leg-marks", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    l.marks[0].name = 'begin';
+    l.marks[1].name = 'before';
+  }));
+add("w-no-selection-dismissstate-dropped", "no-selection-law", ((r) => {
+    const l = leg(r, 'sp83-accept-answer');
+    l.stateAfterDismiss = Object.assign({}, l.stateAfterDismiss, { k: [] });
+  }));
+add("w-order-cod-childlate-dropped", "order-law", ((r) => { leg(r, 'sp83-cross-origin-nonfile-disabled').childLate = 1; }));
+add("w-ports-childorigin-dropped", "ports-declared", ((r) => { r.fixture.child.origin = 'http://127.0.0.1:1'; }));
+add("w-ports-httporigin-dropped", "ports-declared", ((r) => { r.fixture.origin = 'http://127.0.0.1:1'; }));
+add("w-ports-min-dropped", "ports-declared", ((r) => {
+    const old = r.ports.http;
+    r.ports.http = 80;
+    r.fixture.origin = 'http://127.0.0.1:80';
+    for (const l of r.legs) {
+      for (const c of l.cdpSendLog) if (c.method === 'Page.navigate') c.params.url = c.params.url.split('127.0.0.1:' + old + '/').join('127.0.0.1:80/');
+      for (const e of l.cdpEventLog) if (e.method === 'Page.frameNavigated') e.params.url = e.params.url.split('127.0.0.1:' + old + '/').join('127.0.0.1:80/');
+    }
+  }));
+add("w-priorclick-error-dropped", "leg-records", ((r) => { leg(r, 'sp83-accept-answer').priorClickError = { note: 1 }; }));
+add("w-replay-browser-unique-dropped", "replay-devtools-url", ((r) => {
+    const a = leg(r, 'sp83-accept-answer'), b = leg(r, 'sp83-webkitdirectory-answer');
+    b.devtoolsListening = JSON.parse(JSON.stringify(a.devtoolsListening));
+    b.stderrHead = 'DevTools listening on ' + b.devtoolsListening.url;
+  }));
+add("w-replay-token-unique-dropped", "replay-launch-token", ((r) => {
+    const a = leg(r, 'sp83-accept-answer'), b = leg(r, 'sp83-webkitdirectory-answer');
+    const tok = a.launchToken;
+    b.launchToken = tok;
+    const i = b.argv.findIndex((x) => typeof x === 'string' && x.startsWith('--user-data-dir='));
+    b.argv[i] = b.argv[i].replace(/profile-[0-9a-f]{12}$/, 'profile-' + tok);
+  }));
+add("w-runwindow-upper-dropped", "run-window", ((r) => { r.finishedAt = new Date(Date.parse(r.startedAt) + 700000).toISOString(); }));
+add("w-sendid-order-dropped", "send-log-allowlist", ((r) => { renumber(r, 'sp83-accept-answer'); }));
+add("w-sendlog-child-expr-any", "send-log-allowlist", ((r) => {
+    const l = leg(r, 'sp83-cross-origin-nonfile');
+    l.cdpSendLog.push({ id: l.cdpSendLog.length + 1, method: 'Runtime.evaluate', params: { expression: 'window.__evil()', returnByValue: true, contextId: l.childContextId } });
+  }));
+add("w-sendlog-getframetree-once-dropped", "send-log-allowlist", ((r) => {
+    const log = leg(r, 'sp83-accept-answer').cdpSendLog;
+    const ft = log.find((c) => c.method === 'Page.getFrameTree');
+    log.push({ id: log.length + 1, method: 'Page.getFrameTree', params: JSON.parse(JSON.stringify(ft.params)) });
+  }));
+add("w-sendlog-navigate-params-loosened", "send-log-allowlist", ((r) => { leg(r, 'sp83-accept-answer').cdpSendLog.find((c) => c.method === 'Page.navigate').params.url = 'http://127.0.0.1:1/?run=x'; }));
+add("w-sendlog-parent-expr-any", "send-log-allowlist", ((r) => {
+    const log = leg(r, 'sp83-accept-answer').cdpSendLog;
+    log.push({ id: log.length + 1, method: 'Runtime.evaluate', params: { expression: 'window.__evil()', returnByValue: true } });
+  }));
+add("w-sendlog-prologue-loosened", "send-log-allowlist", ((r) => {
+    const log = leg(r, 'sp83-accept-answer').cdpSendLog;
+    const a = log[1].method, b = log[2].method;
+    log[1].method = b; log[2].method = a;
+    const pa = log[1].params, pb = log[2].params;
+    log[1].params = pb; log[2].params = pa;
+  }));
+add("w-server-404-dropped", "server-log-binding", ((r) => { leg(r, 'sp83-accept-answer').serverLog.push({ path: '/other', status: 200, run: r.nonce }); }));
+add("w-server-root-count-open", "server-log-binding", ((r) => { const l = leg(r, 'sp83-accept-answer'); l.serverLog.push({ path: '/', status: 200, run: r.nonce }); }));
+add("w-teardown-closed-any", "teardown-closure", ((r) => { leg(r, 'sp83-accept-answer').teardown.portProbes.child = 'open'; }));
+add("w-teardown-curl-any", "teardown-closure", ((r) => { leg(r, 'sp83-accept-answer').teardown.postKillCurl.child = 0; }));
+add("w-teardown-probes-open", "teardown-closure", ((r) => { delete leg(r, 'sp83-accept-answer').teardown.portProbes.child; }));
+add("w-trigger2-error-dropped", "leg-records", ((r) => { leg(r, 'sp83-accept-answer').trigger2Error = { note: 1 }; }));
+add("w-trust-pointer-dropped", "trust-law", ((r) => { PTR_EV(r, 'sp83-accept-answer', 'click').leg = 'show-picker'; }));
+add("w-webkitdir-answer-keys-open", "webkitdirectory-answer-law", ((r) => { leg(r, 'sp83-webkitdirectory-answer').answer.extra = 1; }));
 // ---- run ----
 const results = [];
 let mirrorBuilt = false;

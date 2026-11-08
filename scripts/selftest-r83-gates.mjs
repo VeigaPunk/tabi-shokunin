@@ -22,14 +22,15 @@ if (!lane || !path.isAbsolute(lane)) { console.error(JSON.stringify({ error: 'us
 if (!work || !path.isAbsolute(work)) { console.error(JSON.stringify({ error: 'usage', detail: '--work must be an absolute path' })); process.exit(2); }
 fs.mkdirSync(work, { recursive: true });
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
-const readJson = (p) => { try { return JSON.parse(fs.readFileSync(path.join(lane, p), 'utf8')); } catch { return null; } };
+const readJson = (p) => { try { return JSON.parse(fs.readFileSync(path.isAbsolute(p) ? p : path.join(lane, p), 'utf8')); } catch { return null; } };
 const run = (script, args) => {
   const r = spawnSync(process.execPath, [path.join(lane, 'scripts', script), ...args], { encoding: 'utf8', timeout: 1800000 });
   let j = null; try { j = JSON.parse(r.stdout); } catch { j = null; }
   return { status: r.status, json: j, stderr: (r.stderr || '').slice(0, 500) };
 };
 
-const receipt = 'corpus/evidence/round83/chromium-showpicker/receipt.json';
+const receiptRel = 'corpus/evidence/round83/chromium-showpicker/receipt.json';
+const receipt = path.join(lane, receiptRel);
 const rec = readJson(receipt);
 let pins = {};
 try {
@@ -39,7 +40,7 @@ try {
 const pinOf = (rel) => { try { return sha256(fs.readFileSync(path.join(lane, rel))); } catch { return null; } };
 const FILES = ['scripts/chrome-cdp-showpicker-round83.mjs', 'scripts/check-showpicker-r83.mjs', 'scripts/negatives-showpicker-r83.mjs', 'scripts/kill-power-r83.mjs', 'scripts/selftest-r83-gates.mjs', 'scripts/check-record-drift-r83.mjs'];
 const expect = { driver: rec && rec.driverSha256, fixture: rec && rec.fixture && rec.fixture.sha256, nonce: rec && rec.nonce };
-const PS = '.ufo/waves/round-83/controls/c1/prior-set.txt';
+const PS = path.join(lane, '.ufo/waves/round-83/controls/c1/prior-set.txt');
 const gates = [];
 const gate = (name, fn) => gates.push({ name, fn });
 
@@ -60,7 +61,7 @@ if (!skipKp) gate('kill-power', () => {
   return { ok: r.status === 0 && r.json && r.json.survived === 0 && r.json.crashed === 0, detail: 'exit ' + r.status + ' ' + JSON.stringify(r.json ? { mutants: r.json.mutants, killed: r.json.killed, survived: r.json.survived, crashed: r.json.crashed, survivors: r.json.survivorsList } : r.stderr) };
 });
 gate('nowork-control', () => {
-  const r = run('check-showpicker-r83.mjs', ['--lane', lane, '--receipt', 'corpus/evidence/round82/chromium-showpicker/receipt.json', '--expect-driver-sha256', expect.driver, '--expect-nonce', expect.nonce, '--expect-fixture-sha256', expect.fixture, '--prior-set', PS, '--json']);
+  const r = run('check-showpicker-r83.mjs', ['--lane', lane, '--receipt', path.join(lane, 'corpus/evidence/round82/chromium-showpicker/receipt.json'), '--expect-driver-sha256', expect.driver, '--expect-nonce', expect.nonce, '--expect-fixture-sha256', expect.fixture, '--prior-set', PS, '--json']);
   const ids = r.json ? r.json.findings.map((f) => f.id) : [];
   return { ok: r.status === 1 && ids.includes('schema') && ids.length >= 5, detail: 'exit ' + r.status + ' findings ' + JSON.stringify(ids) };
 });

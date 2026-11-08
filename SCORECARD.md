@@ -4054,12 +4054,12 @@ Scored (r82): 64 checks, battery 70/70, kill power 46/46.
 
 ## Round 83 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r83; C2 calibration, the r82 spotcheck routed defects (direction-bound anchored, 7→4, census)
 
-Base `4cdf4def` (digests commit); nonce `tabi-r83-l1-9d90392aca79`. Axes at start: all six at 9; C1 works
+Base `4cdf4def` (digests commit); nonce `tabi-r83-l1-b6496e6f5d4f`. Axes at start: all six at 9; C1 works
 a lowest axis and is a capability move (generation r83 of the r79 capability).
 
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
-| C1 coverage (9), capability `chromium-showpicker-linux` generation r83 (sourced: S219–S220 carried) | `node scripts/check-showpicker-r83.mjs --lane <ABS lane> --receipt corpus/evidence/round83/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r83-l1-9d90392aca79 --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-83/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R83`) | base: no r83 receipt → exit 2 `receipt-unreadable`; the r82 receipt under the r83 counter → exit 1, schema finding; after: the scored receipt → exit 0, 74 checks clean | VERIFIED |
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r83 (sourced: S219–S220 carried) | `node scripts/check-showpicker-r83.mjs --lane <ABS lane> --receipt corpus/evidence/round83/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r83-l1-b6496e6f5d4f --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-83/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R83`) | base: no r83 receipt → exit 2 `receipt-unreadable`; the r82 receipt under the r83 counter → exit 1, schema finding; after: the scored receipt → exit 0, 74 checks clean | VERIFIED |
 | C2 calibration (9), record drift (the r82 spotcheck routed defects) + the anchored direction-bound counter + the r83 self-drift identity/numbers legs | `node scripts/check-record-drift-r83.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 7 record claims) | before: exit 1, **4** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0** (`lesson-proof/c2-after.json`) | VERIFIED |
 
 Capabilities (this round):
@@ -4074,5 +4074,5 @@ Knowledge 94 → 95 (`corpus/knowledge/chromium-showpicker-runtime-round-83.md`)
 
 Planned (r84): `type=tel`/`search`/`text` cross-origin legs; the full `accept` token grammar; the R83Mut1 survivors as battery cases. Retired: none.
 
-Scored (r83): 74 checks, battery 84/84, kill power 50/50.
-- Digests: D 9d90392aca79, nonce tabi-r83-l1-9d90392aca79. 74 checks, battery 84/84, kill power 50/50.
+Scored (r83): 74 checks, battery 153/153, kill power 50/50.
+- Digests: D b6496e6f5d4f, nonce tabi-r83-l1-b6496e6f5d4f. 74 checks, battery 153/153, kill power 50/50.

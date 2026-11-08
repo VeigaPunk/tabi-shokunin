@@ -128,8 +128,8 @@ const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(de
 // 6. r83 numbers
 {
   const c = scored.counter, b = scored.battery, k = scored.killpower;
-  const okNums = c && b && k && c.checkCount === 64 && Number.isInteger(c.checkCount) && b.failed === 0 && k.survived === 0 && k.crashed === 0;
-  const stated = okNums && records.scorecard.includes('64 checks') && records.log.includes('64 checks') && lesson.includes('64 checks');
+  const okNums = c && b && k && c.checkCount === 74 && Number.isInteger(c.checkCount) && b.failed === 0 && k.survived === 0 && k.crashed === 0;
+  const stated = okNums && records.scorecard.includes('74 checks') && records.log.includes('74 checks') && lesson.includes('74 checks');
   claim('r83-numbers', !!(okNums && stated), 'checks=' + (c && c.checkCount) + ' battery=' + (b && b.cases) + '/' + (b && b.failed) + ' kp=' + (k && (k.killed + '/' + k.mutants)));
 }
 // 7. lens-agnostic: keep the counter count stable (8 claims as r82 had)

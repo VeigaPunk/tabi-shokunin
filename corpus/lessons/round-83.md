@@ -52,7 +52,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0
 
 C1 admitted as the round's coverage move (capability generation r83;
 `claims.json` / `SCORECARD.md` frozen predicate `C1-SHOWPICKER-R83`, counter
-`check-showpicker-r83`, 74 checks, battery and kill power green). C2
+`check-showpicker-r83`, 74 checks, battery 153/153, kill power 50/50). C2
 admitted as the calibration move (`scripts/check-record-drift-r83.mjs`;
 before state `lesson-proof/c2-before.json`, after
 `lesson-proof/c2-after.json`, 0 mismatches).
@@ -64,9 +64,13 @@ before state `lesson-proof/c2-before.json`, after
 | `reference-drift` — the second-chooser leg's `clickAt` was missing from the counter's PLAN, so `plan-calls` crashed on `p.clickAt[0]` | `check-showpicker-r83.mjs:389` (pre-freeze probe) | the pre-freeze probe run (fatal before scoring) | `clickAt: [160, 670]` added to PLAN + driver leg; rect-center geometry verifies the value |
 | `reference-drift` — `LEG_KEYS` expected `first/secondChooserBackendNodeId` on every leg but only the second-chooser leg set them | probe legs 0–13 missing the keys (`leg-records`) | the pre-freeze probe (1 finding) | driver initializes both to `null` on every leg |
 
+| `reference-drift` — the r83 prior set initially carried the r82 receipt, so the replay forgery case cloned a foreign plan and the counter refused on `plan-frozen`/`leg-*` before reaching `replay-event-timeline` | battery `replay-event-timeline` case (exit 1 with 20+ ids) | the battery's own case rule (one expected id) | prior set now carries an r83 probe receipt (`controls/c1/probes/prior1.json`, 15 legs); the case passes |
+| `survivor` — `second-chooser-id-dropped` survived: its conjunct is double-covered by the answer binding and the `first === second` check | kill-power run (1 survivor) | the kill-power gate | the redundant conjunct dropped from the mutant list as a rule owned by another check (QUALITY 156), not covered by a case |
+
 Sweep for further mistakes: the pre-freeze probe receipt
-(`.ufo/waves/round-83/controls/c1/probes/`) scored 74 checks patched
-(null defaults); the scored run re-produces it at the frozen nonce.
+(`.ufo/waves/round-83/controls/c1/probes/`) was produced by the pre-freeze driver,
+so its legs lack the two chooser-id fields on non-second-chooser legs; the scored
+run re-produces every leg at the frozen pins with those fields present.
 
 ## Corrections — the r82 spotcheck routed defects (append-only; the r82 records are not rewritten)
 
@@ -75,6 +79,7 @@ Sweep for further mistakes: the pre-freeze probe receipt
 | 1 | `check-record-drift-r82.mjs` direction-bound (`corpus/lessons/round-82-verifier-spotcheck.md` §6 routed defect 1) | `direction-bound` greps `c2-controls.json` for `/reversed/` | `23 -> 20` (this cell, arrow between the tokens); the reversed `20 -> 23` control is re-executed on a scratch mirror by R83Drift and its refusal is committed in `lesson-proof/c2-controls.json` with `"refused": true` |
 | 2 | `corpus/lessons/round-82.md:46,63` | "7 mismatches" (twice) while `lesson-proof/c2-before.json` records 4 | `7 -> 4` — the truth is `mismatches: 4` in `.ufo/waves/round-82/lesson-proof/c2-before.json`; the frozen r82 lesson is append-only and stays stale |
 | 3 | `.ufo/waves/round-82/census/` (absent) | census artifacts absent (`exit 1 (W04 only — see below)`) | this round files `.ufo/waves/round-83/census/start.txt` and `end.txt` with pasteable output and exit codes |
+| 4 | r83 battery (spotcheck routed defect 2) | the r82 battery carried 84 cases; the 72 R82Mut1 witnesses were not cases | the battery now carries **153 cases**: the 84 r83 cases plus 69 imported witnesses (each a receipt mutation with its expected id), coverage 74/74; three witnesses (`replay-frac-raised`, `unparsable-ext-only`, `walk-exempt-everything`) are dropped because they need the witness harness's `H.*` mirror machinery and their ids are covered by the existing `prior-set-complete`/`prior-set-unparsable` cases; the `mode-single-only` branch is closed by the `sp83-multiple-mode` leg |
 
 ## Sources
 
@@ -86,5 +91,5 @@ rows.
 
 (To be integrated after WAVE-DONE.)
 
-Scored (r83): counter 74 checks, battery and kill power green, selftest 9/9.
-- Round 83 digests: D 9d90392aca79, nonce tabi-r83-l1-9d90392aca79. 74 checks.
+Scored (r83): counter 74 checks, battery 153/153, kill power 50/50, selftest 9/9.
+- Round 83 digests: D b6496e6f5d4f, nonce tabi-r83-l1-b6496e6f5d4f. 74 checks.

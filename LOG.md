@@ -3916,8 +3916,8 @@ Scored (r81): battery 62/62, kill power 46/46, 56 checks.
 
 ## Round 83 (2026-11-08)
 
-Lane TabiR83a2. C1 capability generation r83 (74 checks clean, battery 84/84,
+Lane TabiR83a2. C1 capability generation r83 (74 checks clean, battery 153/153,
 kill power 50/50, selftest 9/9). C2 record drift for the r82 routed defects
 (direction-bound anchored `23 -> 20`, lesson `7 -> 4`, census start/end filed):
-before 4 mismatches, after 0. Digests D 9d90392aca79, nonce tabi-r83-l1-9d90392aca79.
+before 4 mismatches, after 0. Digests D b6496e6f5d4f, nonce tabi-r83-l1-b6496e6f5d4f.
 Knowledge 94 → 95. Registry 223 unchanged (S219/S220 re-opened).
