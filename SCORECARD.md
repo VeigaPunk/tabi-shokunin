@@ -4345,3 +4345,44 @@ UI-side colour popup probe; the independent sweep's survivors as battery cases. 
 Scored (r90): 107 checks, battery 226/226, kill power 76/76, selftest 12/12 (D6), record drift 7 → 0,
 leak witness dead-branch red. C1 verdict **NOT VERIFIED** (axis miss, reported); C2 **VERIFIED**.
 - Digests: D4 85c4191706b3, nonce tabi-r90-l1-e573334c78fa. 107 checks, battery 226 cases, kill power 76 mutants.
+
+## Round 91 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-proxy-linux` (new); C2 calibration, the six lane-measurable r90 spot-check §8 defects
+
+Base `b1d8f07b` (the round-90 verifier spot-check commit); instrument freeze D1 `1d073adc0b8d`
+(`.ufo/waves/round-91/freeze.txt`), nonce `tabi-r91-l1-1d073adc0b8d` (the scored receipt's own
+nonce). Axes at start: all six at 9. C1 works a lowest axis and is a capability acquisition (the
+new `chromium-showpicker-proxy-linux`; the last capability row was r90); C2 works calibration
+(record-vs-state mismatches, the lane's lowest tie at 9).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-proxy-linux` (sourced: S225/S226/S219) | `node scripts/check-showpicker-proxy-round91.mjs --lane <ABS lane> --receipt corpus/evidence/round91/chromium-showpicker-proxy/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r91-l1-1d073adc0b8d --expect-parent-sha256 <pin> --expect-same-sha256 <pin> --expect-child-sha256 <pin> --prior-set .ufo/waves/round-91/controls/c1/prior-set.txt --json` (predicate `C1-SHOWPICKER-PROXY-R91`); leg (b) battery + kill power; leg (c) row, note, registry, gate runner | base: no r91 receipt → exit 2 `receipt-unreadable`; the proxy-flip control → exit 1 `law`; the post-removed control → exit 1 `plan-calls`; the scored receipt → exit 0, **30 checks**, 15 legs; battery **44** cases / 0 failed; kill power **32** mutants / **32** killed / 0 survived / 0 crashed / 0 unapplied | **VERIFIED** on the predicate (the wave's non-author verdicts are recorded in the lesson `## Gate`) |
+| C2 calibration (9), the six lane-measurable r90 spot-check §8 defects (`scripts/check-record-drift-round91.mjs`, predicate `C2-RECORDDRIFT-R91`) | `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (exit 0 iff 8 statements, 0 findings); the before control is the same gate (tip bytes) on a base `b1d8f07b` worktree | before (base `b1d8f07b`): **8 findings** (the six §8 defects plus the two self-checks, red because the r91 artifacts do not exist at base); after: **0 of 8**; `--selftest` ok, 10 causal cases; §8 items 4 and 6 disclosed as fleet-report/process, not counted | **VERIFIED** on the predicate, with the counted set stated in the claim (no widening) |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-proxy-linux` | Reach the same file/date/colour input shapes in a same-origin and a cross-origin iframe through a `window.postMessage` proxy that accepts only the served parent origin, and measure the activation and origin laws: no activation → `NotAllowedError` in both; a parent click → success + one parent-owned chooser same-origin and `NotAllowedError` cross-origin; a child click → success + one child-owned chooser cross-origin; date → `SecurityError` in both activation states; colour → success with no FILE chooser; the answered child chooser delivers the file to the child input while the parent stays empty; direct cross-origin access is `contentDocument:null` + `SecurityError` | `corpus/evidence/round91/chromium-showpicker-proxy/receipt.json`; `corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md`; `scripts/check-showpicker-proxy-round91.mjs` (30 checks) | 91 |
+
+Knowledge 103 → 104 (`corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md`). Registry
+224 → 226 (S225 the postMessage target-origin note, S226 the activation duration/consuming APIs;
+S219 re-opened in place, `used-by` gains the r91 note). `SKILL.md` `## Round 91 gate registry`
+registers the six r91 instruments; `scripts/selftest-r91-gates.mjs` runs them in order (six gates).
+
+Narrowings (`plans/round-91.md` §Declared limits): (1) the proxy is the lane fixture's origin check
+(`e.origin === served parent origin`), not a measurement of Chromium's own check beyond the fixture;
+(2) the native date/colour pickers are unmeasured — "success" is the absence of
+`Page.fileChooserOpened`, not a UI observation; (3) the answer is programmatic
+(`DOM.setFileInputFiles`), not a dialog; (4) the activation states are post-leg reads, with success
+consuming activation and a throwing call leaving it active (L9/L13 are the measured exceptions);
+(5) the counter reads a receipt — a forger who rewrites identity fields and regenerates every
+synthetic launch token/devtools id is outside the replay rule.
+
+Planned (r92): the colour popup itself (a UI-side probe or a source-side reading of the colour
+chooser path); a second browser build (Edge/WebView2) for the proxy capability; the wave's
+survivors/forgeries as battery cases. Retired: none.
+
+Scored (r91): 30 checks, battery 44/44, kill power 32/32, gate runner six gates, record drift 8 → 0
+at the committed tip. C1 **VERIFIED** on its predicate; C2 **VERIFIED** on its predicate.
+- Digests: D1 `1d073adc0b8d`, nonce `tabi-r91-l1-1d073adc0b8d`. 30 checks, 44 battery cases, 32 mutants.

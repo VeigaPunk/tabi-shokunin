@@ -4076,14 +4076,14 @@ SOURCES §Search log round-89 entry (S224 added, registry 223 → 224).
 L1 `TabiR90`. Base `a9f1da08` (the round-89 verifier spot-check commit). Claims: C1 coverage —
 capability `chromium-showpicker-linux` generation r90, the settle-call binding (the four domread
 legs' send logs carry a distinct `Runtime.evaluate` of `window.__inputs(true)` immediately after
-the settle `window.__state()` evaluate; `plan-calls` requires it there, forbids it elsewhere and
-compares it in the ordered plan sequence) — 41 legs / 107 checks; C2 calibration — the six routed
+the settle `window.__state()` evaluate; `plan-calls` requires it there and compares it in the
+ordered plan sequence, and `send-log-allowlist` forbids it elsewhere) — 41 legs / 107 checks; C2 calibration — the six routed
 defects of the round-89 non-author spot-check (`corpus/lessons/round-89-verifier-spotcheck.md` §7),
 counted by `scripts/check-record-drift-round90.mjs` over 8 statements, 7 → 0.
 
 Instruments (pins in `.ufo/waves/round-90/freeze.txt`): `chrome-cdp-showpicker-round90.mjs`
 (41 legs), `check-showpicker-round90.mjs` (107 checks), `negatives-showpicker-round90.mjs`
-(225 cases, coverage 107/107), `kill-power-round90.mjs` (settle-call and settle-order mutants
+(226 cases at the final D6 freeze, coverage 107/107; the preflight run was 225 cases before the D2 battery repair added one), `kill-power-round90.mjs` (settle-call and settle-order mutants
 added), `selftest-r90-gates.mjs` (11 gates), `check-record-drift-round90.mjs` (8 statements).
 Two 41-leg probes are the prior set (`.ufo/waves/round-90/controls/c1/probes/`); each scores clean
 (107 checks, exit 0) against the other's prior-set. Scored receipt

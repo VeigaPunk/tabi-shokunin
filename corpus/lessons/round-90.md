@@ -74,3 +74,24 @@ defects plus three self-checks; §7 defect 6 is not lane-measurable).
 | `claim-type-overstates-the-counted-set` — the frozen C2 `type` says "the six routed defects", but the gate counts five of them plus three self-checks, and the plan named the sixth as "report author date" | `w1/R90Critic.md` §F2.1; `claims.json` C2 `type`; `plans/round-90.md` (pre-correction) | the claims `type`, the plan and the gate were written at three different moments and never reconciled before the freeze | §7 defect 6 is recorded as not lane-measurable, the SCORECARD row and `plans/round-90.md` §Wave corrections state the counted set, and the claim text stays frozen (a narrowing on record, not an amendment) |
 
 | `report-author-date` — the r89 spot-check's defect 6 recurred in a minor form: the report commit's author date (12:10:25) precedes the cited lane tip's committer time (12:11:41) by 76 s, because the report body was written before the lane landed and only the lane-tip line was patched afterwards | `git log -1 --format='%ai %ci' -- .ufo/reports/round-90/tabi.md` → author 12:10:25, committer 12:12:00; lane `f2b69440` committer 12:11:41 | nothing checks the report author date against the lane tip's committer time; the helper stamps the author date from the working-tree write | disclosed here and in the report; the committer time is after the lane tip, so the landing order is provable. The r91 rule: write the report body only after the lane commit lands, so author and committer both follow it |
+
+## Corrections carried by round 91 (append-only; the round-90 records above are not rewritten)
+
+The round-90 non-author spot-check (`corpus/lessons/round-90-verifier-spotcheck.md` §8 items 4–7)
+routed four report/record items. Round 91 records what is lane-measurable here and discloses the
+two fleet-report items; nothing above is rewritten.
+
+1. **C2 after-run revision (defect 5).** `scored/drift-a.json` does not name the revision it was
+   measured at. The after-run was measured at the **D4 worktree**; the independent re-derivation
+   in the spot-check and the round-91 `check-record-drift-round91.mjs` counter both measure at the
+   committed tip `3e6cf40f980ea011a400eec7ce1c5db58773141a` (the r90 lesson commit). The revision
+   is named here, and the r91 after-run carries a `revision` field.
+2. **Dangling pointer (defect 7).** The r90 report cites `plans/round-90.md` §Re-freeze history
+   for D3–D6, but that section held D1–D2 only. `plans/round-90.md` now carries an explicit
+   pointer: D3–D6 live under §Wave corrections.
+3. **Fleet-report items, not lane-measurable (defects 4 and 6).** Defect 4 (the r90 report's
+   "Four rows are `falsifies-wording`" sentence lists five) and defect 6 (the r90 report commit's
+   author date) live in `/home/vgpnk/Projects/shokunin/.ufo/reports/round-90/tabi.md` and its
+   fleet commit, outside this lane's write scope. The correct count is five `falsifies-wording`
+   rows in `.ufo/waves/round-90/claim-falsification.tsv`; the round-91 report carries this erratum
+   and follows the author-date rule (the report body is written only after the lane commit lands).

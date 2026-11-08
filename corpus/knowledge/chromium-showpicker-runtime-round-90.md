@@ -15,11 +15,12 @@ have to require the `window.__inputs()` evaluate)". Generation r90 closes it.
 
 **A DOM read a claim binds is bound by the CALL that produced it.** Each of the four domread legs
 re-reads the page at settle with a distinct expression, `window.__inputs(true)`, immediately after
-the settle `window.__state()` call. The counter's `plan-calls` check now:
+the settle `window.__state()` call. The counter now:
 
-1. requires exactly one `Runtime.evaluate` of `window.__inputs(true)` in a domread leg's send log,
-   positioned directly after the settle `window.__state()` evaluate;
-2. forbids that expression in every other leg's send log;
+1. requires exactly one `Runtime.evaluate` of `window.__inputs(true)` in a domread leg's send log
+   (`plan-calls`), positioned directly after the settle `window.__state()` evaluate;
+2. forbids that expression in every other leg's send log (`send-log-allowlist`, not `plan-calls`
+   — the r90 spot-check's routed defect 1 corrected here);
 3. includes it in the ordered plan sequence, so a leg that carries the `domRead` data without the
    call (or with the plain `window.__inputs()`) is refused with `plan-calls`.
 

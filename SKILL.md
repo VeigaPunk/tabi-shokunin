@@ -3361,3 +3361,12 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-round90.mjs ... --work <scratch> --json` (adds `domread-settle-call-dropped` and `domread-settle-order-any`).
 - Record drift: `node scripts/check-record-drift-round90.mjs --lane <ABS lane> --json` (8 statements: the six r89 spot-check routed defects, the gate-selftest set, QUALITY 161's cite, and the SCORECARD tally set).
 - Self-test: `node scripts/selftest-r90-gates.mjs --lane <ABS lane> --work <scratch> --json` (12 gates; the identity comes from `.ufo/waves/round-90/expectations.json`, never from the receipt under test).
+
+## Round 91 gate registry
+
+- `check-showpicker-proxy-round91` (30 checks): `node scripts/check-showpicker-proxy-round91.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r91-...> --expect-parent-sha256 <hex> --expect-same-sha256 <hex> --expect-child-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Binds the 15-leg proxy capability: the same file/date/colour shapes in a same-origin and a cross-origin iframe; the previously measured laws are in `corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md`.
+- Driver: `scripts/chrome-cdp-showpicker-proxy-round91.mjs` (15 legs; one fresh browser per leg; parent + two iframes; one `postMessage` proxy per child document).
+- Battery: `node scripts/negatives-showpicker-proxy-round91.mjs --lane <ABS lane> --real <receipt.json> --expect-* ... --prior-set <file> --work <scratch> --json` (43 cases: 1 positive control + 42 single-field mutations, each naming its expected finding id).
+- Kill power: `node scripts/kill-power-proxy-round91.mjs --lane <ABS lane> --real <receipt.json> --expect-* ... --prior-set <file> --work <scratch> --json` (32 counter mutants; the battery is the oracle).
+- Record drift: `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (8 statements: the six lane-measurable r90 spot-check §8 defects + `gate-selftest` + `scorecard-tallies`).
+- Self-test: `node scripts/selftest-r91-gates.mjs --lane <ABS lane> --work <scratch> --json` (six gates; writes `.ufo/waves/round-91/scored/selftest.json`).

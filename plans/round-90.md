@@ -98,9 +98,14 @@ calls removed → exit 1, `plan-calls` on all four domread legs) and
 
 ## Re-freeze history (instrument family)
 
+- **Pointer (round 91, the r90 spot-check's routed defect 7).** D1 and D2 are recorded below; the
+  D3–D6 entries live under §Wave corrections, which is where the round-90 report's citation of this
+  section for D3–D6 should point. No frozen text is amended by this pointer.
+
 - **D1 `e573334c78fa`**: first freeze (six instruments at their r90 content + two probe pins;
   `.ufo/waves/round-90/freeze.txt`). Pre-freeze preflight on the probe receipt (prior1, prior-set =
-  prior2): counter clean 107, battery 225 cases / 0 failed / coverage 107/107, and both probes score
+  prior2): counter clean 107, battery 225 cases / 0 failed / coverage 107/107 at the preflight
+  (226 cases at the D2/final freeze, after the mirror and prior-set repairs), and both probes score
   clean against each other's prior-set. The scored receipt is produced once at the D1-derived nonce
   `tabi-r90-l1-e573334c78fa`; every later freeze touches only non-receipt instruments.
 - **D2 `18d06a3f3895`** (post-scoring, one batched repair): the kill-power insertion that added

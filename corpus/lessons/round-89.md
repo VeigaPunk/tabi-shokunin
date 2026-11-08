@@ -115,3 +115,26 @@ statements. Nothing below alters a frozen predicate, counter, pin, prior, thresh
    spot-check and hold; the after-run revision is the 10:13 worktree, not the branch tip.
 6. **Report author date (D6).** The round-89 report commit's author date (09:46:35) predates the
    lane work it cites. Round 90's report commit uses a clean author date (the committer time).
+
+## Corrections carried by round 91 (append-only; the round-89 records above are not rewritten)
+
+The round-90 non-author spot-check (`corpus/lessons/round-90-verifier-spotcheck.md` §8 items 3
+and 8) found two append-only defects in this lesson and one in `corpus/QUALITY.md`. Round 91
+records the corrections here; the round-89 text above stays byte-unchanged.
+
+1. **Append-only discipline (defect 3, lesson side).** The `frozen-control-numeral` row above was
+   **extended in place** (the parenthetical naming `plans/round-89.md` §Frozen-amendment note and
+   the §Corrections item 2 pointer was added to the row itself) while this file's round-90 block
+   says "the round-89 records above are not rewritten". This block is the named correction: the
+   extension is disclosed, and no further in-place edit is made.
+2. **Append-only discipline (defect 3, QUALITY side).** `corpus/QUALITY.md` criterion 161 was
+   **rewritten in place** (its green-state citation moved from the r89 gate to the r90 gate)
+   rather than superseded by a new row. Criterion 164 in `corpus/QUALITY.md` now supersedes 161's
+   green-state citation and names this correction.
+3. **S224 Gate quote length (defect 8).** The original S224 Gate quote in the round-90 block above
+   is **31 words**, over the contract's 25-word ceiling. It is kept verbatim as the original
+   evidence; the counted quote is the **17-word** replacement in item 3 of that block ("tokens
+   consist of any string of zero or more characters, neither beginning nor ending with ASCII
+   whitespace"), which the round-90 scout re-located at the `id=set-of-comma-separated-tokens` dfn
+   (2026-11-08, 121,595 B, sha256 `2e9e2cbbe1ed`). The over-length original is marked here, not
+   rewritten.
