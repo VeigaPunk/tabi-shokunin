@@ -1,0 +1,51 @@
+{
+ "lane": "tabi",
+ "round": 89,
+ "base": "5a9011635c3bafb64a59a1411c4036bb40438724",
+ "digestsCommit": "7bde5e6c2f2d",
+ "nonce": "tabi-r89-l1-7bde5e6c2f2d",
+ "frozenAt": "2026-11-08. Single freeze (the r89 rule from the r88 mistake table: freeze only after every gate has executed green once on the exact bytes). The scored receipt is produced once at the nonce tabi-r89-l1-7bde5e6c2f2d; every freeze witness ran before it.",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability generation r89 — chromium-showpicker-linux: the DOM-parsed token list. Four new legs re-read window.__inputs() on the page at settle (domRead) and the counter binds BOTH the raw accept string AND the DOM-parsed token list from spec §2.3.8 (split on commas, trim ASCII whitespace) plus ASCII lowercasing: `sp89-accept-domread-text` (aw, `image/*` <- txt) tokens [\"image/*\"]; `sp89-accept-domread-png` (am, `image/png, .txt` <- png) tokens [\"image/png\", \".txt\"]; `sp89-accept-domread-multimime` (a2, `image/png,application/pdf` <- txt) tokens [\"image/png\", \"application/pdf\"]; `sp89-accept-domread-whitespace` (aws, `\"  image/png ,  .txt  \"` <- png) tokens [\"image/png\", \".txt\"]. Law (carried from r86-r88, now over a DOM-parsed token list): accept is not a validator on a programmatic answer — every delivered file lands in the input's file list with its bytes, fires trusted input+change, page-read hex; the raw string and the tokens are both read from the page.",
+   "predicate": "C1-SHOWPICKER-R89",
+   "legs": {
+    "a": "scored run corpus/evidence/round89/chromium-showpicker/receipt.json scores clean under scripts/check-showpicker-round89.mjs at checkCount 108 with the driver/fixture/nonce pins",
+    "b": "battery exits 0 with 0 failed and full coverage; kill power leaves 0 survivors, 0 crashed, 0 unapplied",
+    "c": "capability row + knowledge note + SKILL registry + selftest green"
+   },
+   "countingCommand": "node scripts/check-showpicker-round89.mjs --lane <ABS lane> --receipt corpus/evidence/round89/chromium-showpicker/receipt.json --expect-driver-sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0 --expect-nonce tabi-r89-l1-7bde5e6c2f2d --expect-fixture-sha256 <the scored receipt fixture sha256> --prior-set .ufo/waves/round-89/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-showpicker-round89.mjs": "76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0",
+    "scripts/check-showpicker-round89.mjs": "33d4b9277607334cc566093073ddd538e4901feb00c71bd21b53bfa705eb1f07",
+    "scripts/negatives-showpicker-round89.mjs": "7951d40e6acfc03e612ba1ad89b918d5e21f076a36fc89972c848a265266fe16",
+    "scripts/kill-power-round89.mjs": "319534b9aadf3fb192b49e1d45db0b2f09cb3eeaf0686a15e10b499146fe3faa",
+    "scripts/selftest-r89-gates.mjs": "35235effd6f42e539ceb237e01e53e7d4e438855d0ec6cf9a96b93f10b7db80a",
+    "scripts/check-record-drift-r89.mjs": "c54d5edf724ceb8c08ba6b71cff3b25d84b3deaa546831b9a813fbf6fb37308c"
+   },
+   "priorSet": ".ufo/waves/round-89/controls/c1/prior-set.txt (probes/prior1.json nonce tabi-r89-probe1-probe0001, probes/prior2.json nonce tabi-r89-probe2-probe0002 — the two 41-leg r89 probe receipts, driver 76b69b4f, 0 failures; each scores clean at 108 checks against the other's prior-set)",
+   "doNothingControl": ".ufo/waves/round-89/controls/c1/nowork-r88-under-r89.json — the r88 scored receipt under the r89 counter: exit 1, findings incl. `schema` and `plan-frozen`; controls/c1/noreceipt.txt is the exit-2 unreadable control",
+   "killRule": "any leg false or any axis harmed -> NOT verified",
+   "limit": "acceptance law, not a dialog-filter law (DOM.setFileInputFiles bypasses the dialog); the token list is the fixture's normalization (comma-split, ASCII-trimmed, ASCII-lowercased) rather than Chromium's internal tokenization — the lowercasing is recorded as the fixture's own rule; the domRead is per-leg at settle; the byte contents stay the inherited marker under the r89 file names — the counter binds names, sizes, types, hex and hashes, never the content marker; the colour-popup arm remains a FILE-chooser metric. Attribution rides on the top-level fixtureInputs snapshot plus each domread leg's own domRead; per-leg fixtureInputs mirrors are unenforced on grammar legs (carried narrowing)."
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "the round-88 non-author spot-check routed defects 1-2, counted against repo state. Three statement repairs: (1) the drift --selftest fixture now carries all seven swept sections so the scorecard-tallies red is causal (removing the injected 10/10 turns it green on that statement); (2) the drift --selftest removes its fixture tree in-process (Narrowing 7 leak fix, verified 0 left behind); (3) the counter's replay limit sentence prints the computed per-prior absNeed values and a new replay-limit-consistency check binds refused == (absMatched >= absNeed) (Narrowing 8 fix).",
+   "predicate": "C2-RECORDDRIFT-R89",
+   "legs": {
+    "a": "node scripts/check-record-drift-r89.mjs --lane <ABS lane> --json exits 0 with claims 4, mismatches 0",
+    "b": "the BEFORE control — the frozen gate pointed at a worktree of base 5a901163 — exits 1 with mismatches 2 (selftest-wording, quality161-sweep; measured, scored/drift-before.json), and the after run exits 0 with mismatches 0 (scored/drift-a.json)",
+    "c": "the drift gate's own --selftest mode runs isolated and exits 0 (the fixture lane fails scorecard-tallies, selftest-wording, gate-selftest and quality161-sweep); the fixture-leak check confirms 0 tapi-r89-driftfix-* trees remain; the two do-nothing C1 controls reproduce their exits (1 and 2)"
+   },
+   "countingCommand": "node scripts/check-record-drift-r89.mjs --lane <ABS lane> --json",
+   "pins": {
+    "scripts/selftest-r89-gates.mjs": "35235effd6f42e539ceb237e01e53e7d4e438855d0ec6cf9a96b93f10b7db80a",
+    "scripts/check-record-drift-r89.mjs": "c54d5edf724ceb8c08ba6b71cff3b25d84b3deaa546831b9a813fbf6fb37308c"
+   },
+   "killRule": "after mismatches != 0 or before mismatches != 2 -> NOT verified",
+   "limit": "four record statements, not every sentence in the lane; the scored receipt, battery and kill power are C1's, not C2's; a green gate means those four match observed state, nothing more."
+  }
+ },
+ "frozenAmendments": ""
+}

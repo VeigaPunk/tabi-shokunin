@@ -1,0 +1,229 @@
+{
+  "schema": "ufo-swarm-wave-dispatch-v1",
+  "wave": "w1",
+  "policy": {
+    "source": "config",
+    "maxLanes": 256,
+    "minLanes": 8,
+    "waveMinLanes": 8,
+    "waveMaxLanes": 16,
+    "declaredMaxLanes": null,
+    "hardCeiling": 256,
+    "rampBatchSize": 5,
+    "rampIntervalMs": 700,
+    "globalRunnerCeiling": 1056
+  },
+  "counts": {
+    "spawn": 12,
+    "resume": 0,
+    "total": 12
+  },
+  "registry": {
+    "schema": "ufo-swarm-registry-v1",
+    "path": ".ufo/waves/round-89/w1/swarm-registry.json",
+    "reportDir": ".ufo/waves/round-89/w1",
+    "members": {
+      "R89Exec1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "coverage",
+          "operability"
+        ],
+        "milestone": "C1 cold-run reproduction"
+      },
+      "R89Exec2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "operability"
+        ],
+        "milestone": "leg (b) re-measure"
+      },
+      "R89Exec3": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "calibration",
+          "operability"
+        ],
+        "milestone": "C2 before/after and do-nothing controls"
+      },
+      "R89Review1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "axes": [
+          "coverage",
+          "calibration"
+        ],
+        "milestone": "count reproduction and pin audit"
+      },
+      "R89Review2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "new-leg attribution attack"
+      },
+      "R89Critic": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "critic",
+        "item": null,
+        "axes": [
+          "calibration"
+        ],
+        "milestone": "claims vs instruments"
+      },
+      "R89Mut1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "mutation-tester",
+        "item": null,
+        "axes": [
+          "coverage",
+          "calibration"
+        ],
+        "milestone": "independent mutant sweep"
+      },
+      "R89Scout": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scout",
+        "item": null,
+        "axes": [
+          "coverage",
+          "freshness"
+        ],
+        "milestone": "source re-opening"
+      },
+      "R89Scribe": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scribe",
+        "item": null,
+        "axes": [
+          "depth",
+          "calibration"
+        ],
+        "milestone": "record drafts"
+      },
+      "R89Connector": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "connector",
+        "item": null,
+        "axes": [
+          "adjacency"
+        ],
+        "milestone": "sibling-overlap scan"
+      },
+      "R89Sentinel": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "sentinel",
+        "item": null,
+        "axes": [
+          "calibration"
+        ],
+        "milestone": "bounds and provenance audit"
+      },
+      "R89Simplifier": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "simplifier",
+        "item": null,
+        "axes": [
+          "operability"
+        ],
+        "milestone": "instrument dead-weight review"
+      }
+    }
+  },
+  "compaction": {
+    "applied": false,
+    "mechanism": null,
+    "reason": null,
+    "savedBytes": 0,
+    "payloadBytesBefore": 0,
+    "payloadBytesAfter": 0
+  },
+  "taskCall": {
+    "context": "# Target\nTabi round 89, one v1 wave `w1`. L1 `TabiR89` holds the planner seat and is the sole integration owner. Lane /home/vgpnk/Projects/shokunin/tabi-shokunin; base 5a901163; D 7bde5e6c2f2d (freeze.txt); scored receipt nonce tabi-r89-l1-7bde5e6c2f2d, receipt corpus/evidence/round89/chromium-showpicker/receipt.json (read the exact fixture sha256 from the receipt).\nClaims FROZEN in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/claims.json; instrument pins in .ufo/waves/round-89/freeze.txt. Never propose amending a predicate, counter, pin, prior, threshold or kill rule; attack them.\n\nC1 coverage, capability generation r89 `chromium-showpicker-linux`: four new legs on the DOM-parsed token list — `sp89-accept-domread-text` (aw, `image/*` answered with text/plain), `sp89-accept-domread-png` (am, `image/png, .txt` answered with image/png), `sp89-accept-domread-multimime` (a2, `image/png,application/pdf` answered with text/plain), `sp89-accept-domread-whitespace` (aws, `\"  image/png ,  .txt  \"` answered with image/png). Each leg re-reads `window.__inputs()` on the page at settle (`domRead`) and the counter binds BOTH the raw accept string AND the DOM-parsed token list from WHATWG §2.3.8 (split on commas, trim ASCII whitespace) plus ASCII lowercasing. Measured law (carried from r86-r88, now over a DOM-parsed token list): accept is not a validator on a programmatic answer — every delivered file lands in the input with its bytes, trusted input+change, page-read hex; the raw string and the tokens are both read from the page. Predicate: scored receipt clean at checkCount 108; battery 0 failed with full coverage; kill power 0 survivors; selftest green.\n\nC2 calibration, the round-88 non-author spot-check routed defects 1-2: the drift `--selftest` fixture now carries all seven swept sections so the `scorecard-tallies` red is causal; the drift `--selftest` removes its fixture tree in-process (Narrowing 7 leak fix); the counter's replay limit sentence prints the computed per-prior `absNeed` values and a new `replay-limit-consistency` check binds `refused == (absMatched >= absNeed)` (Narrowing 8 fix). Measured before: 2 mismatches on base 5a901163 (selftest-wording, quality161-sweep); after: 0.\n\n# Absolute paths (every seat)\n- Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin\n- Scored receipt: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round89/chromium-showpicker/receipt.json (driver sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0, nonce tabi-r89-l1-7bde5e6c2f2d)\n- Prior set: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/controls/c1/prior-set.txt (prior1.json nonce tabi-r89-probe1-probe0001, prior2.json nonce tabi-r89-probe2-probe0002 — both 41-leg r89 probe receipts)\n- Frozen pins: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/freeze.txt (D 7bde5e6c2f2d)\n- Do-nothing controls: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/controls/c1/nowork-r88-under-r89.json (exit 1, schema/plan-frozen among the findings) and noreceipt.txt (exit 2)\n- Scored outputs (read-only for seats): /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/scored/\n- Round-88 non-author verifier spot-check (context): /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/lessons/round-88-verifier-spotcheck.md\n- Scratch root: /fast/scratch/hyaku/tabi-r89/<your-seat-name>/ (mkdir -p; remove it before you yield; /tmp is for files under 50 MB only). Never leave a scratch tree behind.\nEvery `Report:` trailer path in your prompt is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin — write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>.\n\n# Bounds\nRead-only seats return findings only. Every seat: never commit, never push, never run a mutating git or jj command anywhere (no add/commit/stash/checkout/switch/reset/pull/push; read-only git only; `git worktree add` for a base clone is allowed and must be removed before you yield), never write into corpus/evidence/round89 or .ufo/waves/round-89/scored, never edit lane records (SKILL.md, SCORECARD.md, LOG.md, plans/, corpus/**, scripts/**), never touch the fleet repo or a sibling lane, never message agent://all. Fixture repos: `D=$(mktemp -d) && git -C \"$D\" init -q` and every later git call names `-C \"$D\"`; assert `git -C \"$D\" rev-parse --show-toplevel` equals `$D` before any commit. Never mutate host sysctls.\n\n# Tooling\nYou may install or upgrade tools that help the task (operator authorization 2026-10-19): first read /home/vgpnk/.omp/agent/RULES.md (official channels, update-safety gate) and record tool/version/channel/reason in your report. pacman transactions are PAUSED host-wide (orchestrator ruling 2026-10-20): install via uv tool/npx/an official binary in ~/.local/bin, or file nothing; never -Sy/-Syu/-U/-R, never restart a host service, never mutate host sysctls.\n",
+    "tasks": [
+      {
+        "name": "R89Exec1",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n# Assignment\nRun the frozen driver twice under fresh nonces (tabi-r89-cold1-7bde5e6c2f2d and tabi-r89-cold2-7bde5e6c2f2d), distinct port triples (19940/19941/19942 and 19950/19951/19952), `--lane /home/vgpnk/Projects/shokunin/tabi-shokunin`, `--scratch /fast/scratch/hyaku/tabi-r89/R89Exec1/<run>`, `--out /fast/scratch/hyaku/tabi-r89/R89Exec1/cold<k>.json`.\nScore each cold receipt with the frozen counter: `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-round89.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt <cold.json> --expect-driver-sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0 --expect-nonce <that cold nonce> --expect-fixture-sha256 <that receipt's fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/controls/c1/prior-set.txt --json`. Report verdict/checkCount/finding ids per run. A cold run may legitimately fail only `prior-set-complete` (an undeclared in-tree receipt); list every id and say whether it is a law or a declaration.\nAlso report the two runs' per-leg counts and durations, and whether the four `sp89-accept-domread-*` legs are present in both cold receipts with identical per-leg facts (stateAfter, one `Page.fileChooserOpened` selectSingle, read hex, domRead acceptTokens). Do not write into corpus/evidence/round89 or .ufo/waves/round-89/scored.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: coverage, operability\nMilestone: C1 cold-run reproduction\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec1.md\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: coverage, operability\nMilestone: C1 cold-run reproduction\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec1.md"
+      },
+      {
+        "name": "R89Exec2",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n# Assignment\nRe-measure leg (b) from committed bytes, all outputs under /fast/scratch/hyaku/tabi-r89/R89Exec2/: battery, kill power, selftest. Commands:\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-round89.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --real /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round89/chromium-showpicker/receipt.json --expect-driver-sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0 --expect-nonce tabi-r89-l1-7bde5e6c2f2d --expect-fixture-sha256 <receipt fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/controls/c1/prior-set.txt --work /fast/scratch/hyaku/tabi-r89/R89Exec2/battery --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-round89.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --real /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round89/chromium-showpicker/receipt.json --expect-driver-sha256 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0 --expect-nonce tabi-r89-l1-7bde5e6c2f2d --expect-fixture-sha256 <receipt fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/controls/c1/prior-set.txt --work /fast/scratch/hyaku/tabi-r89/R89Exec2/killpower --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/selftest-r89-gates.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --work /fast/scratch/hyaku/tabi-r89/R89Exec2/selftest --json`.\nReport exact cases/failed/coverage, mutants/killed/survived/crashed/unapplied, and gate pass/fail, compared byte-for-byte with /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/scored/*.json. Any mismatch is a finding. Note that the selftest carries a `gate-selftest` gate that runs four isolated `--selftest` modes; report each mode's exit. Note also that kill power now includes two domread mutants and one replay-limit mutant; report whether each is killed.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: operability\nMilestone: leg (b) re-measure\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec2.md\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: operability\nMilestone: leg (b) re-measure\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec2.md"
+      },
+      {
+        "name": "R89Exec3",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n# Assignment\nReproduce C2's before-state and the do-nothing controls. (1) `git -C /home/vgpnk/Projects/shokunin/tabi-shokunin worktree add --detach /fast/scratch/hyaku/tabi-r89/R89Exec3/base 5a901163`, then `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r89.mjs --lane /fast/scratch/hyaku/tabi-r89/R89Exec3/base --json`; report claims/mismatches/failed ids. Expect 2 mismatches at base (selftest-wording, quality161-sweep). Remove the worktree before yielding. (2) Reproduce both C1 do-nothing controls: the r88 scored receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round88/chromium-showpicker/receipt.json under the r89 counter (expect exit 1 with `schema` among findings) and a nonexistent receipt path (expect exit 2 `receipt-unreadable`). (3) Run the drift gate's isolated mode: `node scripts/check-record-drift-r89.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --selftest --json` (expect exit 0 with ok true), and verify the fixture leak fix: after the run, count /fast/scratch/hyaku/tabi-r89-driftfix-* trees (expect 0). (4) Run the after-state on the live lane: expect claims 4, mismatches 0. Report every exit code and id list.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: calibration, operability\nMilestone: C2 before/after and do-nothing controls\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec3.md\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: calibration, operability\nMilestone: C2 before/after and do-nothing controls\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Exec3.md"
+      },
+      {
+        "name": "R89Review1",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\n\n# Assignment\nRe-run C1's counting command from committed bytes on /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round89/chromium-showpicker/receipt.json with every pin (driver 76b69b4f691d24c8c94a92897e33635d2386b9191f5aaa66640515dc998bd2d0), and verify every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/freeze.txt against the committed bytes. Independently re-derive the receipt's fixture sha256 from the pinned driver + the r78 template + the receipt nonce/child port if you can (the r87 spot-check found this verifiable out-of-band); report whether the fixture pin is counter-enforced or declaration-level. Also audit the prior set: are prior1/prior2 genuine r89 receipts with 41 legs, do their launch tokens and devtools browser ids differ from the scored receipt's, and does each carry the r89 schema? Report the scored receipt's leg count and whether the four `sp89-accept-domread-*` legs are present with `domRead` non-null.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, calibration\nMilestone: count reproduction and pin audit\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Review1.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, calibration\nMilestone: count reproduction and pin audit\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Review1.md"
+      },
+      {
+        "name": "R89Review2",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\n\n# Assignment\nAttack the four new legs (`sp89-accept-domread-text`, `sp89-accept-domread-png`, `sp89-accept-domread-multimime`, `sp89-accept-domread-whitespace`). For each: is the fixture input its own element with the exact raw accept string, is the `domRead` snapshot taken from that leg's own page (can one leg's `domRead` be swapped for another's without a finding?), is the delivered file's name/size/type/hex bound in the law, and can one leg's `stateAfter` be swapped for another's without a finding? Mutate the scored receipt in scratch and score it with the frozen counter to show what is and is not caught (e.g. swap two sp89 legs' domRead, swap two sp89 legs' stateAfter, change `aw` acceptTokens to [\"image/png\"], change a read hex). Report concrete mutations, their counter exit/finding ids, and whether they falsify the claim's wording.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: new-leg attribution attack\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Review2.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: new-leg attribution attack\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Review2.md"
+      },
+      {
+        "name": "R89Critic",
+        "agent": "critic",
+        "task": "/skill:godspeed\n\n# Assignment\nFalsify the claims as written (/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/claims.json). C1: the sentence says `accept` is not a validator on a programmatic answer over a DOM-parsed token list — does any measured fact in the scored receipt contradict it (e.g. a token list that does not match the raw string, or a leg whose delivered bytes differ from what the tokens would accept), and does the counter enforce exactly that scope (no wider)? Specifically: does the whitespace leg measure the parser's trimming, or only the fixture's split-and-trim emulation of it? Does any leg measure Chromium's own matching rather than the fixture's tokenization? C2: the four drift statements plus the fixture-causality and replay-limit repairs — is each one a real repo-state mismatch test, or can a construction satisfy it without the work (do-nothing control)? Check in particular whether `replay-limit-consistency` actually binds the printed sentence to the computed math or merely restates it.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration\nMilestone: claims vs instruments\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Critic.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration\nMilestone: claims vs instruments\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Critic.md"
+      },
+      {
+        "name": "R89Mut1",
+        "agent": "mutation-tester",
+        "task": "/skill:godspeed\n\n# Assignment\nIndependent mutation sweep, not the frozen kill-power list. Write your own mutants (at least 25 semantic edits) of /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-round89.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r89.mjs: weaken or flip one clause per mutant (the domread raw/tokens binding, per-leg state binding, read-hex binding, nonce/prior logic, the replay-limit check, the four drift statements, the selftest-mode assertions). Score each against the frozen battery (and, for the drift gate, against the live lane plus an isolated fixture where the statement should be red — build the fixture with all seven swept sections present so the red is causal). Report killed/survived/crashed/unapplied per mutant, survivors with the exact clause left alive, and whether any survivor falsifies a claim's wording. Scratch under /fast/scratch/hyaku/tabi-r89/R89Mut1/ (read the write scope in your prompt context for where to put your report).\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, calibration\nMilestone: independent mutant sweep\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Mut1.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, calibration\nMilestone: independent mutant sweep\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Mut1.md"
+      },
+      {
+        "name": "R89Scout",
+        "agent": "scout",
+        "task": "/skill:godspeed\n\n# Assignment\nRe-open the sources the new law cites. Fetch https://html.spec.whatwg.org/multipage/input.html (expect HTTP 200, ~687,515 B, sha256 b0202de1c0b4...) and https://html.spec.whatwg.org/multipage/common-microsyntaxes.html (expect HTTP 200, ~121,595 B, sha256 2e9e2cbbe1ed...), stage both under /fast/scratch/hyaku/tabi-r89/R89Scout/, and locate with exact anchor: (a) the `accept` attribute sentence and its word count; (b) the `set of comma-separated tokens` dfn text on the microsyntaxes page (comma-split, ASCII whitespace rule) and its word count; (c) whether either page assigns a case rule to accept matching (if not, say what rule would assign case, with a located quote). Verify staging is byte-identical to live (`cmp`). Report: for each quote, URL, access date, byte offset or anchor, and a word count ≤25.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, freshness\nMilestone: source re-opening\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Scout.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage, freshness\nMilestone: source re-opening\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Scout.md"
+      },
+      {
+        "name": "R89Scribe",
+        "agent": "scribe",
+        "task": "/skill:godspeed\n\n# Assignment\nDraft independently (write only under /fast/scratch/hyaku/tabi-r89/R89Scribe/ and your report): (a) the round-89 knowledge-note body for the DOM-parsed token list — laws, leg facts, declared limits (compare with the committed /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/chromium-showpicker-runtime-round-88.md and list divergences); (b) the lesson `## Gate` source rows for S224 with the located quote and word count; (c) the SCORECARD capability row text for generation r89 and the round-89 section's claim table wording; (d) three `## Mistakes` candidates for round 89 with class/evidence/captured-by/fix. Do not edit lane files.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: depth, calibration\nMilestone: record drafts\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Scribe.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: depth, calibration\nMilestone: record drafts\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Scribe.md"
+      },
+      {
+        "name": "R89Connector",
+        "agent": "connector",
+        "task": "/skill:godspeed\n\n# Assignment\nSibling-overlap scan (read-only): grep /home/vgpnk/Projects/shokunin/*-shokunin/corpus/knowledge, SCORECARD.md, /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts for `acceptTokens`, `domRead`, `comma-separated`, `setFileInputFiles`, `showPicker`, and record-drift counters. Report which lanes have measured the same ground (paths + one-line state each), whether any would be contested if this round plates four DOM-parsed token-list legs, and any pattern this lane should reuse. No edits anywhere.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: adjacency\nMilestone: sibling-overlap scan\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Connector.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: adjacency\nMilestone: sibling-overlap scan\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Connector.md"
+      },
+      {
+        "name": "R89Sentinel",
+        "agent": "sentinel",
+        "task": "/skill:godspeed\n\n# Assignment\nAdversarial bounds/provenance audit of the round so far: (1) every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/freeze.txt vs committed bytes; (2) receipt identity (schema, lane basename, nonce tabi-r89-l1-7bde5e6c2f2d, driver pin, fixture pin, distinct ports, 41 legs) read from the committed receipt, and whether the driver's sha256 equals the pin; (3) census artifacts /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-89/census/start.txt and census/end.txt carry pasteable output and `exit=0` (end may still be absent — report that honestly); (4) no seat wrote outside the lane (check `git -C /home/vgpnk/Projects/shokunin status --porcelain` for files naming tabi/round-89); (5) the do-nothing controls' exit codes and finding ids; (6) whether any seat left a scratch tree behind under /fast/scratch/hyaku/tabi-r89/.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration\nMilestone: bounds and provenance audit\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Sentinel.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration\nMilestone: bounds and provenance audit\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Sentinel.md"
+      },
+      {
+        "name": "R89Simplifier",
+        "agent": "simplifier",
+        "task": "/skill:godspeed\n\n# Assignment\nYAGNI/dead-weight review of the round-89 instrument family, preserving verified behaviour. Read /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-round89.mjs, /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-round89.mjs, /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-round89.mjs, /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/selftest-r89-gates.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r89.mjs. Identify: dead code paths, duplicated constants that can drift (e.g. the ANSWER/PNG/SECOND/DIR constants vs the driver's written files), unused parameters, and any `--selftest` block that duplicates another. For each candidate, say what it would cost to delete and what would break (cite the check id or battery case that would stop firing). Do NOT edit lane files: produce a ranked list with the evidence that proves each candidate dead or harmful.\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: operability\nMilestone: instrument dead-weight review\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Simplifier.md\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: operability\nMilestone: instrument dead-weight review\n\nReport: write your scoped findings to .ufo/waves/round-89/w1/R89Simplifier.md"
+      }
+    ]
+  },
+  "resumeSends": [],
+  "note": "Issue exactly one batched task call with taskCall ({context, tasks}); never split a wave into multiple task calls (one-swarm-per-wave). Then one hub send per resumeSends entry: hub send --to <entry.resume> --message <entry.message> (entry.name is bookkeeping, not a hub field)."
+}
