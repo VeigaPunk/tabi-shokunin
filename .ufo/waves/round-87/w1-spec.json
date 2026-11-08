@@ -1,0 +1,111 @@
+{
+ "wave": "w1",
+ "milestone": "Round 87 v1 wave: cold-run reproduction, leg (b) re-measure, C2 before/after and controls, count/pin and new-leg attacks, claims critique, independent mutants, source re-opening, record drafts, sibling scan, bounds audit; 11 seats, 5 attack roles.",
+ "reportDir": ".ufo/waves/round-87/w1",
+ "context": "# Target\nTabi round 87, one v1 wave `w1`. L1 `TabiR87` holds the planner seat and is the sole integration owner. Lane /home/vgpnk/Projects/shokunin/tabi-shokunin; base 24765dd9; D 3dd4b0802d67; nonce tabi-r87-l1-3dd4b0802d67.\nClaims FROZEN in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/claims.json; instrument pins in .ufo/waves/round-87/freeze.txt. Never propose amending a predicate, counter, pin, prior, threshold or kill rule; attack them.\n\nC1 coverage, capability generation r87 `chromium-showpicker-linux`: four new legs on the `accept` token grammar \u2014 `accept=\"audio/*\"` answered with image/png, `accept=\"video/*\"` answered with text/plain, a multi-MIME list `image/png,application/pdf` answered with text/plain, and the whitespace variant `\"  image/png ,  .txt  \"` answered with image/png. Measured law (carried from r86, now over seven token forms): accept is not a validator on a programmatic answer \u2014 every delivered file lands in the input with its bytes, trusted input+change, page-read hex; the raw attribute is read from the page. Predicate: scored receipt clean at checkCount 99; battery 0 failed with full coverage; kill power 0 survivors; selftest green.\n\nC2 calibration, the lane-owned record defects of the round-86 non-author spot-check: `scripts/check-record-drift-r87.mjs` counts five statements (accept-headline sweep, mistake-evidence pointer, SOURCES search-log entry, ledger-pointer resolution, r86 report corrections). Measured before: 5 mismatches on base 24765dd9; after: 0.\n\n# Absolute paths (every seat)\n- Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin\n- Scored receipt: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round87/chromium-showpicker/receipt.json (fixture sha256 10e444f7fb840b6e132b4570794d3a0ed6f5db0781ca490a986685505e8d94c4, driver sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f, nonce tabi-r87-l1-3dd4b0802d67)\n- Prior set: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/controls/c1/prior-set.txt (prior1.json, prior2.json)\n- Do-nothing controls: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/controls/c1/nowork-r86-under-r87.json (exit 1) and noreceipt.txt (exit 2)\n- Scored outputs: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/scored/\n- Scratch root: /fast/scratch/hyaku/tabi-r87/<your-seat-name>/ (mkdir -p; remove it before you yield; /tmp is for files under 50 MB only). Never leave a scratch tree behind.\nEvery `Report:` trailer path in your prompt is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin \u2014 write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>.\n\n# Bounds\nRead-only seats return findings only. Every seat: never commit, never push, never run a mutating git or jj command anywhere (no add/commit/stash/checkout/switch/reset/pull/push; read-only git only), never write into corpus/evidence/round87, never edit lane records, never touch the fleet repo or a sibling lane, never message agent://all. Fixture repos: `D=$(mktemp -d) && git -C \"$D\" init -q` and every later git call names `-C \"$D\"`; assert `git -C \"$D\" rev-parse --show-toplevel` equals `$D` before any commit.\n\n# Tooling\nYou may install or upgrade tools that help the task (operator authorization 2026-10-19): first read /home/vgpnk/.omp/agent/RULES.md (official channels, update-safety gate) and record tool/version/channel/reason in your report. pacman transactions are PAUSED host-wide (orchestrator ruling 2026-10-20): install via uv tool/npx/an official binary in ~/.local/bin, or file nothing; never -Sy/-Syu/-U/-R, never restart a host service, never mutate host sysctls.\n",
+ "items": [
+  {
+   "name": "R87Exec1",
+   "role": "executor",
+   "axes": [
+    "coverage",
+    "operability"
+   ],
+   "milestone": "C1 cold-run reproduction",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRun the frozen driver twice under fresh nonces derived from the frozen one (tabi-r87-cold1-3dd4b0802d67 and tabi-r87-cold2-3dd4b0802d67), distinct port triples (19620/19621/19622 and 19630/19631/19632), `--lane /home/vgpnk/Projects/shokunin/tabi-shokunin`, `--scratch /fast/scratch/hyaku/tabi-r87/R87Exec1/<run>`, `--out /fast/scratch/hyaku/tabi-r87/R87Exec1/cold<k>.json`.\nScore each cold receipt with the frozen counter: `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-r87.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt <cold.json> --expect-driver-sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f --expect-nonce <that cold nonce> --expect-fixture-sha256 <that receipt's fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/controls/c1/prior-set.txt --json`. Report verdict/checkCount/finding ids per run. A cold run may legitimately fail only `prior-set-complete` (an undeclared in-tree receipt); list every id and say whether it is a law or a declaration. Do not write into corpus/evidence/round87 or .ufo/waves/round-87/scored.\n"
+  },
+  {
+   "name": "R87Exec2",
+   "role": "executor",
+   "axes": [
+    "operability"
+   ],
+   "milestone": "leg (b) re-measure",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRe-measure leg (b) from committed bytes, all outputs under /fast/scratch/hyaku/tabi-r87/R87Exec2/: battery, kill power, selftest. Commands:\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-r87.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --real /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round87/chromium-showpicker/receipt.json --expect-driver-sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f --expect-nonce tabi-r87-l1-3dd4b0802d67 --expect-fixture-sha256 10e444f7fb840b6e132b4570794d3a0ed6f5db0781ca490a986685505e8d94c4 --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/controls/c1/prior-set.txt --work /fast/scratch/hyaku/tabi-r87/R87Exec2/battery --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-r87.mjs ...same args... --work /fast/scratch/hyaku/tabi-r87/R87Exec2/killpower --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/selftest-r87-gates.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --work /fast/scratch/hyaku/tabi-r87/R87Exec2/selftest --json`.\nReport exact cases/failed/coverage, mutants/killed/survived/crashed/unapplied, and gate pass/fail, compared byte-for-byte with /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/scored/*.json. Any mismatch is a finding.\n"
+  },
+  {
+   "name": "R87Exec3",
+   "role": "executor",
+   "axes": [
+    "calibration",
+    "operability"
+   ],
+   "milestone": "C2 before/after and do-nothing controls",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nReproduce C2's before-state and the do-nothing controls. (1) `git -C /home/vgpnk/Projects/shokunin/tabi-shokunin worktree add --detach /fast/scratch/hyaku/tabi-r87/R87Exec3/base 24765dd95b5ef01ffc24a19ae5f293315216f4e5` (40 s), then `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r87.mjs --lane /fast/scratch/hyaku/tabi-r87/R87Exec3/base --json`; report claims/mismatches/failed ids. Expect 5 mismatches at base. Remove the worktree (`git -C /home/vgpnk/Projects/shokunin/tabi-shokunin worktree remove --force <path>`) before yielding. (2) Reproduce both do-nothing controls: the r86 scored receipt `/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round86/chromium-showpicker/receipt.json` under the r87 counter (expect exit 1 and the finding ids) and a no-receipt run (expect exit 2 `receipt-unreadable`). (3) Run the same drift gate against the lane (`--lane /home/vgpnk/Projects/shokunin/tabi-shokunin`) and report the after-state. Do not fix anything; report only.\n"
+  },
+  {
+   "name": "R87Review1",
+   "role": "reviewer",
+   "axes": [
+    "coverage"
+   ],
+   "milestone": "count reproduction and pin audit",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRe-run C1's counting command from committed bytes on /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round87/chromium-showpicker/receipt.json with every pin (driver 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f), and verify every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/freeze.txt matches the committed script bytes (`sha256sum`). Report verdict/checkCount/findings. Then hunt: does any check pass for a reason narrower than C1's sentence? Name at least two concrete weaknesses with a receipt/source pointer each.\n"
+  },
+  {
+   "name": "R87Review2",
+   "role": "reviewer",
+   "axes": [
+    "coverage"
+   ],
+   "milestone": "new-leg attribution attack",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nAttack the four new legs (`sp87-accept-audio-png`, `sp87-accept-video-text`, `sp87-accept-multimime-text`, `sp87-accept-whitespace-png`). For each: is the fixture input its own element with the exact raw accept string, is the delivered file's name/size/type/hex bound in the law, and is the leg individually attributable (can one leg's facts be swapped for another's without a finding)? Mutate the scored receipt in scratch and score it with the frozen counter to show what is and is not caught. Report concrete mutations, their counter exit/finding ids, and whether they falsify the claim's wording.\n"
+  },
+  {
+   "name": "R87Critic",
+   "role": "critic",
+   "axes": [
+    "calibration"
+   ],
+   "milestone": "claims vs instruments",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nFalsify the claims as written. C1: the sentence says \"accept is not a validator on a programmatic answer\" over seven token forms \u2014 does any measured fact contradict it, and does the counter enforce exactly that scope (no wider)? C2: the five drift statements \u2014 are they minimal, do they measure repo state rather than restate the fix, and could a do-nothing tree pass? Check the two do-nothing controls' reach. Report each attack with a verdict (`falsifies-wording` / `falsifies-number` / `neutral`) and the artifact path.\n"
+  },
+  {
+   "name": "R87Mut1",
+   "role": "mutation-tester",
+   "axes": [
+    "coverage",
+    "calibration"
+   ],
+   "milestone": "independent mutant sweep",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nIndependent mutation sweep, not the frozen kill-power list. Write your own mutants of /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-r87.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r87.mjs (at least 25 semantic edits: weaken/duplicate/drop new-leg clauses, widen the grammar equality, invert the drift statements), run each against the frozen battery / the lane's records, and report killed/survived/crashed with the exact edit and the case or check that noticed. Flag every whole-check escape.\n"
+  },
+  {
+   "name": "R87Scout",
+   "role": "scout",
+   "axes": [
+    "coverage"
+   ],
+   "milestone": "source re-opening",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRe-open the sources the new law cites. Fetch https://html.spec.whatwg.org/multipage/input.html (expect HTTP 200, ~687 KB, sha256 b0202de1c0b4\u2026, as staged at /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/sources/whatwg-input.html), locate (a) the `accept` attribute's own hint sentence and (b) the Color-state exemption for showPicker, and (c) any sentence on how the attribute value is parsed (commas/whitespace). Record URL, access date, line locators, \u226425-word quotes and `wc -w` counts. Do not add or edit SOURCES.md rows; report only, and say whether the staged bytes are byte-identical to the fetch.\n"
+  },
+  {
+   "name": "R87Scribe",
+   "role": "scribe",
+   "axes": [
+    "coverage",
+    "calibration"
+   ],
+   "milestone": "independent record drafts",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nDraft independently (write only under /fast/scratch/hyaku/tabi-r87/R87Scribe/ and your report): (a) the round-87 knowledge-note body for the four new token forms \u2014 laws, leg facts, declared limits; (b) the lesson `## Gate` source rows for S223/S219 with quotes and word counts; (c) the SCORECARD capability row text for generation r87 and the r87 move-log row; (d) the round-87 `## Mistakes` candidates. Read the committed receipt and scripts; do not edit lane files. Report divergences between your draft and the committed r86 note's scope.\n"
+  },
+  {
+   "name": "R87Connector",
+   "role": "connector",
+   "axes": [
+    "adjacency"
+   ],
+   "milestone": "sibling-overlap scan",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nSibling-overlap scan: grep /home/vgpnk/Projects/shokunin/*-shokunin/corpus/knowledge, SCORECARD.md, scripts (read-only) for accept=, setFileInputFiles, showPicker, fileChooserOpened, and record-drift counters. Report which lanes have measured the same ground (paths + one-line state each), whether any would be contested if this round plates four new token forms, and any pattern this lane should reuse. No edits anywhere.\n"
+  },
+  {
+   "name": "R87Sentinel",
+   "role": "sentinel",
+   "axes": [
+    "calibration"
+   ],
+   "milestone": "bounds and provenance audit",
+   "prompt": "/skill:godspeed\n\nYou are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim \u2014 let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nAdversarial bounds/provenance audit of the round so far: (1) every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/freeze.txt vs committed bytes; (2) receipt identity (schema, lane basename, nonce tabi-r87-l1-3dd4b0802d67, driver pin, fixture pin, ports distinct) read from the committed receipt; (3) census artifacts `/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-87/census/start.txt and census/end.txt` carry pasteable output and `exit=0`; (4) no seat wrote outside the lane (check the fleet repo `git -C /home/vgpnk/Projects/shokunin status --porcelain` for files naming tabi/round-87); (5) the do-nothing controls' exit codes and finding ids. Report each as PASS/FINDING with the exact command output.\n"
+  }
+ ]
+}

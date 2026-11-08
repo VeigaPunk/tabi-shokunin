@@ -1,0 +1,50 @@
+{
+ "lane": "tabi",
+ "round": 87,
+ "base": "24765dd9",
+ "digestsCommit": "b1d06cf8db57",
+ "nonce": "tabi-r87-l1-3dd4b0802d67",
+ "frozenAt": "2026-11-08, freeze.txt sha256 6d4a63d29e0c (D6). The scored receipt and its nonce stay at D3 `tabi-r87-l1-3dd4b0802d67`: D4 fixed the selftest runner path and D5 strengthened the drift gate's ledger-pointer (item 9) and report-corrections (directional) checks after R87Critic C2-3/C2-4; neither touched the driver, counter, battery or kill-power list. D1 `efbee055d6b4` and D2 `42a489b9d4be` were superseded pre-report (plans/round-87.md \u00a7Re-freeze history).",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability generation r87 \u2014 chromium-showpicker-linux: the remaining accept token forms measured, one leg per form. Four new page inputs, each with its raw accept attribute read back by window.__inputs(): `audio/*` answered with image/png bytes, `video/*` answered with text/plain bytes, a multi-MIME list `image/png,application/pdf` answered with text/plain, and the whitespace variant `  image/png ,  .txt  ` answered with image/png. Law (carried from r86, now over seven token forms): accept is NOT a validator on a programmatic answer \u2014 every delivered file lands in the input's file list with its bytes, fires trusted input+change, and the page reads the bytes back; the dialog itself is unmeasured.",
+   "predicate": "C1-SHOWPICKER-R87",
+   "legs": {
+    "a": "scored run corpus/evidence/round87/chromium-showpicker/receipt.json scores clean under scripts/check-showpicker-r87.mjs at checkCount 99 with the driver/fixture/nonce pins",
+    "b": "battery exits 0 with 0 failed and full coverage; kill power leaves 0 survivors, 0 crashed, 0 unapplied",
+    "c": "capability row + knowledge note + SKILL registry + selftest green"
+   },
+   "countingCommand": "node scripts/check-showpicker-r87.mjs --lane <ABS lane> --receipt corpus/evidence/round87/chromium-showpicker/receipt.json --expect-driver-sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f --expect-nonce tabi-r87-l1-3dd4b0802d67 --expect-fixture-sha256 <the scored receipt fixture sha256> --prior-set .ufo/waves/round-87/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-showpicker-round87.mjs": "7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f",
+    "scripts/check-showpicker-r87.mjs": "6a2bb03b63feb4835d9bf61b4b8970a27b81ac266e2e1e4cc130cd620bf9b181",
+    "scripts/negatives-showpicker-r87.mjs": "9883807a5a60e20fb18cd28e4599c2e769c568a20f67e1e099527b4b652d22a5",
+    "scripts/kill-power-r87.mjs": "c95b5305645e20e3b9d0e35bd3bbed4282caaffaf7ea39f8bb07c12597e002c4",
+    "scripts/selftest-r87-gates.mjs": "ee0336a66e0857dfaf97fa042e29a1a00b07740289909fce7ec78e5f1f89658b",
+    "scripts/check-record-drift-r87.mjs": "eea04278daf02e94094fabe8f7968d1413cfe32c6f2635c0db3da5f2abae69f6"
+   },
+   "priorSet": ".ufo/waves/round-87/controls/c1/prior-set.txt (probes/prior1.json nonce tabi-r87-probe1-a1, probes/prior2.json nonce tabi-r87-probe2-b1 \u2014 the two pre-freeze 34-leg probes)",
+   "doNothingControl": ".ufo/waves/round-87/controls/c1/nowork-r86-under-r87.json \u2014 the r86 scored receipt under the r87 counter: exit 1, findings incl. `schema` and `plan-frozen`; controls/c1/noreceipt.txt is the exit-2 unreadable control",
+   "killRule": "any leg false or any axis harmed -> NOT verified",
+   "limit": "acceptance law, not a dialog-filter law (DOM.setFileInputFiles bypasses the dialog); seven token forms, not the full grammar (MIME parameters and case variants stay frontier); the whitespace leg measures the raw attribute string, not a parsed token list; the colour-popup arm (r86) remains a FILE-chooser metric."
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "the lane-owned record defects of the round-86 non-author spot-check, counted against repo state. Five statements: (1) accept-headline sweep into SKILL.md + plans/round-86.md + QUALITY 161; (2) the two round-86 Mistakes rows repointed to a committed note that states the transcript was not retained; (3) the round-86 SOURCES search-log entry; (4) the round-86 ledger pointer resolves to a \u00a7Narrowings headline item; (5) the round-87 lesson records the round-86 report corrections (39->40; S221/S222 carried).",
+   "predicate": "C2-RECORDDRIFT-R87",
+   "legs": {
+    "a": "node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json exits 0 with claims 5, mismatches 0",
+    "b": "the BEFORE control \u2014 the frozen gate pointed at a worktree of base 24765dd9 \u2014 exits 1 with mismatches 5",
+    "c": "the two do-nothing C1 controls reproduce their exits (1 and 2) and the drift gate is wired into the selftest"
+   },
+   "countingCommand": "node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json",
+   "pins": {
+    "scripts/check-record-drift-r87.mjs": "eea04278daf02e94094fabe8f7968d1413cfe32c6f2635c0db3da5f2abae69f6",
+    "scripts/selftest-r87-gates.mjs": "ee0336a66e0857dfaf97fa042e29a1a00b07740289909fce7ec78e5f1f89658b"
+   },
+   "killRule": "after mismatches != 0 or before mismatches != 5 -> NOT verified",
+   "limit": "five record statements, not every sentence in the lane; the round-86 mistake transcripts stay unretained (the fix is a truthful pointer plus the class rule, never a reconstructed run); a green gate means those five match observed state, nothing more."
+  }
+ }
+}

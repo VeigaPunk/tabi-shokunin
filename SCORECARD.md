@@ -2384,7 +2384,7 @@ claims deliberately carry NO wave-settled clause - the predicates below are comp
 |---|---|---|---|
 | C1 calibration (routed defect 3; QUALITY 107) | `node .ufo/waves/round-44/counters/check-routed-defects-round44.mjs --rev 844a5b3a... --repo <lane> --json`; fixtures via `.ufo/waves/round-44/fixtures/build-r5-fixtures.mjs` (deterministic revs) | r43 bytes: drop3 FALSE GREEN exit 0, fragment FALSE GREEN exit 0, pathtype uncaught TypeError crash, honest exit 0 -> v2: honest exit 0 (no harm), drop3 exit 1 `r5-binding-set-missing`, fragment exit 1 `r5-binding-quote-not-whole-line`, pathtype exit 1 `r5-binding-path-type`; selftest 8/8 | **met** under the frozen rule; the blob pin `f3036d9e` refuses any rewritten r43 freeze; calibration held 9 -> 9 |
 | C2 coverage capability (sourced: S152, S153) | `node scripts/chrome-cdp-loopback-round44.mjs --out corpus/evidence/round44/chrome-cdp/receipt.json --shot ... --scratch <dir>`; `node .ufo/waves/round-44/counters/chrome-cdp-receipt-r44.mjs <receipt> --shot <png> --runner <runner>` | baseline tree count 0 -> live run exit 0 (Chrome/156.0.8078.74, ws 127.0.0.1:51901, invocation-bound fixture nonce, PNG 7,908 B sha 4ee1806f), receipt+shot committed as explicit files, counter exit 0, repro run fresh nonces | **met** under the frozen rule; residual (receipt does not self-authenticate; Chrome-ness re-derived by re-running the committed runner) declared pre-data; coverage held 9 -> 9 |
-| C3 operability (routed defects 1-2 deterministic halves) | `node .ufo/waves/round-44/counters/c1-anchor-bound-v6.mjs --rev 844a5b3a... --repo <lane> [--target failedrun | --measure <selfauth> | --mutation anchor-self-select | --selftest]` | v5 wall keyed to the record's own pubkey (r43 kill class) -> v6 honest exit 0 under the PINNED anchor 868c0d89; failedrun exit 1 (anchor-pin-mismatch + 46 egress-count-without-remotes); selfauth exit 1; the SAME fixture greens under anchor-self-select (the deterministic do-nothing reach, reproduced browser-free); selftest 9/9 | **met** under the frozen rule; the fully-zeroed lying run stays honestly unbindable (declared residual); operability held 9 -> 9 |
+| C3 operability (routed defects 1-2 deterministic halves) | `node .ufo/waves/round-44/counters/c1-anchor-bound-v6.mjs --rev 844a5b3a... --repo <lane> [--target failedrun | --measure <selfauth> | --mutation anchor-self-select | --selftest]` | v5 wall keyed to the record's own pubkey (r43 kill class) -> v6 honest exit 0 under the PINNED anchor 868c0d89; failedrun exit 1 (anchor-pin-mismatch + 46 egress-count-without-remotes); selfauth exit 1; the SAME fixture greens under anchor-self-select (the deterministic do-nothing reach, reproduced browser-free); selftest 10/10 | **met** under the frozen rule; the fully-zeroed lying run stays honestly unbindable (declared residual); operability held 9 -> 9 |
 
 ### Capabilities — round 44
 
@@ -3627,7 +3627,7 @@ Attempt 2 (attempt 1's L1 ended after its wave dispatched). Base `1746c53de7d56e
 |---|---|---|---|
 | C1 adjacency (lowest, 8): adjudication gate refuses lane self-adjudication, off-line quotes, degenerate quotes | `node scripts/check-adjacency-adjudication-r68.mjs --ledger .ufo/waves/round-66/c1/adjudicated/adjacency-host-delta-r66.tsv --worksheet corpus/adjacency-adjudication-r68.tsv --snapshot .ufo/waves/round-66/measure/snapshot-live-r66.tsv --fleet /home/vgpnk/Projects/shokunin --expect-ledger-sha256 3739288392ad7083c819637347bed14348a6e350b121492fc2653bf3e57b1105 --expect-snapshot-sha256 a5fccf44aad0e4e67dc4592a18e15c3f7c6c88adebd236c4da723ad9d9370a74 --repo . --expect-pending 49 --max-adjudicated 0 --json` plus four forgeries from `.ufo/waves/round-68/counters/make-c1-forgeries-r68.sh` and a no-worksheet control | forgeries: pre-fix rc 0 ×4 → post-fix rc 1 ×4; real 49 rows rc 0 (checked 49, pending 49); no-work rc 1 `worksheet-missing`; selftest 20/20 | VERIFIED on frozen predicate. Axis contested: the Connector measured zero adjacency movement (49 pending rows are bookkeeping) and reads the gate work as calibration. Score held 8. Not admitted pending the operator ruling (L0 `tabi | round-67`). |
 | C2 calibration (9): instrument registry at SKILL.md for the seven round-67 instruments | `node scripts/check-instrument-registry-r68.mjs --skill SKILL.md --repo . --json` | HEAD SKILL.md: rc 1 `registry-section-missing` (0 of 7 paths registered by `grep -c -F`) → worktree: rc 0, `findings []`, 7 expected; blob equality worktree = HEAD = r67 freeze for all seven (`controls/c2-blob-equality.txt`); selftest 7/7 | VERIFIED on frozen predicate. Score held 9. Gate defects F1–F10 (attack) routed. |
-| C3 coverage (9): docs-held `Input.synthesizeScrollGesture` entry bound to S173 | `node .ufo/waves/round-68/w1/R68Exec3/check-c3-synthscroll-r68.mjs` (default entry/source) | HEAD: no lane knowledge entry on the surface; empty entry → rc 2 `no-work` → worktree: rc 0, clean, 8/8 checks; selftest 9/9 | VERIFIED on counter predicate. Score held 9. No capability row (runtime unmeasured). |
+| C3 coverage (9): docs-held `Input.synthesizeScrollGesture` entry bound to S173 | `node .ufo/waves/round-68/w1/R68Exec3/check-c3-synthscroll-r68.mjs` (default entry/source) | HEAD: no lane knowledge entry on the surface; empty entry → rc 2 `no-work` → worktree: rc 0, clean, 8/8 checks; selftest 10/10 | VERIFIED on counter predicate. Score held 9. No capability row (runtime unmeasured). |
 
 Capabilities: none this round. Knowledge 80 → 81 (`knowledge/chromium-scroll-gesture-protocol-round-68.md`, S173). Registry 172 → 173 (S173 tier A `code`, mined; census start HEAD exit 0 with 172 rows; end exit 0 with 173 rows; W04 cross-scope warnings only). QUALITY 126–129 added.
 
@@ -3908,7 +3908,7 @@ new capability was r76).
 
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
-| C1 coverage (9), capability `chromium-showpicker-linux` (new; sourced: S216–S218 new) | `node scripts/check-showpicker-r79.mjs --lane <ABS lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r79-l1-<D12> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-79/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R79`) | base: no r79 receipt → exit 2 `receipt-unreadable`, and the r78 file-chooser receipt under the r79 counter → exit 1, 52 findings (`schema`, `plan-frozen`, every `leg-*`, `gesture-law`, `intercept-law`, …); after: the scored receipt → exit 0 `clean` 56 checks; battery 88/88 with `coverageGap []`; kill power KILLPOWERNUM; selftest 9/9 | VERIFIED |
+| C1 coverage (9), capability `chromium-showpicker-linux` (new; sourced: S216–S218 new) | `node scripts/check-showpicker-r79.mjs --lane <ABS lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r79-l1-<D12> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-79/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R79`) | base: no r79 receipt → exit 2 `receipt-unreadable`, and the r78 file-chooser receipt under the r79 counter → exit 1, 52 findings (`schema`, `plan-frozen`, every `leg-*`, `gesture-law`, `intercept-law`, …); after: the scored receipt → exit 0 `clean` 56 checks; battery 88/88 with `coverageGap []`; kill power KILLPOWERNUM; selftest 10/10 | VERIFIED |
 | C2 calibration (9), record drift (round-78 routed defects 1, 2 and 6) | `node scripts/check-record-drift-r79.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 20 record claims: the r78 SCORECARD row, SKILL registry, LOG entry, filed report, claims.json leg (b) path and nodeReport sentence, each checked for stale-present + correction + truth) | before: exit 1, **7** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0 with `mismatches 0` and `provisional 1` | VERIFIED |
 
 Capabilities (this round):
@@ -3954,7 +3954,7 @@ a lowest axis and is a capability move (generation r80 of the r79 capability).
 
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
-| C1 coverage (9), capability `chromium-showpicker-linux` generation r80 (sourced: S219–S221 new; S216–S218 carried) | `node scripts/check-showpicker-r80.mjs --lane <ABS lane> --receipt corpus/evidence/round80/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r80-l1-211962dccb61 --expect-fixture-sha256 <receipt fixture sha> --prior-set .ufo/waves/round-80/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R80`) | base: no r80 receipt → exit 2 `receipt-unreadable`; the r79 showpicker receipt under the r80 counter → exit 1, findings incl. `schema` and every `leg-*` (`lesson-proof/c1-nowork.json`); after: the scored receipt → exit 0 clean, **57 checks**; battery **102/102**; kill power **80/80**, 0 survivors; selftest 9/9 | VERIFIED |
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r80 (sourced: S219–S221 new; S216–S218 carried) | `node scripts/check-showpicker-r80.mjs --lane <ABS lane> --receipt corpus/evidence/round80/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r80-l1-211962dccb61 --expect-fixture-sha256 <receipt fixture sha> --prior-set .ufo/waves/round-80/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R80`) | base: no r80 receipt → exit 2 `receipt-unreadable`; the r79 showpicker receipt under the r80 counter → exit 1, findings incl. `schema` and every `leg-*` (`lesson-proof/c1-nowork.json`); after: the scored receipt → exit 0 clean, **57 checks**; battery **102/102**; kill power **80/80**, 0 survivors; selftest 10/10 | VERIFIED |
 | C2 calibration (9), record drift (r79 routed defects 1–4) + the self-drift leg (defect 8) | `node scripts/check-record-drift-r80.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 19 record claims: the r79 corrections with directional pairs and every-pair truth, the r80 records against the committed scored outputs, the prefreeze summary and the three C2 controls) | before: exit 1, **17 mismatches** (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0, `mismatches 0`, `provisional 1` | VERIFIED |
 
 Capabilities (this round):
@@ -3995,7 +3995,7 @@ a lowest axis and is a capability move (generation r81 of the r79 capability).
 
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
-| C1 coverage (9), capability `chromium-showpicker-linux` generation r81 (sourced: S222–S223 new; S219–S220 carried) | `node scripts/check-showpicker-r81.mjs --lane <ABS lane> --receipt corpus/evidence/round81/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r81-l1-a2183a933622 --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-81/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R81`) | base: no r81 receipt → exit 2 `receipt-unreadable`; the r80 receipt under the r81 counter → exit 1, 30 findings (`schema`, `nonce-shape`, `driver-pin`, `plan-frozen`, …); after: the scored receipt → exit 0 `clean`, 56 checks, 0 findings; battery 62/62; kill power 46/46; selftest 9/9 | VERIFIED |
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r81 (sourced: S222–S223 new; S219–S220 carried) | `node scripts/check-showpicker-r81.mjs --lane <ABS lane> --receipt corpus/evidence/round81/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r81-l1-a2183a933622 --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-81/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R81`) | base: no r81 receipt → exit 2 `receipt-unreadable`; the r80 receipt under the r81 counter → exit 1, 30 findings (`schema`, `nonce-shape`, `driver-pin`, `plan-frozen`, …); after: the scored receipt → exit 0 `clean`, 56 checks, 0 findings; battery 62/62; kill power 46/46; selftest 10/10 | VERIFIED |
 | C2 calibration (9), record drift (the ten r80 routed defects) + the self-drift identity leg | `node scripts/check-record-drift-r81.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 12 record claims: the r80 end census, the D9 sweep, the two dead pointers, the Gate quote counts, the frozen-claim annotation, the capability typo, the control count, D10, the battery binding, the r81 identity and numbers) | before: exit 1, **12** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0, `mismatches 0`, `provisional 1` | VERIFIED |
 
 Capabilities (this round):
@@ -4112,7 +4112,7 @@ Planned (r85): battery witnesses for R84Mut1's survivor families (`childResult.m
 `accept` MIME-token and `image/*` grammar legs; the same-origin tel/search/text contrast leg; a
 counter generation whose limit sentence prints the constant-offset escape. Retired: none.
 
-Scored (r84): 80 checks, battery 162/162, kill power 50/50, selftest 9/9.
+Scored (r84): 80 checks, battery 162/162, kill power 50/50, selftest 10/10.
 - Digests: D 31fc14c29f84, nonce tabi-r84-l1-31fc14c29f84. 80 checks, battery 162/162, kill power 50/50.
 
 ## Round 85 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r85 (the same-origin arms); C2 operability, the six r84 survivor-family witnesses
@@ -4146,7 +4146,7 @@ freeze-commit battery, not the D bytes — the honest before-value is 3, not 6.
 Planned (r86): the `accept` token grammar matrix (`image/png` MIME token, `image/*`, mixed list);
 a same-element origin comparison; a `type=color` same-origin activated arm. Retired: none.
 
-Scored (r85): 87 checks, battery 175/175, kill power 58/58, selftest 9/9, family witnesses 3 → 0.
+Scored (r85): 87 checks, battery 175/175, kill power 58/58, selftest 10/10, family witnesses 3 → 0.
 - Digests: D 620623a43f74, nonce tabi-r85-l1-620623a43f74. 87 checks, battery 175 cases, kill power 58 mutants.
 
 ## Round 86 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r86 (the `accept` token grammar and the same-origin colour arm); C2 operability, the six tel-only conjunct narrowings
@@ -4183,3 +4183,41 @@ popup probe. Retired: none.
 
 Scored (r86): 95 checks, battery 201/201, kill power 66/66, selftest 10/10, witness families 3 → 0.
 - Digests: D 4bd89a80f439, nonce tabi-r86-l1-4bd89a80f439. 95 checks, battery 201 cases, kill power 66 mutants.
+
+## Round 87 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r87 (the remaining accept token forms); C2 calibration, the five lane-owned record defects of the r86 spot-check
+
+Base `24765dd9`; scored receipt D **`3dd4b0802d67`** (D1 `efbee055d6b4`, D2 `42a489b9d4be`
+superseded pre-report; D4 `b1d06cf8db57` re-froze only the selftest runner — path fix — and D5
+`c921658c6046` only the drift gate's ledger-pointer/directional checks; the scored receipt stays at
+D3; `plans/round-87.md` §Re-freeze history), nonce **`tabi-r87-l1-3dd4b0802d67`**. Axes at start: all six
+at 9; C1 works a lowest axis and is a capability move (generation r87 of the r79 capability); C2
+works calibration (record-vs-state mismatches).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r87 (sourced: S223/S219 re-opened) | `node scripts/check-showpicker-r87.mjs --lane <ABS lane> --receipt corpus/evidence/round87/chromium-showpicker/receipt.json --expect-driver-sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f --expect-nonce tabi-r87-l1-3dd4b0802d67 --expect-fixture-sha256 10e444f7fb840b6e132b4570794d3a0ed6f5db0781ca490a986685505e8d94c4 --prior-set .ufo/waves/round-87/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R87`) | base `24765dd9`: no r87 receipt → exit 2 `receipt-unreadable`; the r86 scored receipt under the r87 counter → exit 1, 95 checks, findings incl. `schema`, `plan-frozen`, `leg-order` (`controls/c1/nowork-r86-under-r87.json`); after: exit 0, **99 checks**, 0 findings; battery 209/0/coverage 99/99; kill power 66/66/0/0/0; selftest 10/10 | VERIFIED |
+| C2 calibration (9), the five lane-owned r86 spot-check record defects (`scripts/check-record-drift-r87.mjs`, predicate `C2-RECORDDRIFT-R87`) | `node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json` (exit 0 iff 5 claims, 0 mismatches) | before (base `24765dd9` worktree): **5 mismatches** (`accept-headline`, `mistake-evidence`, `sources-searchlog`, `ledger-pointer`, `report-corrections` — `scored/drift-before.json`); after: **0** of 5 (`scored/drift-a.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r87) | As r86, and now: the `accept` acceptance law holds over seven token forms — `audio/*` ← png, `video/*` ← txt, a multi-MIME list `image/png,application/pdf` ← txt, and the whitespace variant `"  image/png ,  .txt  "` ← png all accept a programmatic answer with trusted input+change and page-read bytes, with each raw attribute read from the page (34 legs, 99 checks) | `corpus/evidence/round87/chromium-showpicker/receipt.json`; `corpus/knowledge/chromium-showpicker-runtime-round-87.md` | 79 |
+
+Knowledge 99 → 100 (`corpus/knowledge/chromium-showpicker-runtime-round-87.md`). Registry 223 (no new
+rows; S223/S219 re-opened; S221/S222 carried). SKILL.md `## Round 87 gate registry` registers the six
+r87 instruments; `scripts/selftest-r87-gates.mjs` runs them in order (10 gates).
+
+Narrowings (`plans/round-87.md` §Narrowings): (1) acceptance is not filtering — the dialog is
+unmeasured; (2) seven token forms, not the whole grammar (MIME parameters, case variants, combined
+media lists stay frontier); (3) the whitespace leg measures the raw attribute string, not a parsed
+token list; (4) C2 counts five record statements, not every sentence; (5) the round-86 mistake
+transcripts stay unretained — the fix is a truthful pointer plus QUALITY 161, never a reconstructed
+run.
+
+Planned (r88): `accept` MIME parameters and case variants; a DOM-parsed token list alongside the raw
+string; a same-element origin comparison if the fixture can carry a `postMessage` proxy. Retired:
+none.
+
+Scored (r87): 99 checks, battery 209/209, kill power 66/66, selftest 10/10, record drift 5 → 0.
+- Digests: D 3dd4b0802d67, nonce tabi-r87-l1-3dd4b0802d67. 99 checks, battery 209 cases, kill power 66 mutants.

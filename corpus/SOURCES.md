@@ -297,6 +297,8 @@ admitted to `knowledge/` (admission stays in `corpus/QUALITY.md`). Structural ch
 
 - 2026-11-07 · round81 showPicker answer/accept sources (TabiR81 L1). Question: what does the CDP answer command take, and is `accept` a validation rule or a dialog hint? Fetched the tag-155.0.8059.84 DOM.pdl (S222: `DOM.setFileInputFiles` parameters at lines 682-691, no accept/directory parameter) and re-opened the living WHATWG input page (S223: the accept attribute is a hint; S219/S220 re-opened for the r81 cross-origin non-file and order legs). identified 2 / screened 2 / included 2 / excluded 0. Staged copies and hashes: `.ufo/waves/round-81/sources/` (dom.pdl sha256 50c460459e50, whatwg-input.html sha256 b0202de1c0b4). Stop: both quotes locate the exact sentence the r81 laws need.
 
+- 2026-11-08 · round-86 bounded re-opening (TabiR86 L1). Question: does the WHATWG `input` element's own text make `accept` a hint rather than a validator, and which sentence exempts the Color state from the cross-origin `showPicker()` refusal? Fetched html.spec.whatwg.org/multipage/input.html (HTTP 200, 687,515 B, sha256 b0202de1c0b4…, staged `.ufo/waves/round-86/sources/whatwg-input.html`). identified 2 / screened 2 / included 0 / excluded 2 for NEW rows: S223 (accept-attribute hint sentence) and S219 (Color-state exemption) were re-opened in place, not superseded; S221/S222 were carried, not re-opened (no `.pdl` fetched this round). Stop: both quotes locate the exact sentences the two measured laws need; the dialog itself stays unmeasured.
+
 ## Leads (unopened)
 
 - WPT WebDriver BiDi results — https://wpt.fyi/results/webdriver/tests/bidi — fetched only as an application shell; per-command interoperability data is unread.

@@ -1048,3 +1048,7 @@
 ## Round 82 additions
 
 160. A cross-origin leg set must not overlap its own click targets. Round 82's probe legs placed the new `type=color`/`month`/`week`/`time` buttons in the same column as the existing `go3`/`go4` buttons at overlapping `top` values; the click for `sp82-cross-origin-nonfile` landed on `go5` instead of `go3` and the leg read `None` until the buttons were separated into two columns (go3/go4 at x=300, go5–go8 at x=160). Green state: a cross-origin leg's child events name the leg's own button; a leg whose child result is `None` after a click is a fixture defect, not a law. Red state: `.ufo/waves/round-82/controls/c1/probes/probe8.json` (`sp82-cross-origin-nonfile` child events `['go5', …]`). (lesson: corpus/lessons/round-82.md Mistakes row 1)
+
+## Round 87 additions
+
+161. A narrowing sweeps every distilled copy in the round that narrows it: the knowledge note, the plan, SKILL.md, the lesson and any ledger cell that repeats the wider sentence are each rewritten or explicitly marked, and a counting command enumerates the set. Red state: round 86 narrowed its `accept` law in the note and the lesson but left "never a validator" in `SKILL.md` and "filters the dialog, never a programmatic answer" in `plans/round-86.md`, caught by the round-86 verifier spot-check as defect 3. Green state: `node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json` → 0 mismatches with the stale-phrase sweep inside claim `accept-headline`, and the round-87 records carry only the programmatic-answer wording.

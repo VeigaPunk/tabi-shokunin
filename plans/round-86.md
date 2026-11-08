@@ -20,7 +20,8 @@ same-element origin comparison, is not constructible in the loopback fixture and
    - `accept="image/png, .txt"` (mixed list) answered with `text/plain` and with `image/png`;
    - `accept="application/pdf"` (a MIME token matching neither delivered byte) answered with
      `image/png`.
-   The measured law: **`accept` filters the dialog, never a programmatic answer** — all five
+   The measured law: **`accept` is not a validator on a programmatic answer** (the dialog is
+   unmeasured) — all five
    answers land in the input's file list, fire trusted `input`+`change`, and the page reads back
    the delivered bytes (`read` event `hex:` field). The r84 `.png`-token law is the control; the
    r86 matrixes are the wildcard, the mixed list and a non-matching MIME token.
@@ -153,3 +154,9 @@ Kill rule: `after.survivors != 0` or `before.survivors != 3` → NOT verified.
 8. **Conjunct-completeness is not established.** Closing the tel-only gap for the nine loop legs does
    not witness the number/range/month/week/time/color legs' non-`childResult` conjuncts; the same
    mutant class remains alive there until they are witnessed.
+
+9. **The accept-headline narrowing (round-86 verifier spot-check defect 3; lesson Corrections item 3).**
+   The note's law 1 was narrowed to an acceptance law; the distilled copies in `SKILL.md` and this
+   plan were restated in round 87 to the same scope ("not a validator on a programmatic answer —
+   the dialog itself is unmeasured"). This item is the pointer the round-86 pre-file ledger's
+   Scribe row names (`plans/round-86.md §Narrowings`), made resolvable in round 87.

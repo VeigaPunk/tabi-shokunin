@@ -3318,10 +3318,19 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 
 ## Round 86 gate registry
 
-- `check-showpicker-r86` (95 checks): `node scripts/check-showpicker-r86.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r86-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Six new legs `sp86-accept-{wildcard-text,wildcard-png,mixed-text,mixed-png,pdf-token-png}` and `sp86-same-origin-color-activated`; new laws `accept-grammar-law` (accept is a dialog hint, never a validator: wildcard, mixed list and non-matching MIME token all accept a programmatic answer) and `same-origin-color-law` (undefined, activation consumed, no input/change, zero FILE choosers).
+- `check-showpicker-r86` (95 checks): `node scripts/check-showpicker-r86.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r86-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Six new legs `sp86-accept-{wildcard-text,wildcard-png,mixed-text,mixed-png,pdf-token-png}` and `sp86-same-origin-color-activated`; new laws `accept-grammar-law` (accept is not a validator on a programmatic answer — the dialog itself is unmeasured: wildcard, mixed list and non-matching MIME token all accept a programmatic answer) and `same-origin-color-law` (undefined, activation consumed, no input/change, zero FILE choosers).
 - Driver: `scripts/chrome-cdp-showpicker-round86.mjs` (30 legs; new parent inputs `#aw` `accept="image/*"`, `#am` `accept="image/png, .txt"`, `#ap` `accept="application/pdf"`, `#cos` `type=color`).
 - Battery: `node scripts/negatives-showpicker-r86.mjs ... --work <scratch> --json` (201 cases, coverage 95/95; 12 search/text conjunct witnesses `cross-{search,text}-*`).
 - Kill power: `node scripts/kill-power-r86.mjs ... --work <scratch> --json` (66 mutants, 66 killed, 0 survivors, 0 crashed).
 - Family witnesses: `node scripts/witness-families-r86.mjs --lane <ABS lane> --work <scratch> --json` (12 families; before 3 survivors on the r85 battery — `narrow-tel-crossaccess`, `narrow-tel-childseq`, `narrow-tel-childact-before` — after 0 on the r86 battery).
 - Self-test: `node scripts/selftest-r86-gates.mjs --lane <ABS lane> --work <scratch> --json` (10 gates).
 - Record drift: `node scripts/check-record-drift-r86.mjs --lane <ABS lane> --json` (8 claims, 0 mismatches).
+
+## Round 87 gate registry
+
+- `check-showpicker-r87` (99 checks): `node scripts/check-showpicker-r87.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r87-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Four new legs `sp87-accept-{audio-png,video-text,multimime-text,whitespace-png}`; the extended law `accept-grammar-law` now covers seven token forms (`image/*`, `image/png, .txt`, `application/pdf`, `audio/*`, `video/*`, `image/png,application/pdf`, and the whitespace variant `"  image/png ,  .txt  "`), each raw attribute read from the page; `accept` is not a validator on a programmatic answer — the dialog itself is unmeasured.
+- Driver: `scripts/chrome-cdp-showpicker-round87.mjs` (34 legs; new parent inputs `#aa` `accept="audio/*"`, `#av` `accept="video/*"`, `#a2` `accept="image/png,application/pdf"`, `#aws` `accept="  image/png ,  .txt  "`).
+- Battery: `node scripts/negatives-showpicker-r87.mjs ... --work <scratch> --json` (209 cases, coverage 99/99; the four new legs carry their own per-leg cases and four grammar cases).
+- Kill power: `node scripts/kill-power-r87.mjs ... --work <scratch> --json` (66 mutants, 66 killed, 0 survivors, 0 crashed).
+- Record drift: `node scripts/check-record-drift-r87.mjs --lane <ABS lane> --json` (5 statements: the five lane-owned r86 spot-check record defects; 5 → 0 mismatches).
+- Self-test: `node scripts/selftest-r87-gates.mjs --lane <ABS lane> --work <scratch> --json` (10 gates).

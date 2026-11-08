@@ -3991,3 +3991,28 @@ constant-offset forgery), R85Scout (sources), R85Scribe (note drafts), R85Connec
   new rows; S223/S219/S216/S221/S222 re-opened; located quotes 18 and 21 words).
 - Mistake mined: `witness-polarity` + `guard-inversion` (whole-law vs conjunct-scoped narrowing,
   and the inverted guard) and `kill-power-reach` (three battery cases added) — `corpus/lessons/round-86.md`.
+
+## Round 87 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR87`. Base `24765dd9` (the round-86 verifier spot-check commit); D `3dd4b0802d67` (D1
+`efbee055d6b4`, D2 `42a489b9d4be` superseded pre-report, `plans/round-87.md` §Re-freeze history);
+nonce `tabi-r87-l1-3dd4b0802d67`. Claims: C1 coverage — capability `chromium-showpicker-linux`
+generation r87, the four remaining `accept` token forms (`audio/*`, `video/*`, a multi-MIME list,
+the whitespace variant), 34 legs / 99 checks; C2 calibration — the five lane-owned record defects of
+the round-86 non-author spot-check, `check-record-drift-r87` 5 → 0.
+
+Instruments (pins in `.ufo/waves/round-87/freeze.txt`): `chrome-cdp-showpicker-round87.mjs` (34
+legs), `check-showpicker-r87.mjs` (99 checks), `negatives-showpicker-r87.mjs` (209 cases, coverage
+99/99), `kill-power-r87.mjs` (66 mutants, 66/66), `selftest-r87-gates.mjs` (10 gates),
+`check-record-drift-r87.mjs` (5 statements). Scored receipt
+`corpus/evidence/round87/chromium-showpicker/receipt.json` (fixture `10e444f7…`, driver `7c54e786…`,
+0 failures). Do-nothing controls: `controls/c1/nowork-r86-under-r87.json` (exit 1, 95 checks,
+`schema`/`plan-frozen` among the findings) and `controls/c1/noreceipt.txt` (exit 2); the C2 before
+control is the same frozen gate on a base `24765dd9` worktree (5 mismatches,
+`scored/drift-before.json`).
+
+Records: `corpus/knowledge/chromium-showpicker-runtime-round-87.md` (knowledge 99 → 100);
+`corpus/lessons/round-87.md`; `plans/round-87.md`; SCORECARD round-87 section + capability row;
+SKILL.md `## Round 87 gate registry`; QUALITY 161 (a narrowing sweeps every distilled copy); the
+round-86 spot-check's record defects 3/4/5/7 closed and defects 1–2 carried into this round's
+records; SOURCES §Search log round-86 entry; `.ufo/waves/round-86/lesson-proof/README.md`.
