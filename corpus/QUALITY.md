@@ -1044,3 +1044,7 @@
 ## Round 81 additions
 
 159. A Gate quote count is checked with `wc -w` before filing, and its locator is the line range the quote actually occupies. Round 80's Gate stated S220 as 17 words at 2654-2656 (it is 14 words at 2654-2655) and S221 as 9 words (it is 7), a recurrence of the r79 defect-6 class. Green state: `printf '%s' "<quote>" | wc -w` is run for every new row and the count written beside the locator; the r81 Gate rows state 6 and 23 words with their line/paragraph locators. Red state: `corpus/lessons/round-80.md` Gate rows S220/S221 as filed. (lesson: corpus/lessons/round-81.md Corrections row 5)
+
+## Round 82 additions
+
+160. A cross-origin leg set must not overlap its own click targets. Round 82's probe legs placed the new `type=color`/`month`/`week`/`time` buttons in the same column as the existing `go3`/`go4` buttons at overlapping `top` values; the click for `sp82-cross-origin-nonfile` landed on `go5` instead of `go3` and the leg read `None` until the buttons were separated into two columns (go3/go4 at x=300, go5–go8 at x=160). Green state: a cross-origin leg's child events name the leg's own button; a leg whose child result is `None` after a click is a fixture defect, not a law. Red state: `.ufo/waves/round-82/controls/c1/probes/probe8.json` (`sp82-cross-origin-nonfile` child events `['go5', …]`). (lesson: corpus/lessons/round-82.md Mistakes row 1)

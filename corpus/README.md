@@ -1147,3 +1147,16 @@ hint, S223); a real click on an input whose picker is already open opens a SECON
 `corpus/knowledge/chromium-showpicker-runtime-round-81.md`. Frontier: answering the second chooser,
 `type=color`/`type=month` cross-origin legs, nested `webkitdirectory` answers, and the `accept` token
 grammar. Refusal routes unchanged: no external-site interaction, no credential content, loopback only.
+
+## Round 82 coverage
+
+The r81 frontier is now core: a cross-origin `type=color` input's own script is EXEMPT
+(`showPicker()` returns undefined, no chooser — the file/color branch, measured for the first
+time); cross-origin `type=month`, `type=week` and `type=time` inputs throw SecurityError (the
+non-file branch is not date-specific); a real click while a picker is open opens a second chooser
+with the SAME `backendNodeId` as the first (the measured limit: answering by id cannot
+discriminate). The r81 six laws are carried forward. Gated by
+`scripts/check-showpicker-r82.mjs` (64 checks) with the note
+`corpus/knowledge/chromium-showpicker-runtime-round-82.md`. Frontier: `type=number`/`range`
+cross-origin legs, second-chooser answer attribution, the `accept` token grammar. Refusal routes
+unchanged: no external-site interaction, no credential content, loopback only.
