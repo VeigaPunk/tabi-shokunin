@@ -4176,3 +4176,8 @@ counter clauses (20 true battery gaps) and a 4/13 selftest kill power. The claim
 narrowed at 13:19:45 after the scored receipt — recorded in `frozenAmendments`, not hidden. The round
 is an honest stop: no instrument changed after data, no axis claimed as moved, repairs routed
 to r92 with the critic's tautology fixture as the red case.
+
+Wave handoff (after attempt 3 filed): the orchestrator wrote `.ufo/waves/round-91/w1-results.json`
+at 13:36 (-03) — all 13 seats, their outputs and the wave metadata. It is committed here as wave
+evidence. The report and the ledger accounting above were built from the seats' filed reports and
+the direct messages, not from this file, which did not exist at filing.
