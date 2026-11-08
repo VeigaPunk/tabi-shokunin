@@ -52,7 +52,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0
 
 C1 admitted as the round's coverage move (capability generation r83;
 `claims.json` / `SCORECARD.md` frozen predicate `C1-SHOWPICKER-R83`, counter
-`check-showpicker-r83`, 72 checks, battery and kill power green). C2
+`check-showpicker-r83`, 74 checks, battery and kill power green). C2
 admitted as the calibration move (`scripts/check-record-drift-r83.mjs`;
 before state `lesson-proof/c2-before.json`, after
 `lesson-proof/c2-after.json`, 0 mismatches).
@@ -65,7 +65,7 @@ before state `lesson-proof/c2-before.json`, after
 | `reference-drift` — `LEG_KEYS` expected `first/secondChooserBackendNodeId` on every leg but only the second-chooser leg set them | probe legs 0–13 missing the keys (`leg-records`) | the pre-freeze probe (1 finding) | driver initializes both to `null` on every leg |
 
 Sweep for further mistakes: the pre-freeze probe receipt
-(`.ufo/waves/round-83/controls/c1/probes/`) scored 72 checks patched
+(`.ufo/waves/round-83/controls/c1/probes/`) scored 74 checks patched
 (null defaults); the scored run re-produces it at the frozen nonce.
 
 ## Corrections — the r82 spotcheck routed defects (append-only; the r82 records are not rewritten)
@@ -86,5 +86,5 @@ rows.
 
 (To be integrated after WAVE-DONE.)
 
-Scored (r83): counter 72 checks, battery and kill power green, selftest 9/9.
-- Round 83 digests: D c016710129da, nonce tabi-r83-l1-c016710129da. 72 checks.
+Scored (r83): counter 74 checks, battery and kill power green, selftest 9/9.
+- Round 83 digests: D 9d90392aca79, nonce tabi-r83-l1-9d90392aca79. 74 checks.
