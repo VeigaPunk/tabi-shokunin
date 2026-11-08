@@ -1,0 +1,1372 @@
+{
+ "seat": "R91Mut1",
+ "lane": "tabi-shokunin",
+ "round": 91,
+ "proxy": {
+  "detector": "scripts/negatives-showpicker-proxy-round91.mjs (44 cases, --counter <mutant>)",
+  "baseline": {
+   "laneHashesBefore": {
+    "proxy": "f2f052f27c3a0e18ecef3217fc902c2897c59ab9f175d314ba66d526a7edb03e",
+    "drift": "e2e51c6b50e24cfb7b4991ccbdddc9e375dc73a6de8e7ab4aa95893fd62ffda3",
+    "battery": "6475f056ba9d0a868274c0047337a6c61736415b39ace5bd907a41e135fe78cb"
+   },
+   "baselineProxy": {
+    "status": 0,
+    "verdict": "clean",
+    "checkCount": 30
+   },
+   "baselineBattery": {
+    "status": 0,
+    "cases": 44,
+    "failed": 0
+   },
+   "baselineDrift": {
+    "status": 0,
+    "verdict": "clean",
+    "checkCount": 8
+   },
+   "baselineDriftSelftest": {
+    "status": 0,
+    "ok": true,
+    "cases": 8
+   },
+   "baselineCounterSelftest": {
+    "status": 0,
+    "ok": true
+   },
+   "baselineDriftFixture": {
+    "status": 0,
+    "checkCount": 8,
+    "findings": []
+   },
+   "laneHashesAfter": {
+    "proxy": "f2f052f27c3a0e18ecef3217fc902c2897c59ab9f175d314ba66d526a7edb03e",
+    "drift": "e2e51c6b50e24cfb7b4991ccbdddc9e375dc73a6de8e7ab4aa95893fd62ffda3",
+    "battery": "6475f056ba9d0a868274c0047337a6c61736415b39ace5bd907a41e135fe78cb"
+   }
+  },
+  "counts": {
+   "mutants": 40,
+   "killed": 13,
+   "survived": 27,
+   "crashed": 0,
+   "unapplied": 0
+  },
+  "mutants": [
+   {
+    "id": "P01",
+    "target": "law",
+    "clause": "proxy result/law: LAW w.proxy compared on the ok flag only",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "f1959f420fadad8237bde747f42852f86ea37c5497288c9fc67f8767e0c02a8c",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "law-proxy-message",
+       "expect": "law",
+       "findings": [
+        "prior-set"
+       ],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "law-proxy-message",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P02",
+    "target": "proxy-law",
+    "clause": "proxy shape: proxy.target and proxy.origin binding dropped",
+    "verdict": "survived",
+    "class": "redundant-cross-check",
+    "mutantSha": "96cecce6eb859b345b7871bde19deb8b28f34e355748a17baf6ad9b202ff14af",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "proxy-shape-origin",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "law"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P03",
+    "target": "proxy-law",
+    "clause": "proxy log: accepted parent origin no longer checked",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "86d3333619ed69282fd2b60a915d639e3734c0c27e7a6da80066e135b1a1c1e1",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "proxy-log-origin",
+       "expect": "proxy-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "log-origin",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P04",
+    "target": "proxy-law",
+    "clause": "proxy log: target echoed by the child no longer checked",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "171668989d7f92b5bf58ed05678c10df9cc6dd66de5d9da121b23dd37dc97399",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "log-target",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P05",
+    "target": "proxy-law",
+    "clause": "proxy log: exactly-one-request cardinality dropped",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "0bd561ed4bd12bbfe90b9b2f6e60c7a64403efdcb6dddcfcdb9eeef3761de0dc",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "log-count",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P06",
+    "target": "proxy-law",
+    "clause": "proxy reply: reply origin (parent-addressed) unchecked",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "8a15636641e0d427a35d845ceedf681e8b41c002d814a6e11c691e4a3ec71927",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "reply-origin",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P07",
+    "target": "proxy-law",
+    "clause": "proxy reply: payload compared on the ok flag only",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "12f3b1e20eb0e162ebc0bf1474482a0ff29528feab30a3a256bba4fddb84ad75",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "reply-name",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P08",
+    "target": "same-element-law",
+    "clause": "same-element: iframe element rects no longer compared",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "d8129555bc110e702da7b9a8baaea4aa3978a2545c57e2761fbbc62b12301550",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "same-element-rect",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P09",
+    "target": "same-element-law",
+    "clause": "same-element: per-leg copy compared on the same-origin record only",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "7f444317faeecf404f8c3a4e92b1a6c081b1a05e60107f283bb1c5c366069886",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "same-element-leg",
+       "expect": "same-element-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "same-element-leg-xo",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P10",
+    "target": "same-element-law",
+    "clause": "same-element: parent pad element type 'file' unchecked",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "fd16538baaf0896632f2b595a1bff913e845a02cb9b4c3b11fd527fdf50af707",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "same-element-parent-type",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P11",
+    "target": "chooser-event-law",
+    "clause": "chooser frame: frame id only needs the 32-hex shape",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "634dd23a73444966d66b02c37ac950f9856908cae25ce5f278daf3221548b3f2",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "chooser-frame",
+       "expect": "chooser-event-law",
+       "findings": [
+        "prior-set"
+       ],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "chooser-frame",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P12",
+    "target": "chooser-event-law",
+    "clause": "chooser binding: afterSendId window widened to any non-negative id",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "3177a62eb9ebf1a08f6147b8ea1f0977794aed54029b7f8f7c63cb4a556656ab",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "chooser-binding",
+       "expect": "chooser-event-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "chooser-binding",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P13",
+    "target": "chooser-event-law",
+    "clause": "chooser shape: params.mode enum unchecked",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "136cb740024ace59deb60ed060a32859729631bc6faa6f4448f5f03d92b818b4",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "chooser-mode",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P14",
+    "target": "activation-law",
+    "clause": "activation: parent before-state only",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "773313da7d2b90672e16ec8e8c7d92df3507c526f391dfb43d28f64b9d63192e",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "activation-parent",
+       "expect": "activation-law",
+       "findings": [
+        "prior-set"
+       ],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "activation-parent",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P15",
+    "target": "activation-law",
+    "clause": "activation: child after-state only",
+    "verdict": "survived",
+    "class": "redundant-cross-check",
+    "mutantSha": "a17bcc45f53b636e06e3b7bce4f2a08e28531bf764ddd6b4b403f42243df83e6",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "activation-child-before",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P16",
+    "target": "state-law",
+    "clause": "state: non-answer child state only red for an answer-named file",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "12000fc7bf97145e46450f4ee7f89bab296612d1bb6b44dfdee74aec132c026f",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "state-child",
+       "expect": "state-law",
+       "findings": [
+        "prior-set"
+       ],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "state-child",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P17",
+    "target": "state-law",
+    "clause": "state: parent state only red above a 1000-byte file",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "67cbf1bb4f4423e031378a4a7d54afcd304f97344780cd524263af5761d9d6af",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "state-parent",
+       "expect": "state-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "state-parent",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P18",
+    "target": "state-law",
+    "clause": "answer: child file descriptor size unchecked",
+    "verdict": "survived",
+    "class": "redundant-cross-check",
+    "mutantSha": "c76fb0c0be6a4af18783d95b0295116642b5018ac61549be7b72aba96e894e89",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "state-answer-size",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "prior-set"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P19",
+    "target": "state-law",
+    "clause": "answer: DOM.setFileInputFiles backendNodeId binding dropped",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "d11754bf71400ce9eca916fce96eb66151dc24371df55d18d3e2487a0fd3f0e5",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "state-answer-binding",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P20",
+    "target": "state-law",
+    "clause": "answer: delivered file sha256 only needs 64 chars",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "793792e02380e1f0da02aef8e826df9b7db09f07f26ce6e8521637940fec171d",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "state-answer-sha",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P21",
+    "target": "event-shape",
+    "clause": "event shape: parent pointer sequence only needs at least N events",
+    "verdict": "survived",
+    "class": "redundant-inside-check",
+    "mutantSha": "6588fac4e80edb15926b051bc4f5c72c6c7f870ba312dfafe938e5b9c4b9a56c",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "event-parent",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "event-shape"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": true,
+     "mutantAccepts": false
+    }
+   },
+   {
+    "id": "P22",
+    "target": "event-shape",
+    "clause": "event shape: child pointer sequence only needs at least N events",
+    "verdict": "survived",
+    "class": "redundant-inside-check",
+    "mutantSha": "36bb78ddec333735770606da50ff548f7d7965b22a4e9c5d501a965dce13ea2d",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "event-child",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "event-shape"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": true,
+     "mutantAccepts": false
+    }
+   },
+   {
+    "id": "P23",
+    "target": "event-shape",
+    "clause": "event shape: pointer act flag dropped from the trust demand",
+    "verdict": "survived",
+    "class": "redundant-inside-check",
+    "mutantSha": "62e9c0a559de7febcdbd45dd7e5b7ffbc756750ef38a7311fcf3628577fb100d",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "event-trust",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "event-shape"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": true,
+     "mutantAccepts": false
+    }
+   },
+   {
+    "id": "P24",
+    "target": "event-shape",
+    "clause": "event shape: event key set only needs eight keys",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "0d04d3ad5be4398307d9f4490b25338443309088334384c9026798ef91a57e4c",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "event-keys",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P25",
+    "target": "send-log-allowlist",
+    "clause": "send-log allowlist: any Runtime.evaluate expression under 4 KiB accepted",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "aa1e3b5218f42175ba70ea67d4508059a3422a99dc4f20bfb9b56cdb0cca4ccf",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "send-log-expression",
+       "expect": "send-log-allowlist",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "sendlog-allowlist",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P26",
+    "target": "send-log-allowlist",
+    "clause": "send-log: CDP command ids need not be monotonic 1..n",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "c8f436e8a896b4375e6cec99eca42232f3f1412601a25495aa626db4009f2d8b",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "sendlog-ids",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P27",
+    "target": "send-log-allowlist",
+    "clause": "send-log: frozen prologue order only needs six commands",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "67987c7f910a6fa84cc4a286520439a1be8b06abcf42740c85792f2cb40462ce",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "sendlog-prologue",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P28",
+    "target": "send-log-allowlist",
+    "clause": "send-log: intercept may be enabled more than once",
+    "verdict": "survived",
+    "class": "redundant-cross-check",
+    "mutantSha": "78ca5f927974fa336c7634efcfe38d0536752ba5b766c9747ac23bbc1edc9f40",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "sendlog-intercept",
+     "mutantExit": 1,
+     "mutantFindings": [
+      "plan-calls"
+     ],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P29",
+    "target": "send-log-allowlist",
+    "clause": "send-log: Page.navigate URL compared against itself",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "39eb5b5816743d23a83ef3c853edcfdc7fd3df2fdb2eca2dba3b5739f89313bd",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "sendlog-navigate",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P30",
+    "target": "plan-calls",
+    "clause": "plan calls: ordered action sequence only needs at least N actions",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "2b2227b7b372b0cfafc4214496f7732f76b455f9fa86cd5ffc0d0b86c4f33403",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "plan-calls-seq",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P31",
+    "target": "plan-calls",
+    "clause": "plan calls: answer setSendId only needs to be an integer",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "936b2e6244cf543fa191f8a68ae0b1e46a2cfda5180ef42e938ca07118db4ade",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "plan-calls-answer-id",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P32",
+    "target": "prior-set",
+    "clause": "prior set: at least two priors relaxed to at least one",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "80d54f7462c1ae68327452adde3addd87699172a2123447e0a9c2cf5b5a19f31",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "prior-set-length",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P33",
+    "target": "prior-set",
+    "clause": "prior set: law reproduction across priors no longer required",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "8c2b6f36db6c06496c44883c68f2de1d40c37a5be9800fdf807b2980f2051c36",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "prior-laws",
+       "expect": "prior-set",
+       "findings": [
+        "law",
+        "proxy-law"
+       ],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "prior-set-reproduced",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P34",
+    "target": "replay-identity",
+    "clause": "replay identity: per-leg launch token uniqueness dropped",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "6f97518b60e6cc2b7aebe9afe4e24f9f629b208acc47f47302e27ee5e7cc9e92",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "replay-identity",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P35",
+    "target": "host-argv",
+    "clause": "host argv: chromium argv equality (headless/new flags) unchecked",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "630162419563003220da57e6b26924ac653726baff400f2cd1d68bd8b3b43d2c",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "argv",
+       "expect": "host-argv",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "host-argv",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P36",
+    "target": "teardown-closure",
+    "clause": "teardown: port probes only need to be named, not closed",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "0057a14e5963022693a42af9dbabcd3c0d33a7089c8fca10b78612c69532271b",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "teardown",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P37",
+    "target": "frame-tree",
+    "clause": "frame tree: cross-origin childFrameId binding dropped",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "fa36ffe7f0503e7d954b56655341cfc58a6e728cf94304e08e3bd59a2e126495",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "frame-tree-xo",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P38",
+    "target": "context-binding",
+    "clause": "context binding: execution-context origin only needs loopback shape",
+    "verdict": "survived",
+    "class": "battery-gap",
+    "mutantSha": "aa73cbd3cbe120525027239c16867bf97b32101a2cbeb36756dc1dd903d4cf0e",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 0,
+     "failed": 0,
+     "cases": 44,
+     "failedCases": []
+    },
+    "probe": {
+     "defect": "context-binding",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P39",
+    "target": "leg-marks",
+    "clause": "leg marks: post-close event counts only need to be non-negative",
+    "verdict": "killed",
+    "class": "own-clause",
+    "mutantSha": "076e79a6a46efefa3a5a2d14853e685cdb433f56e26c8fafdf7b92590d1852cb",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 12,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "leg-marks",
+       "expect": "leg-marks",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "state-answer",
+       "expect": "state-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "state-child",
+       "expect": "state-law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "event-shape",
+       "expect": "event-shape",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "event-untrusted",
+       "expect": "event-shape",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "cross-access",
+       "expect": "law",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "argv",
+       "expect": "host-argv",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "teardown",
+       "expect": "teardown-closure",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "server-log",
+       "expect": "host-argv",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "run-window",
+       "expect": "run-window",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "prior-laws",
+       "expect": "prior-set",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      },
+      {
+       "case": "replay-token",
+       "expect": "replay-identity",
+       "findings": [],
+       "targetCheckGreenUnderMutant": false
+      }
+     ]
+    },
+    "probe": {
+     "defect": "leg-marks",
+     "mutantExit": 0,
+     "mutantFindings": [],
+     "pristineExit": 1,
+     "pristineTargetFlipped": true,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   },
+   {
+    "id": "P40",
+    "target": "run-window",
+    "clause": "run window: 30s minimum duration dropped",
+    "verdict": "killed",
+    "class": "sibling-clause",
+    "mutantSha": "18a4fabb16ac05cd7d521e365bccdc12a69283ca0602403a7c6d4a885d4bf835",
+    "cleanExit": 0,
+    "battery": {
+     "exit": 1,
+     "failed": 1,
+     "cases": 44,
+     "failedCases": [
+      {
+       "case": "run-window",
+       "expect": "run-window",
+       "findings": [],
+       "targetCheckGreenUnderMutant": true
+      }
+     ]
+    },
+    "probe": {
+     "defect": "run-window",
+     "mutantExit": 2,
+     "mutantFindings": [
+      "receipt-unreadable"
+     ],
+     "pristineExit": 2,
+     "pristineTargetFlipped": false,
+     "mutantTargetRed": false,
+     "mutantAccepts": true
+    }
+   }
+  ]
+ },
+ "drift": {
+  "detector": "fixture lane with one injected defect (statement must be red) + gate --selftest",
+  "baseline": {
+   "exit": 0,
+   "findings": [],
+   "checkCount": 8
+  },
+  "cases": [
+   {
+    "id": "D01",
+    "target": "r90-attribution-sweep",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": false,
+    "selftestCases": 8,
+    "selftestFailed": [
+     "r90-attribution-sweep"
+    ]
+   },
+   {
+    "id": "D02",
+    "target": "r90-attribution-sweep",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D03",
+    "target": "r90-attribution-sweep",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D04",
+    "target": "r90-battery-count",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D05",
+    "target": "r90-battery-count",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D06",
+    "target": "r89-append-only",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D07",
+    "target": "r89-append-only",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": false,
+    "selftestCases": 8,
+    "selftestFailed": [
+     "r89-append-only"
+    ]
+   },
+   {
+    "id": "D08",
+    "target": "r90-after-revision",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": false,
+    "selftestCases": 8,
+    "selftestFailed": [
+     "r90-after-revision"
+    ]
+   },
+   {
+    "id": "D09",
+    "target": "r90-dangling-pointer",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": false,
+    "selftestCases": 8,
+    "selftestFailed": [
+     "r90-dangling-pointer"
+    ]
+   },
+   {
+    "id": "D10",
+    "target": "r89-s224-mark",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D11",
+    "target": "gate-selftest",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D12",
+    "target": "scorecard-tallies",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   },
+   {
+    "id": "D13",
+    "target": "scorecard-tallies",
+    "cleanExit": 0,
+    "redExit": 0,
+    "redTargetRed": false,
+    "redFindings": [],
+    "selftestOk": true,
+    "selftestCases": 8,
+    "selftestFailed": []
+   }
+  ],
+  "note": "all 13 mutants distinguished by the red fixture; gate selftest distinguishes 4 of 13"
+ }
+}

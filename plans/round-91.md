@@ -182,3 +182,38 @@ D1-derived nonce; every later freeze touches only non-receipt instruments and is
   Recorded, not amended.
 - **Activation law reads only `isActive`:** `hasBeenActive` is unread (R91Review1 F5, R91Exec4 M16);
   the claim's "stays inactive" wording is bound by one field. r92.
+- **Battery coverage is case-coverage (R91Mut1):** 40 clause-level counter mutants were scored
+  against the frozen 44-case battery — 13 killed (8 by their own clause, 5 only via
+  `prior-set`/`law`), **27 survived, 20 of them true battery gaps**. `battery 44/44` says the 44
+  cases hold, not that the counter's clauses are load-bearing. Recorded; the survivors are r92
+  cases.
+- **Selftest kill power (R91Mut1):** 13 drift-gate clause mutants are all killed by the injected
+  defect fixture, but the gate's own `--selftest` kills only **4/13**; the "8/8 injected red and
+  alone" claim is a weak discriminator for the gate's clauses. r92.
+- **Post-data narrowing (R91Critic C1-F1/F7, R91Sentinel F1/F2):** `claims.json` was edited at
+  13:19:45 — after the scored receipt finished at 13:07:04 and after R91Exec3 filed at 13:18:31 —
+  narrowing C1's law-(2) sentence and replacing the D1 pin map with the D3 bytes. Both are recorded
+  in `frozenAmendments` with old/new/why, but they are **after-data** edits; the frozen text at
+  `249b7d0c` remains the claim of record, and the admission verdict is computed against it.
+- **Statement narrowness (R91Critic C2-F2/F3/F5/F7):** statements 1 (LOG/QUALITY may keep the false
+  attribution), 2 (the 225 preflight delta can be deleted), 6 (the counted quote can be lengthened
+  under its marker) and 8 (SCORECARD tallies are id substrings) all accept injected violations on a
+  scratch copy of the nine files the gate reads. Statement 4 passes on a revision the instrument
+  does not implement; statement 7 reads the artifact the runner itself wrote. Recorded; the gate is
+  frozen for this round and its strengthening is r92 work (with the CRITIC fixture committed as the
+  red case).
+- **§8 item 6 (R91Critic C2-F1):** the spot-check's item 6 has a lane-writable half — the r89
+  correction's "(the committer time)" wording — which is uncorrected and excluded from the counted
+  set. The counted set is therefore six full items plus one partial, not six.
+- **Same-origin colour and parent-activated date (R91Critic C1-F2/F4):** the claim's first sentence
+  says all three shapes in both frames; the 15-leg plan carries same-origin file/date and
+  cross-origin file/date/colour only, and the date arms have no parent-activated leg. The claim is
+  wider than the instrument; the operator is asked to rule (no instrument change after data).
+- **Record reconciliation (R91Scribe):** re-derived from the receipt and the scanned instruments —
+  N1 the knowledge note's law-2 parenthetical mislabels its arms (`sp91-so-direct-parentact` is the
+  parent-click DIRECT leg; `sp91-so-proxy-childact` is `childPad:true`); N2 the frozen "direct and
+  proxy calls" sentence is unbound; N3 the `hasBeenActive` split is on the receipt and unstated;
+  N4 `sp91-xo-proxy-color-childact` carries no chooser event at all and `sp91-so-proxy-date-childact`
+  is unmentioned; N5 the `TypeError` lives in `crossAccess.showPicker`; N6 `proxyLog.origin` is the
+  sender (parent) origin on all 13 proxy legs; N7 the fixture sha256s are absent from the note;
+  G1-G5 quote conventions and the "excluded 1 for a NEW row" mislabel. Read-only; nothing amended.

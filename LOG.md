@@ -4166,3 +4166,14 @@ F5 unpinned control churn; Simplifier: K-3/N-3/C-3/R-3 dead weight and "at least
 planned for r92. F3 and F5 are repaired in this round (`freeze.txt` comment, `freeze.sh`,
 control digests in `controls/c1/digests.txt`, census artifacts annotated); F4, the reach gaps and
 the simplifier items are recorded as r92 work in `plans/round-91.md`.
+
+**Verdicts on the frozen claims (computed against the claim of record at `249b7d0c`): C1 NOT VERIFIED
+as written, C2 NOT VERIFIED as written.** The instrument legs hold on their predicates (30 checks,
+battery 44/44, kill power 32/32, five gates, drift 8 → 0, two cold reproductions), but the critic's
+executed counterexamples leave C1's first sentence, its frozen law (2) proxy arm, its activation
+clause and leg (c)'s record items unbound, and C2's gate accepts injected violations on four of its
+eight statements while §8 item 6's lane half is uncorrected; the mutation sweep adds 27/40 surviving
+counter clauses (20 true battery gaps) and a 4/13 selftest kill power. The claims file was also
+narrowed at 13:19:45 after the scored receipt — recorded in `frozenAmendments`, not hidden. The round
+is an honest stop: no instrument changed after data, no axis claimed as moved, repairs routed
+to r92 with the critic's tautology fixture as the red case.
