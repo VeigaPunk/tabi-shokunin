@@ -3984,7 +3984,8 @@ constant-offset forgery), R85Scout (sources), R85Scribe (note drafts), R85Connec
   **66** mutants / 66 killed / 0 survivors / 0 crashed; witness families before **3** survivors
   (narrow-tel-crossaccess, narrow-tel-childseq, narrow-tel-childact-before) → after **0**.
 - Do-nothing controls: `controls/c1/nowork-r85-under-r86.json` (the r85 receipt under the r86
-  counter: exit 1, 89 checks, 39 findings incl. `schema`, `plan-frozen`) and
+  counter: exit 1, 89 checks, 40 findings incl. `schema`, `plan-frozen`; the first capture
+  recorded 39 before the scored receipt existed and was re-captured, `controls/c1/README-controls.md`) and
   `controls/c1/noreceipt.txt` (exit 2 `receipt-unreadable`).
 - Knowledge 98 → 99 (`corpus/knowledge/chromium-showpicker-runtime-round-86.md`). Registry 223 (no
   new rows; S223/S219/S216/S221/S222 re-opened; located quotes 18 and 21 words).
