@@ -79,7 +79,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0 `tab
 C1 and C2 are frozen in `.ufo/waves/round-87/claims.json` (nonce `tabi-r87-l1-3dd4b0802d67`,
 receipt D `3dd4b0802d67`; instrument freeze D5 `c921658c6046`). Scored: counter clean **99** checks;
 battery **209** cases / 0 failed / coverage 99/99; kill power **66/66** killed, 0 survivors, 0
-crashed, 0 unapplied; selftest **10/10** at D6 over the D3 receipt; record drift **5 → 0**.
+crashed, 0 unapplied; selftest **10/10** over the D3 receipt (measured at the D6 freeze `6d4a63d29e0c`); record drift **5 → 0**.
 
 ## Mistakes
 
