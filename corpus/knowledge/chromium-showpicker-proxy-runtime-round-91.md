@@ -26,14 +26,13 @@ receiver reads `event.origin`/`event.source`). Fifteen legs, one fresh browser p
 1. **No activation in either window.** The proxy call on `#s` throws `NotAllowedError` ("requires a
    user gesture") and opens no chooser, in BOTH iframes: `sp91-so-proxy-noact`,
    `sp91-xo-proxy-file-noact`.
-2. **A parent click activates the same-origin child, not the cross-origin child.** After a real
-   click in the parent document: the same-origin child's direct call from the parent document and
-   its proxy call both return `undefined` and open exactly one `Page.fileChooserOpened` owned by
-   the same-origin frame (`sp91-so-direct-parentact`, `sp91-so-proxy-childact` are the child-click
-   arms; the parent-click arm is `sp91-so-direct-parentact`); the cross-origin child's proxy call
-   with the SAME parent click still throws `NotAllowedError` and its child window reports
-   `isActive:false` (`sp91-xo-proxy-file-parentact`). This is the same-element origin comparison:
-   one click, one element shape, two origins, two outcomes.
+2. **A parent click satisfies the same-origin child, not the cross-origin child.** The
+   same-origin child's DIRECT call under a real parent click returns `undefined` and opens exactly
+   one `Page.fileChooserOpened` owned by that frame (`sp91-so-direct-parentact`); a click INSIDE
+   the same-origin child makes its PROXY call do the same (`sp91-so-proxy-childact`); the
+   cross-origin child's proxy call with the SAME parent click still throws `NotAllowedError` and
+   its child window reports `isActive:false` (`sp91-xo-proxy-file-parentact`). This is the
+   same-element origin comparison: one click, one element shape, two origins, two outcomes.
 3. **A click inside the cross-origin child opens its picker.** Its proxy file call returns
    `undefined` and opens exactly one chooser owned by the cross-origin frame
    (`sp91-xo-proxy-file-childact`); `DOM.setFileInputFiles` answered on that chooser delivers

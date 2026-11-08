@@ -18,10 +18,13 @@ the measured laws are:
 
 - no transient activation in either window: the proxy call on `#s` throws `NotAllowedError` with
   the `showPicker()` user-gesture message and opens no chooser, in both iframes;
-- a real click in the PARENT document (which activates the same-origin child but not the
-  cross-origin child): the same-origin child's DIRECT and PROXY calls both return `undefined` and
-  open exactly one `Page.fileChooserOpened` owned by the same-origin frame; the cross-origin
-  child's PROXY call still throws `NotAllowedError` and opens nothing;
+- a real click in the PARENT document (which satisfies the same-origin child's activation
+  requirement but leaves the cross-origin child inactive): the same-origin child's DIRECT call
+  returns `undefined` and opens exactly one `Page.fileChooserOpened` owned by the same-origin
+  frame; the cross-origin child's PROXY call throws `NotAllowedError` and opens nothing; a click
+  INSIDE the same-origin child makes its PROXY call return `undefined` and open exactly one
+  chooser owned by that frame (the frozen plan has no same-origin proxy-under-parent-click leg;
+  the wording was narrowed before any seat scored — `claims.json` `frozenAmendments`);
 - a real click INSIDE the cross-origin child: its proxy file call returns `undefined` and opens
   exactly one chooser owned by the cross-origin frame; the answer `DOM.setFileInputFiles` on that
   chooser delivers `tabi-r91-answer.txt` (22 B) to the CHILD input while the parent `#ps` stays
@@ -33,7 +36,7 @@ the measured laws are:
   `SecurityError` from `contentWindow.document`.
 
 Each law is bound by `scripts/check-showpicker-proxy-round91.mjs` over the 15-leg receipt; the
-counter is frozen with `scripts/chrome-cdp-showpicker-proxy-round91.mjs`, the 39-case battery, the
+counter is frozen with `scripts/chrome-cdp-showpicker-proxy-round91.mjs`, the 44-case battery, the
 32-mutant kill-power sweep, the gate runner and the drift gate. `showPicker()` consumes transient
 activation on success and leaves it active when it throws — measured, and bound in the activation
 law (r90's answer-law recorded the same consumption).
@@ -58,7 +61,7 @@ deliberately NOT counted.
   --expect-nonce <scored nonce> --expect-parent-sha256 <pin> --expect-same-sha256 <pin>
   --expect-child-sha256 <pin> --prior-set .ufo/waves/round-91/controls/c1/prior-set.txt --json`
   → exit 0, 30 checks.
-- C1 leg (b): the battery (39 cases, positive control included) and the kill-power sweep (32
+- C1 leg (b): the battery (44 cases, positive control included) and the kill-power sweep (32
   mutants) over the same receipt and pins.
 - C1 leg (c): the capability row, the knowledge note, the SKILL registry and the gate runner.
 - C2: `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` → exit 0 iff 8
@@ -68,7 +71,7 @@ deliberately NOT counted.
 
 - `controls/c1/probes/probe1.json` — the first 15-leg run, 4 legs dead on the Chromium singleton
   path length: it is NOT a prior and is kept as the failed preflight (disclosed).
-- `controls/c1/noreceipt.txt` — a nonexistent receipt path → counter exit 2 `receipt-unreadable`.
+- `controls/c1/noreceipt.txt` — a deliberately non-JSON sentinel (and a nonexistent path is the second arm) → counter exit 2 `receipt-unreadable`.
 - The r90 scored receipt under the r91 counter → exit 1 with `schema` first (different schema).
 - A probe clone with one proxy result flipped (`sp91-xo-proxy-file-noact` → `ok:true`) → exit 1
   `law` (the counter's own `--selftest` second case, committed as
@@ -125,5 +128,42 @@ D1-derived nonce; every later freeze touches only non-receipt instruments and is
 
 - **D3 `12cbe8a0267f`** (non-receipt instrument only): the drift gate's `--selftest` fixture
   still listed the old gate name `selftest`; it now lists `drift-selftest`, so the D2 gate-name
-  change has a green causal fixture (`--selftest` ok, 10 cases). No predicate, counter, battery,
+  change has a green causal fixture (`--selftest` ok, 8 cases). No predicate, counter, battery,
   kill rule, prior or receipt changed; the scored nonce stays D1's.
+
+## Limits discovered by the wave (recorded, not amended)
+
+- `check-record-drift-round91.mjs --revision <hex>` is an **unverified echo** (`payload.revision =
+  revision || null`); the gate reads the working tree and never binds the lane content to that
+  commit. `scored/drift-a.json`'s revision field is a recorded assertion, not a checked one
+  (R91Exec3 §operability note).
+- The `--selftest` is **8 causal cases**, not 10; the numerals in the plan/claims were corrected
+  after the seat measured the frozen bytes (R91Exec3 §6).
+- `controls/c1/noreceipt.txt` is a deliberately non-JSON sentinel; a nonexistent path is the second
+  arm. Both exit 2 `receipt-unreadable` with different detail strings (R91Exec3 §2).
+- **Reach gaps (R91Exec4, 55 single-field mutants on the scored receipt, 41 refused / 14 clean):**
+  thirteen fields of one leg change without refusal — chooser `mode` (`selectSingle` accepted for a
+  single-select element), `activationAfter.hasBeenActive`, the `directResult`/`postResult`/
+  `crossResult`/`dismissResult` string mirrors, chooser `backendNodeId` on a non-answer leg, event
+  `at`, `actionAt`, `closedAt` (may precede `start`), `interceptSendId`, `soFrameId` inside an xo
+  leg, forged `replies`/`proxyLog` on a direct leg (`proxy-law` is mode-gated), `argv[4]` profile
+  directory (`host-argv` is self-referential), `proxyLog[0].at`; M55 is the declared
+  receipt-regeneration limit. M38 is refused by `prior-set` alone and M04 shows the mirror
+  (`prior-set`'s proxy projection does not read `origin`). None falsifies a frozen law; each is an
+  r92 battery case (recorded, not amended after scoring).
+- **Statement strength (R91Sentinel F4):** four of C2's eight statements are presence-only
+  (`r90-after-revision` reads the lesson prose, not `drift-a.json`; `r89-append-only` proves a
+  block exists, not that nothing was rewritten; the pointer and quote-mark statements test string
+  presence). C2's green is a statement about eight text probes, not eight facts; the underlying
+  facts were independently verified by the seat. The gate is frozen here and the strengthening is
+  r92 work.
+- **Freeze artifact (R91Sentinel F3/F5):** `freeze.txt` was the D3 re-freeze (the D1/D2 bytes were
+  overwritten) and its last line named `tabi-r91-l1-12cbe8a0267f`, a nonce no receipt carries.
+  Repaired in this round: `freeze.sh` now writes `freeze-<digest>.txt` (never truncates), refuses
+  to overwrite a freeze, and reads the scored nonce from `claims.json`; `freeze.txt` carries the
+  corrected line. Control digests are pinned in `controls/c1/digests.txt`; the census artifacts
+  carry their command, exit code and registry sha256.
+- **Dead weight (R91Simplifier K-3/N-3/C-3/R-3):** the kill-power oracle credits a mutant killed by
+  any case rather than its own `expectCase`; the battery accepts "at least" one expected finding;
+  `reproduced` cannot decide the counter's verdict; the drift gate's `note-plan-calls-claim` arm
+  pins a phrase that does not occur. All are r92 instrument work; nothing was changed after scoring.

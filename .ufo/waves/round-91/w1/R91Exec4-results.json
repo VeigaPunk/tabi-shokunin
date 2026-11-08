@@ -1,0 +1,1114 @@
+{
+ "schema": "tabi-r91-r91exec4-refusal-matrix",
+ "base": "receipt.base.json",
+ "baseSha256": "15e2167ea64b638e28fd8d8b3bba3170bd4d48becc2dc27c54039885c39d35c8",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-proxy-round91.mjs",
+ "counterSha256": "f2f052f27c3a0e18ecef3217fc902c2897c59ab9f175d314ba66d526a7edb03e",
+ "cmdTemplate": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-proxy-round91.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt <mutant.json> --expect-driver-sha256 343eb0f202d9b37a21d948adf0f5eff84fbebf8c195ab99c272fd66580e33015 --expect-nonce tabi-r91-l1-1d073adc0b8d --expect-parent-sha256 a6ecf367adcfd31e3e54e82794db09e2f9845b8d910eb465ab47ca022b778bf0 --expect-same-sha256 01380a98976c3fd8963a907a70f1f14d4d84a7b0eb94d088995919331775fe36 --expect-child-sha256 01380a98976c3fd8963a907a70f1f14d4d84a7b0eb94d088995919331775fe36 --prior-set .ufo/waves/round-91/controls/c1/prior-set.txt --json",
+ "mutations": 55,
+ "refused": 41,
+ "passed": 14,
+ "passIds": [
+  "M13-chooser-mode",
+  "M16-activationAfter-hasBeenActive",
+  "M28-directResult-string",
+  "M29-chooser-backendNodeId",
+  "M31-event-at",
+  "M32-actionAt",
+  "M33-closedAt",
+  "M35-interceptSendId",
+  "M37-soFrameId-on-xo-leg",
+  "M39-replies-on-direct-leg",
+  "M40-proxyLog-on-direct-leg",
+  "M41-argv-profile-dir",
+  "M43-proxyLog-at",
+  "M55-launchToken-fresh"
+ ],
+ "refusedByCheck": {
+  "law": 6,
+  "proxy-law": 12,
+  "prior-set": 11,
+  "frame-tree": 1,
+  "chooser-event-law": 3,
+  "activation-law": 2,
+  "state-law": 5,
+  "same-element-law": 3,
+  "send-log-allowlist": 2,
+  "plan-calls": 3,
+  "leg-marks": 2,
+  "teardown-closure": 3,
+  "host-argv": 2,
+  "context-binding": 1,
+  "plan-frozen": 3,
+  "event-shape": 1,
+  "replay-identity": 1,
+  "leg-records": 1,
+  "leg-order": 1
+ },
+ "results": [
+  {
+   "id": "M01-proxy-ok",
+   "note": "proxy result ok false->true (no-activation cross-origin leg)",
+   "appliedPath": "legs[sp91-xo-proxy-file-noact].proxy.ok",
+   "before": false,
+   "after": true,
+   "value": true,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "law",
+    "proxy-law",
+    "prior-set"
+   ],
+   "details": [
+    "law: per-leg showPicker laws: sp91-xo-proxy-file-noact:proxy {\"ok\":true,\"name\":\"NotAllowedError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() requires a user gesture.\",\"targe",
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-file-noact:reply-result",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 113,
+   "mutantSha256": "10be4caf1f742b7adc8128b495309609bed3c63b83dd24659931766d6644d69f"
+  },
+  {
+   "id": "M02-proxy-name",
+   "note": "proxy result name NotAllowedError->SecurityError",
+   "appliedPath": "legs[sp91-so-proxy-noact].proxy.name",
+   "before": "NotAllowedError",
+   "after": "SecurityError",
+   "value": "SecurityError",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "law",
+    "proxy-law",
+    "prior-set"
+   ],
+   "details": [
+    "law: per-leg showPicker laws: sp91-so-proxy-noact:proxy {\"ok\":false,\"name\":\"SecurityError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() requires a user gesture.\",\"target\":\"s\"",
+    "proxy-law: proxy log/reply binding: sp91-so-proxy-noact:reply-result",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 116,
+   "mutantSha256": "9d67be6e5abde07776159c5702a90f3a6e85eb6fb0fc421627b95dc41fc0eff2"
+  },
+  {
+   "id": "M03-proxy-target",
+   "note": "proxy target s->dt (file leg)",
+   "appliedPath": "legs[sp91-xo-proxy-file-childact].proxy.target",
+   "before": "s",
+   "after": "dt",
+   "value": "dt",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "law",
+    "proxy-law",
+    "prior-set"
+   ],
+   "details": [
+    "law: per-leg showPicker laws: sp91-xo-proxy-file-childact:proxy {\"ok\":true,\"ret\":\"undefined\",\"target\":\"dt\",\"origin\":\"http://127.0.0.1:19961\"}",
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-file-childact:reply-result,sp91-xo-proxy-file-childact:proxy-shape {\"ok\":true,\"ret\":\"undefined\",\"target\":\"dt\",\"origin\":\"http://127.0.0.1:19961\"}",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 78,
+   "mutantSha256": "9c6fcb638d87ee9b387a2560462d77b9e89dde8434f5dc840c068221738574d3"
+  },
+  {
+   "id": "M04-proxy-origin",
+   "note": "proxy origin parent->child origin",
+   "appliedPath": "legs[sp91-so-proxy-childact].proxy.origin",
+   "before": "http://127.0.0.1:19961",
+   "after": "http://127.0.0.1:19963",
+   "value": "http://127.0.0.1:19963",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "law",
+    "proxy-law"
+   ],
+   "details": [
+    "law: per-leg showPicker laws: sp91-so-proxy-childact:proxy {\"ok\":true,\"ret\":\"undefined\",\"target\":\"s\",\"origin\":\"http://127.0.0.1:19963\"}",
+    "proxy-law: proxy log/reply binding: sp91-so-proxy-childact:reply-result,sp91-so-proxy-childact:proxy-shape {\"ok\":true,\"ret\":\"undefined\",\"target\":\"s\",\"origin\":\"http://127.0.0.1:19963\"}"
+   ],
+   "ms": 99,
+   "mutantSha256": "c0d3fe1e25eb4898bd7367794ef63cf15c88d7ab9e1384560a6398331524f9b6"
+  },
+  {
+   "id": "M05-proxy-ret",
+   "note": "proxy return undefined->object",
+   "appliedPath": "legs[sp91-so-proxy-childact].proxy.ret",
+   "before": "undefined",
+   "after": "object",
+   "value": "object",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "law",
+    "proxy-law",
+    "prior-set"
+   ],
+   "details": [
+    "law: per-leg showPicker laws: sp91-so-proxy-childact:proxy {\"ok\":true,\"ret\":\"object\",\"target\":\"s\",\"origin\":\"http://127.0.0.1:19961\"}",
+    "proxy-law: proxy log/reply binding: sp91-so-proxy-childact:reply-result",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 83,
+   "mutantSha256": "0edb2a57d04dbcedcd7df9ec2023187050506c7495d3fd6ce36885a177556d64"
+  },
+  {
+   "id": "M06-proxyLog-origin",
+   "note": "proxyLog origin parent->child",
+   "appliedPath": "legs[sp91-so-proxy-childact].proxyLog.0.origin",
+   "before": "http://127.0.0.1:19961",
+   "after": "http://127.0.0.1:19963",
+   "value": "http://127.0.0.1:19963",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-so-proxy-childact:log [{\"origin\":\"http://127.0.0.1:19963\",\"cmd\":\"showpicker\",\"target\":\"s\",\"at\":396.10000002384186}]"
+   ],
+   "ms": 61,
+   "mutantSha256": "048505d0f7f4c5ea941118146e58333aa7467ad0cab852deea70899074492d5f"
+  },
+  {
+   "id": "M07-proxyLog-cmd",
+   "note": "proxyLog cmd showpicker->showPicker",
+   "appliedPath": "legs[sp91-xo-proxy-file-childact].proxyLog.0.cmd",
+   "before": "showpicker",
+   "after": "showPicker",
+   "value": "showPicker",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-file-childact:log [{\"origin\":\"http://127.0.0.1:19961\",\"cmd\":\"showPicker\",\"target\":\"s\",\"at\":489.80000001192093}]"
+   ],
+   "ms": 76,
+   "mutantSha256": "0c10af98e8632663a16a4a4c5b2d83729615ba2026adcbc9fe918822f16d5346"
+  },
+  {
+   "id": "M08-proxyLog-target",
+   "note": "proxyLog target s->dt",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].proxyLog.0.target",
+   "before": "s",
+   "after": "dt",
+   "value": "dt",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-file-answer:log [{\"origin\":\"http://127.0.0.1:19961\",\"cmd\":\"showpicker\",\"target\":\"dt\",\"at\":418}]"
+   ],
+   "ms": 105,
+   "mutantSha256": "dea52160dd02665fa466107346a13c4dda29e954b5a6baed6850023df0ab5bfd"
+  },
+  {
+   "id": "M09-reply-origin",
+   "note": "reply origin parent->child (same-origin child must reply parent)",
+   "appliedPath": "legs[sp91-so-proxy-childact].replies.0.origin",
+   "before": "http://127.0.0.1:19961",
+   "after": "http://127.0.0.1:19963",
+   "value": "http://127.0.0.1:19963",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-so-proxy-childact:reply [{\"origin\":\"http://127.0.0.1:19963\",\"data\":{\"cmd\":\"result\",\"result\":{\"ok\":true,\"ret\":\"undefined\",\"target\":\"s\",\"origin\":\"http://127.0.0.1:19961\"}}}]"
+   ],
+   "ms": 107,
+   "mutantSha256": "70e245e6cba014784875c41a6694d82429fdb5c88d3563bc88addecf1f6b1a36"
+  },
+  {
+   "id": "M10-reply-result",
+   "note": "reply result ok false->true while the proxy field still says SecurityError",
+   "appliedPath": "legs[sp91-xo-proxy-date-childact].replies.0.data.result.ok",
+   "before": false,
+   "after": true,
+   "value": true,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-date-childact:reply-result"
+   ],
+   "ms": 103,
+   "mutantSha256": "6079084ddb267467ac13f4e7b6d2e09fb74f6db3994e2d9e860eae981e8d5013"
+  },
+  {
+   "id": "M11-childFrameId",
+   "note": "childFrameId replaced by the leg xoFrameId after build",
+   "appliedPath": "legs[sp91-so-proxy-childact].childFrameId",
+   "before": "8829BC869C4936BBE20DCCBF5BC18282",
+   "after": "992DF8EC921083471A4CFC73694D7E0C",
+   "value": "XX",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "frame-tree",
+    "chooser-event-law",
+    "prior-set"
+   ],
+   "details": [
+    "frame-tree: frame trees / iframe frame ids",
+    "chooser-event-law: chooser events: sp91-so-proxy-childact:frame",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 214,
+   "mutantSha256": "e794b2480a5778deea61fb5921b4c936a27037abd8cb3031e2103c884a02d8bc"
+  },
+  {
+   "id": "M12-chooser-frameId",
+   "note": "chooser frameId replaced by the leg soFrameId after build",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].choosers.0.params.frameId",
+   "before": "1EC3CE52F51C881D23DEC234C5BE2914",
+   "after": "8513F60696EAD159547EEE72C259609D",
+   "value": "XX",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "chooser-event-law",
+    "prior-set"
+   ],
+   "details": [
+    "chooser-event-law: chooser events: sp91-xo-proxy-file-answer:frame",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 78,
+   "mutantSha256": "62d42062e76dabe49684cc40055d9faf8b122b5bb60553b5c8560c7bbef74506"
+  },
+  {
+   "id": "M13-chooser-mode",
+   "note": "chooser mode selectSingle->selectMultiple on a single file input",
+   "appliedPath": "legs[sp91-so-direct-parentact].choosers.0.params.mode",
+   "before": "selectSingle",
+   "after": "selectMultiple",
+   "value": "selectMultiple",
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 118,
+   "mutantSha256": "45f48fd22af7ec69fc12f7acb6e59e85246f737bd9b62738ac10e237eff7e2b4"
+  },
+  {
+   "id": "M14-chooser-afterSendId",
+   "note": "chooser afterSendId +10 outside the [act, act+2] attribution window",
+   "appliedPath": "legs[sp91-xo-proxy-file-childact].choosers.0.afterSendId",
+   "before": 29,
+   "after": 99,
+   "value": 99,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "chooser-event-law"
+   ],
+   "details": [
+    "chooser-event-law: chooser events: sp91-xo-proxy-file-childact:binding 99 act 28"
+   ],
+   "ms": 129,
+   "mutantSha256": "dde4946843391eeb3d11ddf608f1e4b2f51f973a926996d49ca69c04e3bf83e2"
+  },
+  {
+   "id": "M15-activationAfter-isActive",
+   "note": "parent activationAfter.isActive false->true (success must consume activation)",
+   "appliedPath": "legs[sp91-so-direct-parentact].activationAfter.isActive",
+   "before": false,
+   "after": true,
+   "value": true,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "activation-law",
+    "prior-set"
+   ],
+   "details": [
+    "activation-law: transient-activation transitions: sp91-so-direct-parentact:parent [false,true] want [false,false]",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 149,
+   "mutantSha256": "bbcd2e5e2531c2c57e467f05061d7de6369dfbd2e88ac57f84e6e79a884b9248"
+  },
+  {
+   "id": "M16-activationAfter-hasBeenActive",
+   "note": "parent activationAfter.hasBeenActive false->true never activated",
+   "appliedPath": "legs[sp91-so-direct-noact].activationAfter.hasBeenActive",
+   "before": false,
+   "after": true,
+   "value": true,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 97,
+   "mutantSha256": "b0e4991b1b565da129909e64357efcf69cfc13773480f637e5a544724b822a9f"
+  },
+  {
+   "id": "M17-childActivationAfter-isActive",
+   "note": "child activationAfter.isActive true->false after a throwing call",
+   "appliedPath": "legs[sp91-xo-proxy-date-childact].childActivationAfter.isActive",
+   "before": true,
+   "after": false,
+   "value": false,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "activation-law",
+    "prior-set"
+   ],
+   "details": [
+    "activation-law: transient-activation transitions: sp91-xo-proxy-date-childact:child [false,false] want [false,true]",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 103,
+   "mutantSha256": "b19acf24cdce455a338e0ecc5fea1c4b808f07142ca46f526bb753bffe5aa79c"
+  },
+  {
+   "id": "M18-answerSet-backendNodeId",
+   "note": "answerSet backendNodeId 10->11, chooser backendNodeId stays 10",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].answerSet.backendNodeId",
+   "before": 10,
+   "after": 11,
+   "value": 11,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "state-law"
+   ],
+   "details": [
+    "state-law: state / answer laws: sp91-xo-proxy-file-answer:answer-binding"
+   ],
+   "ms": 132,
+   "mutantSha256": "76c5957f78d62b00e9d051cafb423810f7f653b6c1628fe312922f34b59379d7"
+  },
+  {
+   "id": "M19-answerSet-files-basename",
+   "note": "answerSet files basename answer->answer-beta",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].answerSet.files.0",
+   "before": "/fast/scratch/hyaku/tabi-r91/scored/leg-11/upload/tabi-r91-answer.txt",
+   "after": "/fast/scratch/hyaku/tabi-r91/R91Exec4/upload/tabi-r91-answer-beta.txt",
+   "value": "/fast/scratch/hyaku/tabi-r91/R91Exec4/upload/tabi-r91-answer-beta.txt",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "state-law"
+   ],
+   "details": [
+    "state-law: state / answer laws: sp91-xo-proxy-file-answer:answerSet {\"files\":[\"/fast/scratch/hyaku/tabi-r91/R91Exec4/upload/tabi-r91-answer-beta.txt\"],\"backendNodeId\":10,\"setSendId\":31,\"setResult\":{},\"setError\":null}"
+   ],
+   "ms": 182,
+   "mutantSha256": "6c153f6cd130b8ac16a0f6e96f67371f4de576c4647c7b0af265de8d8b352558"
+  },
+  {
+   "id": "M20-answerSet-setResult",
+   "note": "answerSet setResult {}->{n:1}",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].answerSet.setResult",
+   "before": {},
+   "after": {
+    "n": 1
+   },
+   "value": {
+    "n": 1
+   },
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "state-law"
+   ],
+   "details": [
+    "state-law: state / answer laws: sp91-xo-proxy-file-answer:answerSet {\"files\":[\"/fast/scratch/hyaku/tabi-r91/scored/leg-11/upload/tabi-r91-answer.txt\"],\"backendNodeId\":10,\"setSendId\":31,\"setResult\":{\"n\":1},\"setError\":null}"
+   ],
+   "ms": 130,
+   "mutantSha256": "448774808dd6417e418d449f75096f9d0f198e58cf553a229a2a55a0cb583b53"
+  },
+  {
+   "id": "M21-childState",
+   "note": "childState []->forged file on a non-answer leg",
+   "appliedPath": "legs[sp91-so-proxy-childact].childState",
+   "before": [],
+   "after": [
+    [
+     "forged.txt",
+     4,
+     "text/plain"
+    ]
+   ],
+   "value": [
+    [
+     "forged.txt",
+     4,
+     "text/plain"
+    ]
+   ],
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "state-law",
+    "prior-set"
+   ],
+   "details": [
+    "state-law: state / answer laws: sp91-so-proxy-childact:childState [[\"forged.txt\",4,\"text/plain\"]]",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 114,
+   "mutantSha256": "5d0bff21ba71f223eb950be0e652110eee1f873038122fbce447ed0c45ba48a0"
+  },
+  {
+   "id": "M22-parentState",
+   "note": "parentState []->forged file",
+   "appliedPath": "legs[sp91-so-direct-noact].parentState",
+   "before": [],
+   "after": [
+    [
+     "forged.txt",
+     4,
+     "text/plain"
+    ]
+   ],
+   "value": [
+    [
+     "forged.txt",
+     4,
+     "text/plain"
+    ]
+   ],
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "state-law"
+   ],
+   "details": [
+    "state-law: state / answer laws: sp91-so-direct-noact:parentState [[\"forged.txt\",4,\"text/plain\"]]"
+   ],
+   "ms": 141,
+   "mutantSha256": "8c58076fbf614c5eacbb87a803c9ccea769bb9ec2cc79899081745ecdf455320"
+  },
+  {
+   "id": "M23-leg-element-accept",
+   "note": "one leg copy of the same-origin element accept null->image/*",
+   "appliedPath": "legs[sp91-so-proxy-childact].elements.so.elements.0.accept",
+   "before": null,
+   "after": "image/*",
+   "value": "image/*",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "same-element-law"
+   ],
+   "details": [
+    "same-element-law: same-element record: {\"parent\":{\"origin\":\"http://127.0.0.1:19961\",\"elements\":[{\"id\":\"ps\",\"tag\":\"input\",\"type\":\"file\",\"accept\":null,\"rect\":{\"left\":100,\"top\":650,\"width\":120,\"height\":40}}]},\"so\":{\"origin\":\"http://127.0.0.1"
+   ],
+   "ms": 105,
+   "mutantSha256": "167232daaf18d396f6babd008910547799e8def7f76798ca56099f3b3ee30ba9"
+  },
+  {
+   "id": "M24-leg-element-rect",
+   "note": "one leg copy of the cross-origin element rect width 120->121",
+   "appliedPath": "legs[sp91-so-proxy-childact].elements.xo.elements.0.rect.width",
+   "before": 120,
+   "after": 121,
+   "value": 121,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "same-element-law"
+   ],
+   "details": [
+    "same-element-law: same-element record: {\"parent\":{\"origin\":\"http://127.0.0.1:19961\",\"elements\":[{\"id\":\"ps\",\"tag\":\"input\",\"type\":\"file\",\"accept\":null,\"rect\":{\"left\":100,\"top\":650,\"width\":120,\"height\":40}}]},\"so\":{\"origin\":\"http://127.0.0.1"
+   ],
+   "ms": 172,
+   "mutantSha256": "faeac0934e4fac95714c653775f70374a920db8ba0d19d719377d2c55d11b043"
+  },
+  {
+   "id": "M25-sendlog-expression",
+   "note": "the postMessage Runtime.evaluate expression swapped for document.title",
+   "appliedPath": "legs[sp91-so-proxy-childact].cdpSendLog[26].params.expression",
+   "before": "JSON.stringify((function(){ var f = document.getElementById(\"so\"); f.contentWindow.postMessage({cmd:\"showpicker\",target:\"s\"}, \"http://127.0.0.1:19961\"); return \"sent\"; })())",
+   "after": "document.title",
+   "value": "document.title",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "send-log-allowlist",
+    "plan-calls"
+   ],
+   "details": [
+    "send-log-allowlist: send logs outside the allowlist: sp91-so-proxy-childact:expression",
+    "plan-calls: plan calls differ from the frozen plan: sp91-so-proxy-childact:sequence [\"intercept\",\"childpad-press\",\"childpad-release\",\"dismiss\"] want [\"intercept\",\"childpad-press\",\"childpad-release\",\"post\",\"dismiss\"],sp91-so-proxy-ch"
+   ],
+   "ms": 142,
+   "mutantSha256": "cbb0c4dbb742f28787f6ad5b524f78aa97d7e151bc5cc6e1a78d5f329b3c67d5"
+  },
+  {
+   "id": "M26-mark-name",
+   "note": "mark pre->preflight",
+   "appliedPath": "legs[sp91-so-direct-noact].marks.1.name",
+   "before": "pre",
+   "after": "preflight",
+   "value": "preflight",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "leg-marks"
+   ],
+   "details": [
+    "leg-marks: marks/closes: [[\"sp91-so-direct-noact\",[\"start\",\"preflight\",\"settle\"],0,0],[\"sp91-so-direct-parentact\",[\"start\",\"pre\",\"settle\"],0,0],[\"sp91-so-direct-childact\",[\"start\",\"pre\",\"settle\"],0,0],[\"sp91-so-proxy-noact\",[\"start"
+   ],
+   "ms": 141,
+   "mutantSha256": "4b0c51f40651791d5c7f31126b88e7fd0b5d27ab59c1ee3953fc72c17f60b710"
+  },
+  {
+   "id": "M27-teardown-portProbe",
+   "note": "teardown portProbes.fixture closed->open",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].teardown.portProbes.fixture",
+   "before": "closed",
+   "after": "open",
+   "value": "open",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "teardown-closure"
+   ],
+   "details": [
+    "teardown-closure: a leg teardown proof failed: [[\"sp91-so-direct-noact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"child\":\"closed\"},{\"fixture\":7,\"devtools\":7,\"child\":7}],[\"sp91-so-direct-parentact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"c"
+   ],
+   "ms": 115,
+   "mutantSha256": "f42455aad470ea3844a0077279fd6493b923cfce9a2fd5a7bb68a1caa85d92a6"
+  },
+  {
+   "id": "M28-directResult-string",
+   "note": "legacy directResult string mirror says ok while direct says NotAllowedError",
+   "appliedPath": "legs[sp91-so-direct-noact].directResult",
+   "before": "{\"ok\":false,\"name\":\"NotAllowedError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() requires a user gesture.\"}",
+   "after": "{\"ok\":true,\"ret\":\"undefined\"}",
+   "value": "{\"ok\":true,\"ret\":\"undefined\"}",
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 129,
+   "mutantSha256": "3fa33f56fdbe7a6faebd7c61793bdd8843c63608627809b40fb610e5102a15c6"
+  },
+  {
+   "id": "M29-chooser-backendNodeId",
+   "note": "chooser backendNodeId 10->999 on a leg with no setFileInputFiles answer",
+   "appliedPath": "legs[sp91-so-direct-parentact].choosers.0.params.backendNodeId",
+   "before": 10,
+   "after": 999,
+   "value": 999,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 202,
+   "mutantSha256": "88f3de34d92b657b6523a67cb7ddfa806e358eb91e2003b5646315c1ee2e06b4"
+  },
+  {
+   "id": "M30-argv-profile",
+   "note": "one argv element: the profile path, one character class change only",
+   "appliedPath": "legs[sp91-so-proxy-childact].argv.4",
+   "before": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/scored/leg-05/profile",
+   "after": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/R91Exec4/mutant-profile",
+   "value": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/R91Exec4/mutant-profile",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "host-argv"
+   ],
+   "details": [
+    "host-argv: host argv / devtools / servers: sp91-so-proxy-childact:argv"
+   ],
+   "ms": 171,
+   "mutantSha256": "6b00ac22e003aae17518f59a55db2aab15026547f28c489ce0cf08ee0ab42021"
+  },
+  {
+   "id": "M31-event-at",
+   "note": "one event timestamp at -> -1",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].childEvents.0.at",
+   "before": 192.9000000357628,
+   "after": -1,
+   "value": -1,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 127,
+   "mutantSha256": "67d1b77c9b7eb41959f78a65a6a4a5d12adb53fd09514343d4d6e8a5dbc334aa"
+  },
+  {
+   "id": "M32-actionAt",
+   "note": "actionAt epoch ms -> 1",
+   "appliedPath": "legs[sp91-so-proxy-childact].actionAt",
+   "before": 1794153969206,
+   "after": 1,
+   "value": 1,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 169,
+   "mutantSha256": "92b6d41d50e10c939210142f5c4cfe10334b79b8500f2d7b1d1cbf9ea04363bb"
+  },
+  {
+   "id": "M33-closedAt",
+   "note": "closedAt -> 1, before the start mark",
+   "appliedPath": "legs[sp91-so-proxy-childact].closedAt",
+   "before": 1645.2000000476837,
+   "after": 1,
+   "value": 1,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 171,
+   "mutantSha256": "5c61692666897001198955a373bd126a352d56d349377344df80b86a4dd5f444"
+  },
+  {
+   "id": "M34-stderrHead",
+   "note": "stderrHead stripped of the DevTools line",
+   "appliedPath": "legs[sp91-so-proxy-childact].stderrHead",
+   "before": "\nDevTools listening on ws://127.0.0.1:19962/devtools/browser/b1b7adc0-2976-493a-8580-dd7daefe77d1\n",
+   "after": "x",
+   "value": "x",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "host-argv"
+   ],
+   "details": [
+    "host-argv: host argv / devtools / servers: sp91-so-proxy-childact:devtools"
+   ],
+   "ms": 104,
+   "mutantSha256": "1d96167d299e2be1ead2a0c97a781ba97adb72f92f1352d447c1d16bcc20146a"
+  },
+  {
+   "id": "M35-interceptSendId",
+   "note": "interceptSendId 6->7 (no other send id changes)",
+   "appliedPath": "legs[sp91-so-proxy-childact].interceptSendId",
+   "before": 6,
+   "after": 7,
+   "value": 7,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 123,
+   "mutantSha256": "d51ae209c4b0bab4faab9bc281f2fb577a4f919f847502fab7caf64f98dd777f"
+  },
+  {
+   "id": "M36-dismissSendId",
+   "note": "dismissSendId -> 999 on a chooser leg",
+   "appliedPath": "legs[sp91-so-proxy-childact].dismissSendId",
+   "before": 31,
+   "after": 999,
+   "value": 999,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "plan-calls"
+   ],
+   "details": [
+    "plan-calls: plan calls differ from the frozen plan: sp91-so-proxy-childact:dismiss-id"
+   ],
+   "ms": 125,
+   "mutantSha256": "ef9a006a171ef4eac33e60df320226f518f7be74222f51f0d2df851efccd83d5"
+  },
+  {
+   "id": "M37-soFrameId-on-xo-leg",
+   "note": "the soFrameId field inside an xo leg replaced with a fresh 32-hex id",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].soFrameId",
+   "before": "8513F60696EAD159547EEE72C259609D",
+   "after": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 159,
+   "mutantSha256": "47b958c0159c56bfdc6e4cb9ac913555efd10824de3bfa50efc20bfc0577151c"
+  },
+  {
+   "id": "M38-proxy-on-direct-leg",
+   "note": "proxy object forged on a direct-mode leg whose law says NotAllowedError",
+   "appliedPath": "legs[sp91-so-direct-noact].proxy",
+   "before": null,
+   "after": {
+    "ok": true,
+    "ret": "undefined",
+    "target": "s",
+    "origin": "http://127.0.0.1:19961"
+   },
+   "value": {
+    "ok": true,
+    "ret": "undefined",
+    "target": "s",
+    "origin": "http://127.0.0.1:19961"
+   },
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "prior-set"
+   ],
+   "details": [
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 151,
+   "mutantSha256": "1aeab12f6faa7e3d0219c7c62420c5019e1b3368557c3c1a4e5ed7e1321d3189"
+  },
+  {
+   "id": "M39-replies-on-direct-leg",
+   "note": "proxy reply forged on a direct-mode leg",
+   "appliedPath": "legs[sp91-so-direct-noact].replies",
+   "before": null,
+   "after": [
+    {
+     "origin": "http://127.0.0.1:19961",
+     "data": {
+      "cmd": "result",
+      "result": {
+       "ok": true,
+       "ret": "undefined",
+       "target": "s",
+       "origin": "http://127.0.0.1:19961"
+      }
+     }
+    }
+   ],
+   "value": [
+    {
+     "origin": "http://127.0.0.1:19961",
+     "data": {
+      "cmd": "result",
+      "result": {
+       "ok": true,
+       "ret": "undefined",
+       "target": "s",
+       "origin": "http://127.0.0.1:19961"
+      }
+     }
+    }
+   ],
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 159,
+   "mutantSha256": "ae75aaaef5c23c6fd7af54dc1958b2003445a0581cdb5bc0918e49ec4a4d3647"
+  },
+  {
+   "id": "M40-proxyLog-on-direct-leg",
+   "note": "proxy log entry forged on a direct-mode leg",
+   "appliedPath": "legs[sp91-so-direct-noact].proxyLog",
+   "before": null,
+   "after": [
+    {
+     "origin": "http://127.0.0.1:19961",
+     "cmd": "showpicker",
+     "target": "s",
+     "at": 1
+    }
+   ],
+   "value": [
+    {
+     "origin": "http://127.0.0.1:19961",
+     "cmd": "showpicker",
+     "target": "s",
+     "at": 1
+    }
+   ],
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 93,
+   "mutantSha256": "f8cb98c164e06d03a3823f9abc9bed31b560be8de061ab27be80af206dd5d3f0"
+  },
+  {
+   "id": "M41-argv-profile-dir",
+   "note": "the profile directory moved, basename still profile",
+   "appliedPath": "legs[sp91-so-proxy-childact].argv.4",
+   "before": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/scored/leg-05/profile",
+   "after": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/R91Exec4/elsewhere/profile",
+   "value": "--user-data-dir=/fast/scratch/hyaku/tabi-r91/R91Exec4/elsewhere/profile",
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 220,
+   "mutantSha256": "73695e9fc2021ba536cd2f9bfc8320ab37fa9a223b19a1ecacd13e5f58e897c1"
+  },
+  {
+   "id": "M42-marks-order",
+   "note": "mark pre timestamp moved before the start mark",
+   "appliedPath": "legs[sp91-so-direct-noact].marks.1.at",
+   "before": 1692.956147,
+   "after": 0,
+   "value": 0,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "leg-marks"
+   ],
+   "details": [
+    "leg-marks: marks/closes: [[\"sp91-so-direct-noact\",[\"start\",\"pre\",\"settle\"],0,0],[\"sp91-so-direct-parentact\",[\"start\",\"pre\",\"settle\"],0,0],[\"sp91-so-direct-childact\",[\"start\",\"pre\",\"settle\"],0,0],[\"sp91-so-proxy-noact\",[\"start\",\"pre"
+   ],
+   "ms": 102,
+   "mutantSha256": "9307f8fbd004e1b9b17d80f5e22e523bd456d24369da3242e135c142e92f72fc"
+  },
+  {
+   "id": "M43-proxyLog-at",
+   "note": "proxyLog timestamp at -> 1",
+   "appliedPath": "legs[sp91-xo-proxy-file-childact].proxyLog.0.at",
+   "before": 489.80000001192093,
+   "after": 1,
+   "value": 1,
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 133,
+   "mutantSha256": "a67d95607b42ce6d5d2b525ab8047851ab99bbc93482af949d6239c1f0d2b081"
+  },
+  {
+   "id": "M44-reply-cmd",
+   "note": "reply data.cmd result->showpicker",
+   "appliedPath": "legs[sp91-xo-proxy-file-childact].replies.0.data.cmd",
+   "before": "result",
+   "after": "showpicker",
+   "value": "showpicker",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "proxy-law"
+   ],
+   "details": [
+    "proxy-law: proxy log/reply binding: sp91-xo-proxy-file-childact:reply [{\"origin\":\"http://127.0.0.1:19963\",\"data\":{\"cmd\":\"showpicker\",\"result\":{\"ok\":true,\"ret\":\"undefined\",\"target\":\"s\",\"origin\":\"http://127.0.0.1:19961\"}}}]"
+   ],
+   "ms": 116,
+   "mutantSha256": "708aa07f0eab5e1f02a1240a0aa9dc3cd5538a27f892a732a6deb740ec94e019"
+  },
+  {
+   "id": "M45-teardown-survivors",
+   "note": "teardown survivors []->[1234]",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].teardown.survivors",
+   "before": [],
+   "after": [
+    1234
+   ],
+   "value": [
+    1234
+   ],
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "teardown-closure"
+   ],
+   "details": [
+    "teardown-closure: a leg teardown proof failed: [[\"sp91-so-direct-noact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"child\":\"closed\"},{\"fixture\":7,\"devtools\":7,\"child\":7}],[\"sp91-so-direct-parentact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"c"
+   ],
+   "ms": 84,
+   "mutantSha256": "69be3390ce1b4980033deebf4bab6e7fc07994495ff1df6f4ffc53d7d461d6fa"
+  },
+  {
+   "id": "M46-teardown-postKillCurl",
+   "note": "postKillCurl fixture exit 7->0",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].teardown.postKillCurl.fixture",
+   "before": 7,
+   "after": 0,
+   "value": 0,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "teardown-closure"
+   ],
+   "details": [
+    "teardown-closure: a leg teardown proof failed: [[\"sp91-so-direct-noact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"child\":\"closed\"},{\"fixture\":7,\"devtools\":7,\"child\":7}],[\"sp91-so-direct-parentact\",{\"fixture\":\"closed\",\"devtools\":\"closed\",\"c"
+   ],
+   "ms": 106,
+   "mutantSha256": "40060275f62a6cb5110b85d23c437fb45bc90be627f77458ec087830133e6e37"
+  },
+  {
+   "id": "M47-leg-element-id",
+   "note": "one leg copy of the same-origin element id s->q",
+   "appliedPath": "legs[sp91-so-proxy-childact].elements.so.elements.0.id",
+   "before": "s",
+   "after": "q",
+   "value": "q",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "same-element-law"
+   ],
+   "details": [
+    "same-element-law: same-element record: {\"parent\":{\"origin\":\"http://127.0.0.1:19961\",\"elements\":[{\"id\":\"ps\",\"tag\":\"input\",\"type\":\"file\",\"accept\":null,\"rect\":{\"left\":100,\"top\":650,\"width\":120,\"height\":40}}]},\"so\":{\"origin\":\"http://127.0.0.1"
+   ],
+   "ms": 110,
+   "mutantSha256": "45cb15e0a07b393db3178c369a78d530a9f601459afee24c16a462d03eb375a5"
+  },
+  {
+   "id": "M48-childContextId",
+   "note": "childContextId replaced by a non-existent context id",
+   "appliedPath": "legs[sp91-so-proxy-childact].childContextId",
+   "before": 3,
+   "after": "999",
+   "value": "999",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "context-binding"
+   ],
+   "details": [
+    "context-binding: child context binding: sp91-so-proxy-childact:childContextId"
+   ],
+   "ms": 70,
+   "mutantSha256": "5bb166233054c024ba4bcd645363544e1e1dcccc0974876d30480d897479774e"
+  },
+  {
+   "id": "M49-plan-childPad",
+   "note": "plan field childPad false->true",
+   "appliedPath": "legs[sp91-so-direct-noact].childPad",
+   "before": false,
+   "after": true,
+   "value": true,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "plan-frozen"
+   ],
+   "details": [
+    "plan-frozen: leg plan differs from the frozen plan"
+   ],
+   "ms": 124,
+   "mutantSha256": "793ec204d3853a5b1cbd0393b06a4ab3834406c4e8ba03b466730524d841db12"
+  },
+  {
+   "id": "M50-plan-mode",
+   "note": "plan field mode direct->proxy",
+   "appliedPath": "legs[sp91-so-direct-noact].mode",
+   "before": "direct",
+   "after": "proxy",
+   "value": "proxy",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "plan-frozen",
+    "proxy-law"
+   ],
+   "details": [
+    "plan-frozen: leg plan differs from the frozen plan",
+    "proxy-law: proxy log/reply binding: sp91-so-direct-noact:log [],sp91-so-direct-noact:reply [],sp91-so-direct-noact:proxy-shape null"
+   ],
+   "ms": 123,
+   "mutantSha256": "0a693d8ced77cf2ae9b1e7180660a255aa1e1dbbc7bda873851c509dae7ffae2"
+  },
+  {
+   "id": "M51-event-isTrusted",
+   "note": "one synthetic-looking pointer event isTrusted true->false",
+   "appliedPath": "legs[sp91-xo-proxy-file-answer].childEvents.0.isTrusted",
+   "before": true,
+   "after": false,
+   "value": false,
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "event-shape"
+   ],
+   "details": [
+    "event-shape: page/child event shapes: sp91-xo-proxy-file-answer:child-trust"
+   ],
+   "ms": 78,
+   "mutantSha256": "7475b09b37fd0d5a04f80b0b5df55ad36217052669ddf2421c4629f43eb620f1"
+  },
+  {
+   "id": "M52-launchToken",
+   "note": "launch token replaced by another leg token already in the receipt",
+   "appliedPath": "legs[sp91-so-proxy-childact].launchToken",
+   "before": "27f1186f173b",
+   "after": "4bdee4aa689f",
+   "value": "4bdee4aa689f",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "replay-identity"
+   ],
+   "details": [
+    "replay-identity: launch tokens / devtools ids repeat a prior or another leg"
+   ],
+   "ms": 87,
+   "mutantSha256": "aa85cda860b2fafb97f6b54bf5b36eddad7a2d690fb458b71be4b47a2be3a1b8"
+  },
+  {
+   "id": "M55-launchToken-fresh",
+   "note": "launch token replaced by a fresh unique 12-hex value (uniqueness is the law)",
+   "appliedPath": "legs[sp91-so-proxy-childact].launchToken",
+   "before": "27f1186f173b",
+   "after": "aaaabbbbcccc",
+   "value": "aaaabbbbcccc",
+   "exit": 0,
+   "verdict": "clean",
+   "findingIds": [],
+   "details": [],
+   "ms": 90,
+   "mutantSha256": "dfa3d2fe8ae4e49a0b018785a62c0bd9304e154738c8978571a3a577be0d9125"
+  },
+  {
+   "id": "M53-leg-errors",
+   "note": "leg errors []->[\"E\"]",
+   "appliedPath": "legs[sp91-so-proxy-childact].errors",
+   "before": [],
+   "after": [
+    "E"
+   ],
+   "value": [
+    "E"
+   ],
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "leg-records"
+   ],
+   "details": [
+    "leg-records: leg records: [[\"sp91-so-direct-noact\",true,0],[\"sp91-so-direct-parentact\",true,0],[\"sp91-so-direct-childact\",true,0],[\"sp91-so-proxy-noact\",true,0],[\"sp91-so-proxy-childact\",true,1],[\"sp91-so-proxy-date-noact\",true,0],[\""
+   ],
+   "ms": 131,
+   "mutantSha256": "a67f6397e180e194e6fe04b43ba8dcfa49ff776167c4aeed3ae4e63cc3503037"
+  },
+  {
+   "id": "M54-leg-name",
+   "note": "leg name changed (plan identity)",
+   "appliedPath": "legs[sp91-so-direct-noact].name",
+   "before": "sp91-so-direct-noact",
+   "after": "sp91-so-direct-noact-renamed",
+   "value": "sp91-so-direct-noact-renamed",
+   "exit": 1,
+   "verdict": "findings",
+   "findingIds": [
+    "plan-frozen",
+    "leg-order",
+    "send-log-allowlist",
+    "plan-calls",
+    "law",
+    "prior-set"
+   ],
+   "details": [
+    "plan-frozen: leg plan differs from the frozen plan",
+    "leg-order: legs sp91-so-direct-noact-renamed,sp91-so-direct-parentact,sp91-so-direct-childact,sp91-so-proxy-noact,sp91-so-proxy-childact,sp91-so-proxy-date-noact,sp91-so-proxy-date-childact,sp91-xo-proxy-file-noact,sp91-xo-proxy-fi",
+    "send-log-allowlist: send logs outside the allowlist: sp91-so-direct-noact-renamed:expression",
+    "plan-calls: plan calls differ from the frozen plan: sp91-so-direct-noact-renamed:unknown",
+    "law: per-leg showPicker laws: sp91-so-direct-noact-renamed:no-law",
+    "prior-set: prior receipts: [\"laws-differ\",\"laws-differ\"] reproduced=false"
+   ],
+   "ms": 104,
+   "mutantSha256": "2beb49e3f032b4ad1464792a417044eacffae54c819e0f942c7580baf21c45e9"
+  }
+ ]
+}

@@ -1,0 +1,74 @@
+{
+ "lane": "tabi",
+ "round": 91,
+ "base": "b1d8f07b",
+ "digestsCommit": "1d073adc0b8d",
+ "nonce": "tabi-r91-l1-1d073adc0b8d",
+ "frozenAt": "2026-11-08. The scored receipt was produced once at the D1-derived nonce tabi-r91-l1-1d073adc0b8d; every later freeze touches only non-receipt instruments and is named in plans/round-91.md \u00a7Re-freeze history. No predicate, threshold, prior or kill rule changed after any seat scored.",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition \u2014 chromium-showpicker-proxy-linux (new, first-working round 91). On Chromium 155.0.8059.84 Linux --headless=new the same file/date/colour input shapes in a same-origin and a cross-origin iframe are reached through a window.postMessage proxy in each child that accepts only the served parent origin. The frozen 15-leg laws: (1) no transient activation in either window -> the proxy call on #s throws NotAllowedError and opens no chooser in BOTH iframes; (2) a real click in the PARENT document satisfies the same-origin child's activation requirement -- its DIRECT call returns undefined and opens exactly one chooser owned by that frame -- while the cross-origin child reports isActive:false and its proxy call throws NotAllowedError and opens nothing; a click INSIDE the same-origin child makes its PROXY call return undefined and open exactly one chooser owned by that frame; (3) a real click INSIDE the cross-origin child -> its proxy file call returns undefined and opens exactly one chooser owned by that frame, and DOM.setFileInputFiles on that chooser delivers tabi-r91-answer.txt (22 B) to the child input while the parent #ps stays empty; (4) the cross-origin proxy call on type=date throws SecurityError in BOTH activation states and opens nothing, and the type=color call returns undefined with no FILE chooser; (5) the parent direct access to the cross-origin child yields contentDocument === null and SecurityError from contentWindow.document.",
+   "predicate": "C1-SHOWPICKER-PROXY-R91",
+   "legs": {
+    "a": "the scored run corpus/evidence/round91/chromium-showpicker-proxy/receipt.json scores clean under scripts/check-showpicker-proxy-round91.mjs at checkCount 30 with the driver/fixture/nonce pins",
+    "b": "the battery exits 0 with 0 failed (44 cases, positive control included); kill power leaves 0 survivors, 0 crashed, 0 unapplied (32 mutants)",
+    "c": "the capability row + knowledge note + SKILL registry + gate runner green (five gates)"
+   },
+   "countingCommand": "node scripts/check-showpicker-proxy-round91.mjs --lane <ABS lane> --receipt corpus/evidence/round91/chromium-showpicker-proxy/receipt.json --expect-driver-sha256 343eb0f202d9b37a21d948adf0f5eff84fbebf8c195ab99c272fd66580e33015 --expect-nonce tabi-r91-l1-1d073adc0b8d --expect-parent-sha256 a6ecf367adcfd31e3e54e82794db09e2f9845b8d910eb465ab47ca022b778bf0 --expect-same-sha256 01380a98976c3fd8963a907a70f1f14d4d84a7b0eb94d088995919331775fe36 --expect-child-sha256 01380a98976c3fd8963a907a70f1f14d4d84a7b0eb94d088995919331775fe36 --prior-set .ufo/waves/round-91/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-showpicker-proxy-round91.mjs": "343eb0f202d9b37a21d948adf0f5eff84fbebf8c195ab99c272fd66580e33015",
+    "scripts/check-showpicker-proxy-round91.mjs": "f2f052f27c3a0e18ecef3217fc902c2897c59ab9f175d314ba66d526a7edb03e",
+    "scripts/negatives-showpicker-proxy-round91.mjs": "6475f056ba9d0a868274c0047337a6c61736415b39ace5bd907a41e135fe78cb",
+    "scripts/kill-power-proxy-round91.mjs": "570cffbf7a08ba061ed63ad9dc34872a247d606bcbfe46683276f53421845910",
+    "scripts/selftest-r91-gates.mjs": "988c18e564727ab261e0d6802d437557b148fdf599067add1e2b342b7577bc26",
+    "scripts/check-record-drift-round91.mjs": "e2e51c6b50e24cfb7b4991ccbdddc9e375dc73a6de8e7ab4aa95893fd62ffda3",
+    ".ufo/waves/round-91/controls/c1/probes/probe4.json": "12b5ae6f6b4405ade7642d74d4a1f5d0fd7fbacbfe1d0cdc2e54461547412fce",
+    ".ufo/waves/round-91/controls/c1/probes/probe5.json": "2d76b87d9b1c277a6e5a18e3e8b30b06268ff92c1fc4309ff395d8db2664d69a",
+    ".ufo/waves/round-91/controls/c1/prior-set.txt": "78ffc632b269a3c27d727432b9a17d2ce7cc1531b85272cd8ed5c3a3e17c2701"
+   },
+   "priorSet": ".ufo/waves/round-91/controls/c1/prior-set.txt (probe4.json, probe5.json \u2014 two independent 15-leg r91 probe receipts, 0 failures each, distinct nonces/ports/launch tokens)",
+   "doNothingControl": ".ufo/waves/round-91/controls/c1/noreceipt.txt -> counter exit 2 receipt-unreadable; controls/c1/nowork-proxy-flip.json -> exit 1 law/proxy-law; controls/c1/nowork-post-removed.json -> exit 1 plan-calls; the r90 scored receipt under the r91 counter -> exit 1 with schema among the findings",
+   "killRule": "any leg false or any axis harmed -> NOT verified",
+   "limit": "the proxy is the lane fixture origin check; the native pickers themselves are unmeasured (date/colour success is the absence of Page.fileChooserOpened); the answer is programmatic; the activation states are post-leg reads (success consumes activation, a throwing call leaves it active); the counter reads a receipt and a forger that regenerates every identity field, launch token and devtools id is outside the replay rule."
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "the six LANE-MEASURABLE routed defects of the round-90 non-author spot-check (corpus/lessons/round-90-verifier-spotcheck.md \u00a78 items 1,2,3,5,7,8), counted against repo state by scripts/check-record-drift-round91.mjs over EIGHT statements: (1) r90-attribution-sweep \u2014 the false plan-calls attribution is replaced by send-log-allowlist in the r90 knowledge note, the LOG r90 entry and QUALITY 163; (2) r90-battery-count \u2014 LOG and plans/round-90.md carry 226 cases with the 225 preflight delta; (3) r89-append-only \u2014 the r89 lesson carries the named append correction for the in-place frozen-control-numeral extension and QUALITY 164 supersedes 161's in-place rewrite; (4) r90-after-revision \u2014 the r90 lesson names the D4 worktree and the committed-tip revision 3e6cf40f; (5) r90-dangling-pointer \u2014 plans/round-90.md points D3\u2013D6 at \u00a7Wave corrections; (6) r89-s224-mark \u2014 the r89 lesson marks the 31-word original S224 Gate quote and the 17-word counted replacement; plus the self-checks (7) gate-selftest \u2014 scored/selftest.json is clean and names counter/battery/killpower/selftest exit 0, and (8) scorecard-tallies \u2014 the round-91 section's claim rows tally with claims.json. \u00a78 items 4 (the r90 fleet report's digest arithmetic) and 6 (its commit author date) live in the fleet report/commit, outside this lane's write scope, and are deliberately not counted; they are disclosed in corpus/lessons/round-90.md and the round-91 report.",
+   "predicate": "C2-RECORDDRIFT-R91",
+   "legs": {
+    "a": "node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json exits 0 with checkCount 8, findings 0",
+    "b": "the BEFORE control \u2014 the same gate (tip bytes) on a base b1d8f07b worktree \u2014 exits 1 with 8 findings (scored/drift-before.json); the after run exits 0 (scored/drift-a.json)",
+    "c": "the drift gate --selftest is ok with 8 causal cases and the C1 do-nothing controls reproduce their exits"
+   },
+   "countingCommand": "node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json",
+   "pins": {
+    "scripts/selftest-r91-gates.mjs": "988c18e564727ab261e0d6802d437557b148fdf599067add1e2b342b7577bc26",
+    "scripts/check-record-drift-round91.mjs": "e2e51c6b50e24cfb7b4991ccbdddc9e375dc73a6de8e7ab4aa95893fd62ffda3"
+   },
+   "killRule": "after findings != 0 or before findings != 8 -> NOT verified (before measured on a base b1d8f07b worktree: 8 findings, scored/drift-before.json)",
+   "limit": "eight record statements, not every sentence in the lane; \u00a78 items 4 and 6 are outside the lane write scope; a green gate means those eight match observed state, nothing more."
+  }
+ },
+ "frozenAmendments": [
+  {
+   "at": "2026-11-08, before the wave settled (no seat had scored)",
+   "field": "C1.type item (2)",
+   "old": "a real click in the PARENT document -> the same-origin child is active (its direct and proxy calls return undefined and open exactly one chooser owned by that frame)",
+   "new": "a real click in the PARENT document satisfies the same-origin child's activation requirement -- its DIRECT call returns undefined and opens exactly one chooser; the same-origin PROXY call is measured under a click INSIDE the child (L5), not under the parent click",
+   "why": "the frozen 15-leg plan has no so-proxy-parentact leg; the sentence claimed a proxy call the receipt does not carry. The predicate, counter, battery, kill rule, priors and scored receipt are unchanged."
+  },
+  {
+   "at": "2026-11-08, after the wave filed (record only)",
+   "field": "C1.pins + C2.pins",
+   "old": "the D1-era digests for selftest-r91-gates.mjs (e151c99a\u2026) and check-record-drift-round91.mjs (466496e1\u2026)",
+   "new": "the D3 freeze digests for the same two files (freeze.txt is the pin authority)",
+   "why": "D2/D3 changed only the gate runner and the drift gate; the pins map is a record of instrument bytes, not a predicate. No target, counter, battery, kill rule, prior or scored receipt changed (R91Exec3 observation)."
+  }
+ ],
+ "freezeHistory": {
+  "D1": "1d073adc0b8d (first freeze; the six instruments + probe4/probe5 + prior set; the scored receipt is produced once at tabi-r91-l1-1d073adc0b8d)",
+  "D2": "2d825d85aab7 (post-scoring, non-receipt instruments only: the drift gate's scorecard-tallies read the object-shaped claims.json as an array, and the gate runner's drift-over-lane gate was circular with the artifact the drift gate reads. The runner now runs the five instrument gates (counter-selftest, counter, battery, killpower, drift-selftest); the drift gate's gate-selftest statement requires those four named gates. No predicate, counter, battery, kill rule, prior or receipt changed; the scored nonce stays tabi-r91-l1-1d073adc0b8d.)",
+  "D3": "12cbe8a0267f (non-receipt instrument only: the drift gate's --selftest fixture was updated to the D2 gate names (drift-selftest instead of selftest), so the causal fixture is green again. No predicate, counter, battery, kill rule, prior or receipt changed; the scored nonce stays tabi-r91-l1-1d073adc0b8d.)"
+ }
+}

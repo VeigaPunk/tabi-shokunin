@@ -3369,4 +3369,4 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Battery: `node scripts/negatives-showpicker-proxy-round91.mjs --lane <ABS lane> --real <receipt.json> --expect-* ... --prior-set <file> --work <scratch> --json` (43 cases: 1 positive control + 42 single-field mutations, each naming its expected finding id).
 - Kill power: `node scripts/kill-power-proxy-round91.mjs --lane <ABS lane> --real <receipt.json> --expect-* ... --prior-set <file> --work <scratch> --json` (32 counter mutants; the battery is the oracle).
 - Record drift: `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (8 statements: the six lane-measurable r90 spot-check §8 defects + `gate-selftest` + `scorecard-tallies`).
-- Self-test: `node scripts/selftest-r91-gates.mjs --lane <ABS lane> --work <scratch> --json` (six gates; writes `.ufo/waves/round-91/scored/selftest.json`).
+- Self-test: `node scripts/selftest-r91-gates.mjs --lane <ABS lane> --work <scratch> --json` (five gates; writes `.ufo/waves/round-91/scored/selftest.json`).

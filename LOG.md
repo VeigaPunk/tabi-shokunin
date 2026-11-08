@@ -4112,3 +4112,56 @@ attack_seats=6 findings=0. Freeze D1→D6 (six re-freezes, three of them C1 inst
 its trigger in `plans/round-90.md` §Re-freeze history; verdicts: C1 **NOT VERIFIED** (axis miss —
 the moved surface is a checker obligation), C2 **VERIFIED** on its predicate with the counted set
 narrowed on record.
+
+## Round 91 — 2026-11-08 (attempts 1–3, Linux host)
+
+L1 `TabiR91`. Base `b1d8f07b` (the round-90 verifier spot-check commit). Claims: C1 coverage — the
+NEW capability `chromium-showpicker-proxy-linux` (the same-element origin comparison through a
+`postMessage` proxy in a same-origin and a cross-origin iframe), 15 legs / 30 checks, sourced by
+S225/S226/S219; C2 calibration — the six lane-measurable routed defects of the round-90
+non-author spot-check §8 (items 1, 2, 3, 5, 7, 8), counted by `scripts/check-record-drift-round91.mjs`
+over 8 statements, 8 → 0 at the committed tip. §8 items 4 and 6 are fleet-report/process items,
+disclosed and not counted.
+
+Instruments (pins in `.ufo/waves/round-91/freeze.txt`; D1 `1d073adc0b8d`, D2 `2d825d85aab7`,
+D3 `12cbe8a0267f`; only the drift gate/runner changed after scoring):
+`chrome-cdp-showpicker-proxy-round91.mjs` (15 legs), `check-showpicker-proxy-round91.mjs`
+(30 checks), `negatives-showpicker-proxy-round91.mjs` (44 cases), `kill-power-proxy-round91.mjs`
+(32 mutants), `selftest-r91-gates.mjs` (five gates), `check-record-drift-round91.mjs`
+(8 statements). Prior set: `.ufo/waves/round-91/controls/c1/prior-set.txt` (probe4, probe5 — two
+independent 15-leg probes, 0 failures each, distinct nonces/ports/launch tokens; probe1 is the
+failed first preflight, kept as evidence). Scored receipt
+`corpus/evidence/round91/chromium-showpicker-proxy/receipt.json` (nonce
+`tabi-r91-l1-1d073adc0b8d`). Controls: `controls/c1/noreceipt.txt` (exit 2), the r90 receipt under
+the r91 counter (exit 1 `schema`), `controls/c1/nowork-proxy-flip.json` (exit 1 `law`/`proxy-law`),
+`controls/c1/nowork-post-removed.json` (exit 1 `send-log-allowlist`/`plan-calls`); the C2 before
+control is the same gate on a base `b1d8f07b` worktree (8 findings, `scored/drift-before.json`).
+
+Census: start exit 0 rows=224 (base bytes mirrored in scratch), end exit 0 rows=226 (`tabi ok`);
+registry 224 → 226 (S225/S226 tier A, S219 re-opened with `used-by` old→new). Records:
+`corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md` (knowledge 103 → 104);
+`corpus/lessons/round-91.md`; `plans/round-91.md`; SCORECARD round-91 section + capability row;
+`SKILL.md` `## Round 91 gate registry`; README round-91 coverage + the r90 attribution/battery
+sweep; QUALITY 164; the r89/r90 append-only correction blocks; the r90 note/LOG/plan/QUALITY
+attribution and count repairs.
+Round shape: ONE v1 wave `w1`, 13 seats (4 executor, 2 reviewer, 1 critic, 1 mutation-tester,
+1 scout, 1 scribe, 1 connector, 1 sentinel, 1 simplifier; 5 protocol attack seats = 38 %; the L1
+holds the planner seat). Eight seats filed an artifact under `.ufo/waves/round-91/w1/` (Exec1,
+Exec3, Exec4, Review1 [result JSONs only], Review2, Scout, Sentinel, Simplifier); five seats
+(Exec2, Critic, Mut1, Scribe, Connector) left no artifact after the attempt-2 L1 died at 13:23 and
+their results were never handed off — no results JSON exists, and no seat was replaced. Attempt 3
+re-verified every filed artifact against the frozen command and landed the round.
+
+Wave outcome (record-only; no predicate, counter, battery, kill rule, prior or receipt amended):
+the attack seats reproduced C1 leg (a) clean at 30 checks and C2 at 8/8, and filed reach and record
+findings — Exec4: 13 single-field receipts score clean (chooser `mode`, `hasBeenActive`,
+`directResult`, chooser `backendNodeId`, event `at`, `actionAt`, `closedAt`, `interceptSendId`,
+`soFrameId` in an xo leg, forged `replies`/`proxyLog` on a direct leg, `argv[4]` profile directory,
+`proxyLog[0].at`; M55 is the declared limit) plus M38/M04 where `prior-set` alone refuses;
+Sentinel: F1 the claims artifact moved mid-wave, F2 the pre-amendment C1 text over-claimed one arm
+(corrected in `frozenAmendments`), F3 `freeze.txt` named a nonce no receipt used, F4 four of the
+eight drift statements are presence-only and the committed `drift-a.json` said `working-tree`,
+F5 unpinned control churn; Simplifier: K-3/N-3/C-3/R-3 dead weight and "at least" assertions,
+planned for r92. F3 and F5 are repaired in this round (`freeze.txt` comment, `freeze.sh`,
+control digests in `controls/c1/digests.txt`, census artifacts annotated); F4, the reach gaps and
+the simplifier items are recorded as r92 work in `plans/round-91.md`.

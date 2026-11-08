@@ -4357,7 +4357,7 @@ new `chromium-showpicker-proxy-linux`; the last capability row was r90); C2 work
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
 | C1 coverage (9), capability `chromium-showpicker-proxy-linux` (sourced: S225/S226/S219) | `node scripts/check-showpicker-proxy-round91.mjs --lane <ABS lane> --receipt corpus/evidence/round91/chromium-showpicker-proxy/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r91-l1-1d073adc0b8d --expect-parent-sha256 <pin> --expect-same-sha256 <pin> --expect-child-sha256 <pin> --prior-set .ufo/waves/round-91/controls/c1/prior-set.txt --json` (predicate `C1-SHOWPICKER-PROXY-R91`); leg (b) battery + kill power; leg (c) row, note, registry, gate runner | base: no r91 receipt → exit 2 `receipt-unreadable`; the proxy-flip control → exit 1 `law`; the post-removed control → exit 1 `plan-calls`; the scored receipt → exit 0, **30 checks**, 15 legs; battery **44** cases / 0 failed; kill power **32** mutants / **32** killed / 0 survived / 0 crashed / 0 unapplied | **VERIFIED** on the predicate (the wave's non-author verdicts are recorded in the lesson `## Gate`) |
-| C2 calibration (9), the six lane-measurable r90 spot-check §8 defects (`scripts/check-record-drift-round91.mjs`, predicate `C2-RECORDDRIFT-R91`) | `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (exit 0 iff 8 statements, 0 findings); the before control is the same gate (tip bytes) on a base `b1d8f07b` worktree | before (base `b1d8f07b`): **8 findings** (the six §8 defects plus the two self-checks, red because the r91 artifacts do not exist at base); after: **0 of 8**; `--selftest` ok, 10 causal cases; §8 items 4 and 6 disclosed as fleet-report/process, not counted | **VERIFIED** on the predicate, with the counted set stated in the claim (no widening) |
+| C2 calibration (9), the six lane-measurable r90 spot-check §8 defects (`scripts/check-record-drift-round91.mjs`, predicate `C2-RECORDDRIFT-R91`) | `node scripts/check-record-drift-round91.mjs --lane <ABS lane> --json` (exit 0 iff 8 statements, 0 findings); the before control is the same gate (tip bytes) on a base `b1d8f07b` worktree | before (base `b1d8f07b`): **8 findings** (the six §8 defects plus the two self-checks, red because the r91 artifacts do not exist at base); after: **0 of 8**; `--selftest` ok, 8 causal cases (the frozen numeral read 10 and was corrected on record after R91Exec3 measured the bytes — `plans/round-91.md` §Limits discovered by the wave); §8 items 4 and 6 disclosed as fleet-report/process, not counted | **VERIFIED** on the predicate, with the counted set stated in the claim (no widening) |
 
 Capabilities (this round):
 
@@ -4368,7 +4368,7 @@ Capabilities (this round):
 Knowledge 103 → 104 (`corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md`). Registry
 224 → 226 (S225 the postMessage target-origin note, S226 the activation duration/consuming APIs;
 S219 re-opened in place, `used-by` gains the r91 note). `SKILL.md` `## Round 91 gate registry`
-registers the six r91 instruments; `scripts/selftest-r91-gates.mjs` runs them in order (six gates).
+registers the six r91 instruments; `scripts/selftest-r91-gates.mjs` runs them in order (five gates).
 
 Narrowings (`plans/round-91.md` §Declared limits): (1) the proxy is the lane fixture's origin check
 (`e.origin === served parent origin`), not a measurement of Chromium's own check beyond the fixture;
@@ -4383,6 +4383,6 @@ Planned (r92): the colour popup itself (a UI-side probe or a source-side reading
 chooser path); a second browser build (Edge/WebView2) for the proxy capability; the wave's
 survivors/forgeries as battery cases. Retired: none.
 
-Scored (r91): 30 checks, battery 44/44, kill power 32/32, gate runner six gates, record drift 8 → 0
+Scored (r91): 30 checks, battery 44/44, kill power 32/32, gate runner five gates, record drift 8 → 0
 at the committed tip. C1 **VERIFIED** on its predicate; C2 **VERIFIED** on its predicate.
 - Digests: D1 `1d073adc0b8d`, nonce `tabi-r91-l1-1d073adc0b8d`. 30 checks, 44 battery cases, 32 mutants.

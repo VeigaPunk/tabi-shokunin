@@ -50,9 +50,9 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0 `tab
 ### Admitted / rejected claims
 
 C1 and C2 are frozen in `.ufo/waves/round-91/claims.json`; instrument pins in
-`.ufo/waves/round-91/freeze.txt`. Scored: counter clean **30** checks; battery **39** cases /
+`.ufo/waves/round-91/freeze.txt`. Scored: counter clean **30** checks; battery **44** cases /
 0 failed (positive control included); kill power **32** mutants / **32** killed / 0 survived /
-0 crashed / 0 unapplied; gate runner six gates green; record drift **8 → 0** over 8 statements at
+0 crashed / 0 unapplied; gate runner five gates green; record drift **8 → 0** over 8 statements at
 the committed tip. C1's prior set is two independent clean probes (probe4, probe5; 15/15 legs, 0
 failures each; the copy-with-a-changed-nonce used only for the pre-freeze counter smoke is not
 committed as a prior).
@@ -64,3 +64,23 @@ committed as a prior).
 | `socket-path-unmeasured` — the first 15-leg probe lost four legs with `no loopback page target`; Chromium's stderr says `Socket path too long: …/org.chromium.Chromium.XXXXXX/SingletonSocket` | `.ufo/waves/round-91/controls/c1/probes/probe1.json` failures (4 legs); the precheck measured `scratch/org.chromium…` but the real profile is `scratch/<leg>/profile/org.chromium…` | the driver's precheck measured a path 30+ bytes shorter than the profile it later created; nothing compared its formula to the launch path | the precheck measures the longest leg path (`leg-01..leg-15/profile/...`) and the leg dirs are `leg-NN`; probe2–probe5 ran 15/15 legs clean |
 | `field-omitted-from-record` — the counter's `leg-marks` statement was red on every probe because the driver never pushed the three marks it declared | `leg-marks` finding on probe2/probe3; `check-showpicker-proxy-round91.mjs` LEG_KEYS includes `marks` | the driver's record object initialized `marks: []` but no code appended to it; the counter's other 29 checks were green, so a single missing field hid | the driver pushes `start`/`pre`/`settle`; probe4/probe5 carry three monotonic marks and `lateAfterClose` 0; the batched field fix also added `answerSet` to the record (the answer leg was the only one carrying it, so the strict key set would have refused a clean run) |
 | `answer-events-taken-for-a-violation` — the counter first forbade `input`/`change` on every leg, but the answer leg must fire them when `DOM.setFileInputFiles` delivers the file | `event-shape` finding on probe4 for `sp91-xo-proxy-file-answer:child [input@s, change@s]`, with the child state correctly carrying the file | the no-selection law was written for trigger legs and copied to the answer leg without the measured event shape | the answer leg's expected child sequence is the five `cpad` events plus `input@s`,`change@s`; every other leg keeps the empty sequence; probe5 green |
+| `freeze-artifact-reissued-over-a-scored-nonce` — `freeze.sh` truncated `freeze.txt` and derived `nonce=tabi-r91-l1-<digest>` at every re-freeze, so the D3 file named a nonce no receipt carries and the D1/D2 bytes survived nowhere (R91Sentinel F3) | `freeze.txt` line 10 (`tabi-r91-l1-12cbe8a0267f`) vs the receipt/claims/expectations nonce `tabi-r91-l1-1d073adc0b8d`; the D3 digest `12cbe8a0267f` matches `claims.freezeHistory.D3` | nothing compared the freeze artifact's nonce line to the existing receipt; the counter never reads `freeze.txt`, so no check could go red | `freeze.sh` now writes `freeze-<digest>.txt`, refuses to overwrite an existing freeze, and reads the scored nonce from `claims.json`; the artifact and the lesson record it (this round) |
+
+### Word-count convention (from the wave's scout)
+
+The committed quote counts are reproduced under one stated rule: whitespace tokens after dropping
+only the detached punctuation the quoting convention introduces (the standalone `"` around an
+exception name, the detached `,` after `iframe`); attached punctuation and the inline `(*)` count
+as part of their word. Under a naive whitespace split the same fragments read 20 / 22 / 10 / 22 /
+12; the row/Gate counts (19 / 22 / 10 / 21 / 12) are the convention's counts and the scout
+re-located every fragment as a contiguous substring of the live page (`R91Scout.md` §2).
+
+### Mid-wave claim amendment (recorded, not silent)
+
+`claims.json` was amended at 13:19:45, after the wave dispatched (13:15:55) and after R91Exec3 filed
+its C2 measurement (13:17-13:18), while no C1 leg had been scored (R91Exec1's C1 runs landed 13:20).
+Three entries in `frozenAmendments` carry old/new/why: the C1.type item (2) narrowing, the D3 pins,
+and the two corrected numerals (six -> five gates, 10 -> 8 causal cases). A seat that read the file
+at dispatch audited different bytes (R91Sentinel F1); the pre-amendment C1 sentence over-claimed an
+arm no leg measures (F2). The ledger records which claims digest each seat read where the seat
+stated it; predicate, counter, battery, kill rule, priors, nonce and scored receipt are unchanged.
