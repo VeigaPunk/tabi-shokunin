@@ -2,8 +2,8 @@
 
 Base `f16f992d` (lane clean; the round-87 verifier spot-check commit). Two claims: C1 coverage
 (`chromium-showpicker-linux` generation r88 — MIME parameters, case variants, combined lists) and
-C2 calibration (the seven SCORECARD selftest tallies the round-87 sweep rewrote, plus the D2–D4
-routed defects).
+C2 calibration (the seven SCORECARD selftest tallies the round-87 sweep rewrote, plus the round-87
+spot-check's routed defects D1–D4).
 
 Instruments are the round-87 family retargeted to `r88`, with each gate carrying an isolated
 `--selftest` mode (D3), and the record-drift gate rewritten to the round-88 statements. Pins
@@ -21,7 +21,8 @@ attribute is read back by `window.__inputs()`:
    (`sp88-accept-audiovideo-text`, input `au`);
 3. `accept="image/png;q=0.9"` answered with `image/png` (`sp88-accept-mimeparam-png`, input `amc`).
 
-The measured law stays the one rounds 86–87 stated, now over ten token forms: **`accept` is not
+The measured law stays the one rounds 86–87 stated, now over ten attribute-string values (nine of
+them in-grammar; see the narrowing below): **`accept` is not
 a validator on a programmatic answer** — every delivered file lands in the input's file list with
 its bytes, fires trusted `input`+`change`, and the page reads the bytes back; the attribute
 itself is read from the page, so the token form is measured, not asserted. The dialog remains
@@ -69,8 +70,9 @@ records disagree with observed state:
 
 Predicate `C2-RECORDDRIFT-R88`: `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json`
 exits 0 with `claims 4`, `mismatches 0`; the BEFORE control — the same frozen gate pointed at a
-worktree of base `f16f992d` — exits 1 with `mismatches 3` (`quality161-sweep` is not red at
-base, because base QUALITY 161 already sweeps; it goes red only under a re-sweep).
+worktree of base `f16f992d` — exits 1 with `mismatches 4` (all four statements are red at base;
+R88Exec3 measured it, and the numeral is corrected from the pre-freeze estimate of 3 — see
+§Frozen-amendment note).
 
 Kill rule: after `mismatches != 0` or before `mismatches != 3` → NOT verified.
 
@@ -78,9 +80,15 @@ Kill rule: after `mismatches != 0` or before `mismatches != 3` → NOT verified.
 
 - **C1 measures acceptance, not filtering.** `DOM.setFileInputFiles` is a programmatic answer;
   the user's dialog is not measured (no UI dialog in headless).
-- **The grammar covers ten token forms**, not the whole grammar — what remains is the parser's
-  whitespace/comma normalization read from the DOM rather than the raw string, and the full
-  WHATWG "unique security error" ordering for every type.
+- **The grammar covers ten attribute-string values, nine of them in-grammar.** R88Scout located
+  the spec's own token list ("A valid MIME type string with no parameters", byte 425136):
+  `image/png;q=0.9` contains `;` and is therefore NOT one of the admitted `accept` forms — the leg
+  measures a non-conforming attribute value whose behaviour the spec leaves unspecified, which
+  strengthens the acceptance law (it still accepts the answer) but must not be called a grammar
+  form. The case variant (`IMAGE/PNG`) IS in grammar ("ASCII case-insensitive match", byte 424423)
+  and the combined list (`audio/*,video/*`) IS in grammar (the comma-split rule, byte 425894).
+  What remains frontier: the parser's whitespace/comma normalization read from the DOM rather than
+  the raw string, and the full WHATWG "unique security error" ordering for every type.
 - **The byte CONTENTS stay the inherited r83 marker** (`tabi-r83-answer-alpha\n` under the
   r88 file names `tabi-r88-a.txt` / `tabi-r88-b.png`): the counter binds names, sizes, types,
   hex and hashes — never the content marker. A case-variant or MIME-parameter leg therefore
@@ -100,9 +108,56 @@ Kill rule: after `mismatches != 0` or before `mismatches != 3` → NOT verified.
 
 ## Re-freeze history (instrument family)
 
-- **D1 `86f1dcec` (probe run at D1's pins)** (first freeze): six instruments pinned (the
-  chrome-cdp/showpicker family, the drift gate with its isolated `--selftest`, and the runner).
-  A pre-freeze probe run at `tabi-r88-probe1-probe0001` confirmed the driver reaches all 37
-  legs with 0 failures before the freeze.
+The scored receipt was produced once, at the nonce `tabi-r88-l1-86f1dcec` (the nonce names D1's
+digest because it is derived at the first freeze; the receipt is the receipt under test in every
+later freeze). Re-freezes below touched only non-receipt instruments; each is recorded with its
+cause so the churn is auditable rather than an unexplained digest change.
+
+- **D1 `86f1dcec`** (first freeze): six instruments pinned. A pre-freeze probe run at
+  `tabi-r88-probe1-probe0001` confirmed the driver reaches all 37 legs with 0 failures.
+- **D2 `138bb883`** (pre-scoring): `selftest-r88-gates.mjs` re-pinned after the counter's check
+  count was measured at 102 (the r87 number 99 was still compiled in); the prior set was replaced
+  by the two genuine 37-leg r88 probe receipts (the r87-derived priors had 34 legs, so the
+  battery's `replay-event-timeline` forgery failed `plan-frozen` before reaching the replay rule).
+  Predicate, counter, battery, kill-power list, thresholds and kill rules unchanged.
+- **D3 `93500a4e`** (pre-scoring, batched with the wave): the selftest runner gained the
+  `gate-selftest` gate (it now executes each instrument's isolated `--selftest` mode), answering
+  the drift statement's own wiring claim. Receipt-producing instruments untouched.
+- **D4 `77656d8a`** (post-wave, one batched repair): the kill-power list's
+  `no-selection-empty-dropped` mutant still named the pre-r88 empty-state key list, so it was
+  unapplied on the frozen counter (68/69 killed, 0 survived); its from-string now carries
+  `ac`/`au`/`amc` as well. No other mutant, no predicate, no threshold changed. Re-run: 69/69
+  killed, 0 survivors, 0 crashed, 0 unapplied.
+
+- **D5 `c3fa144b`** (post-wave, one runner repair): the runner's new `gate-selftest` gate read
+  `r.stdout` from a helper that returns the parsed JSON, so every mode looked red; the gate now
+  reads the parsed object and passes `--lane` to the drift mode (which requires an absolute lane).
+  No instrument the receipt depends on changed; the selftest is re-run at D5 over the same scored
+  receipt.
+
+- **D6 `4daf8817`** (post-wave, critic-driven, one batch): `scorecard-tallies` now checks EVERY
+  `## Round N` occurrence for the seven swept rounds and requires every `selftest 10/10` line in
+  the file to sit inside a Round 87/88 section (R88Critic C2-A: a stub or duplicate heading could
+  hide a swept tally, and an off-set 10/10 was printed but not gated); the drift `--selftest`
+  fixture now requires `gate-selftest` red as well. C2's statement 3 is narrowed to what the gate
+  enforces: presence of the isolated mode in each instrument's source (source-bound), with the
+  runner gate `gate-selftest` as the execution control (R88Critic C2-B). No predicate, threshold,
+  prior or kill rule changed; the receipt is untouched.
+
+Seats spawned at 11:50:56Z cite the freeze they read; where a report cites D1/D2/D3 bytes for a
+re-freezed runner, this section is the reconciliation and the report names it. The churn itself
+(D2–D5 after the wave) is mined as a `mid-wave-re-freeze-churn` mistake in
+`corpus/lessons/round-88.md` §Mistakes with the missing rule: freeze the runner only after its
+gates have all executed green once, and batch every repair.
+
+## Frozen-amendment note (disclosed)
+
+- **C2's before-numeral.** The BEFORE control was declared as 3 mismatches from an estimate made
+  before a base worktree was measured. R88Exec3 measured it on a base `f16f992d` worktree: exit 1,
+  **4 mismatches** (`scorecard-tallies`, `selftest-wording`, `gate-selftest`, `quality161-sweep` —
+  the fourth is red at base because QUALITY 161 there carries neither the SCORECARD scope nor the
+  r88 citation). The numeral is corrected to 4 post-scoring; the predicate, the gate bytes, the
+  after-value and the do-nothing direction are untouched, and the amendment is disclosed in the
+  report rather than hidden. `claims.json` `frozenAmendments` carries the same record.
 
 ## Narrowings (post-wave, pre-report — every one reconciled before filing)

@@ -1,0 +1,122 @@
+{
+ "wave": "w1",
+ "milestone": "Round 88 v1 wave: cold runs, leg (b) re-measure, C2 controls, replay/new-leg attacks, claims critique, mutants, sources, records, sibling scan, bounds audit, simplification; 12 seats, 5 attack roles.",
+ "reportDir": ".ufo/waves/round-88/w1",
+ "context": "# Target\nTabi round 88, one v1 wave `w1`. L1 `TabiR88` holds the planner seat and is the sole integration owner. Lane /home/vgpnk/Projects/shokunin/tabi-shokunin; base f16f992d; D 93500a4e (freeze.txt); scored receipt nonce tabi-r88-l1-86f1dcec, receipt corpus/evidence/round88/chromium-showpicker/receipt.json (fixture sha256 8f93405128f1... — read the exact value from the receipt).\nClaims FROZEN in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/claims.json; instrument pins in .ufo/waves/round-88/freeze.txt. Never propose amending a predicate, counter, pin, prior, threshold or kill rule; attack them.\n\nC1 coverage, capability generation r88 `chromium-showpicker-linux`: three new legs on the `accept` token grammar — `accept=\"IMAGE/PNG\"` answered with image/png, `accept=\"audio/*,video/*\"` answered with text/plain, `accept=\"image/png;q=0.9\"` answered with image/png. Measured law (carried from r86/r87, now over ten token forms): accept is not a validator on a programmatic answer — every delivered file lands in the input with its bytes, trusted input+change, page-read hex; the raw attribute is read from the page. Predicate: scored receipt clean at checkCount 102; battery 0 failed with full coverage 102/102; kill power 0 survivors; selftest green.\n\nC2 calibration, the round-87 non-author spot-check routed defects D1-D4: `scripts/check-record-drift-r88.mjs` counts four statements (the seven SCORECARD selftest tallies restored per-section to 9/9, the r87 D7 wording corrected to the D6 value, every gate's isolated `--selftest` mode, QUALITY 161's sweep extended to the SCORECARD tally set). Measured before: 3 mismatches on base f16f992d; after: 0.\n\n# Absolute paths (every seat)\n- Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin\n- Scored receipt: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round88/chromium-showpicker/receipt.json (driver sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4, nonce tabi-r88-l1-86f1dcec)\n- Prior set: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/controls/c1/prior-set.txt (prior1.json nonce tabi-r88-probe1-probe0001, prior2.json nonce tabi-r88-probe2-probe0002 — both 37-leg r88 probe receipts)\n- Frozen pins: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/freeze.txt (D 93500a4e)\n- Do-nothing controls: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/controls/c1/nowork-r87-under-r88.json (exit 1, schema/plan-frozen among the findings) and noreceipt.txt (exit 2)\n- Scored outputs (read-only for seats): /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/scored/\n- Round-87 rejected spot-check (context): /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/lessons/round-87-verifier-spotcheck.md\n- Scratch root: /fast/scratch/hyaku/tabi-r88/<your-seat-name>/ (mkdir -p; remove it before you yield; /tmp is for files under 50 MB only). Never leave a scratch tree behind.\nEvery `Report:` trailer path in your prompt is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin — write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>.\n\n# Bounds\nRead-only seats return findings only. Every seat: never commit, never push, never run a mutating git or jj command anywhere (no add/commit/stash/checkout/switch/reset/pull/push; read-only git only; `git worktree add` for a base clone is allowed and must be removed before you yield), never write into corpus/evidence/round88 or .ufo/waves/round-88/scored, never edit lane records (SKILL.md, SCORECARD.md, LOG.md, plans/, corpus/**, scripts/**), never touch the fleet repo or a sibling lane, never message agent://all. Fixture repos: `D=$(mktemp -d) && git -C \"$D\" init -q` and every later git call names `-C \"$D\"`; assert `git -C \"$D\" rev-parse --show-toplevel` equals `$D` before any commit. Never mutate host sysctls.\n\n# Tooling\nYou may install or upgrade tools that help the task (operator authorization 2026-10-19): first read /home/vgpnk/.omp/agent/RULES.md (official channels, update-safety gate) and record tool/version/channel/reason in your report. pacman transactions are PAUSED host-wide (orchestrator ruling 2026-10-20): install via uv tool/npx/an official binary in ~/.local/bin, or file nothing; never -Sy/-Syu/-U/-R, never restart a host service, never mutate host sysctls.\n",
+ "items": [
+  {
+   "name": "R88Exec1",
+   "role": "executor",
+   "axes": [
+    "coverage",
+    "operability"
+   ],
+   "milestone": "C1 cold-run reproduction",
+   "prompt": "# Assignment\nRun the frozen driver twice under fresh nonces (tabi-r88-cold1-86f1dcec and tabi-r88-cold2-86f1dcec), distinct port triples (19820/19821/19822 and 19830/19831/19832), `--lane /home/vgpnk/Projects/shokunin/tabi-shokunin`, `--scratch /fast/scratch/hyaku/tabi-r88/R88Exec1/<run>`, `--out /fast/scratch/hyaku/tabi-r88/R88Exec1/cold<k>.json`.\nScore each cold receipt with the frozen counter: `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-round88.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt <cold.json> --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce <that cold nonce> --expect-fixture-sha256 <that receipt's fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/controls/c1/prior-set.txt --json`. Report verdict/checkCount/finding ids per run. A cold run may legitimately fail only `prior-set-complete` (an undeclared in-tree receipt); list every id and say whether it is a law or a declaration.\nAlso report the two runs' per-leg counts and durations, and whether the three `sp88-accept-*` legs are present in both cold receipts with identical per-leg facts (stateAfter, one `Page.fileChooserOpened` selectSingle, read hex). Do not write into corpus/evidence/round88 or .ufo/waves/round-88/scored."
+  },
+  {
+   "name": "R88Exec2",
+   "role": "executor",
+   "axes": [
+    "operability"
+   ],
+   "milestone": "leg (b) re-measure",
+   "prompt": "# Assignment\nRe-measure leg (b) from committed bytes, all outputs under /fast/scratch/hyaku/tabi-r88/R88Exec2/: battery, kill power, selftest. Commands:\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-round88.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --real /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 <receipt fixture sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/controls/c1/prior-set.txt --work /fast/scratch/hyaku/tabi-r88/R88Exec2/battery --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-round88.mjs ...same args... --work /fast/scratch/hyaku/tabi-r88/R88Exec2/killpower --json`;\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/selftest-r88-gates.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --work /fast/scratch/hyaku/tabi-r88/R88Exec2/selftest --json`.\nReport exact cases/failed/coverage, mutants/killed/survived/crashed/unapplied, and gate pass/fail, compared byte-for-byte with /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/scored/*.json. Any mismatch is a finding. Note that the selftest now carries a `gate-selftest` gate that runs four isolated `--selftest` modes; report each mode's exit."
+  },
+  {
+   "name": "R88Exec3",
+   "role": "executor",
+   "axes": [
+    "calibration",
+    "operability"
+   ],
+   "milestone": "C2 before/after and do-nothing controls",
+   "prompt": "# Assignment\nReproduce C2's before-state and the do-nothing controls. (1) `git -C /home/vgpnk/Projects/shokunin/tabi-shokunin worktree add --detach /fast/scratch/hyaku/tabi-r88/R88Exec3/base f16f992d`, then `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r88.mjs --lane /fast/scratch/hyaku/tabi-r88/R88Exec3/base --json`; report claims/mismatches/failed ids. Expect 3 mismatches at base (scorecard-tallies, selftest-wording, quality161-sweep). Remove the worktree before yielding. (2) Reproduce both C1 do-nothing controls: the r87 scored receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round87/chromium-showpicker/receipt.json under the r88 counter (expect exit 1 with `schema` among findings) and a nonexistent receipt path (expect exit 2 `receipt-unreadable`). (3) Run the drift gate's isolated mode: `node scripts/check-record-drift-r88.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --selftest --json` (expect exit 0 with ok true, and show that the fixture lane's failed list names scorecard-tallies and selftest-wording). (4) Run the after-state on the live lane: expect claims 4, mismatches 0. Report every exit code and id list."
+  },
+  {
+   "name": "R88Review1",
+   "role": "reviewer",
+   "axes": [
+    "coverage",
+    "calibration"
+   ],
+   "milestone": "count reproduction and pin audit",
+   "prompt": "# Assignment\nRe-run C1's counting command from committed bytes on /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round88/chromium-showpicker/receipt.json with every pin (driver 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4), and verify every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/freeze.txt against the committed bytes. Independently re-derive the receipt's fixture sha256 from the pinned driver + the r78 template + the receipt nonce/child port if you can (the r87 spot-check found this verifiable out-of-band); report whether the fixture pin is counter-enforced or declaration-level. Also audit the prior set: are prior1/prior2 genuine r88 receipts with 37 legs, do their launch tokens and devtools browser ids differ from the scored receipt's, and does `replay-event-timeline` refuse a literal copy of a prior with its identity rewritten (build that forgery in scratch and score it)? Report findings F1..Fn with exact commands and exits. Do not propose amending any frozen predicate."
+  },
+  {
+   "name": "R88Review2",
+   "role": "reviewer",
+   "axes": [
+    "coverage"
+   ],
+   "milestone": "new-leg attribution attack",
+   "prompt": "# Assignment\nAttack the three new legs (`sp88-accept-case-png`, `sp88-accept-audiovideo-text`, `sp88-accept-mimeparam-png`). For each: is the fixture input its own element with the exact raw accept string (`IMAGE/PNG`, `audio/*,video/*`, `image/png;q=0.9`), is the delivered file's name/size/type/hex bound in the law, and is the leg individually attributable (can one leg's facts be swapped for another's without a finding)? Mutate the scored receipt in scratch and score it with the frozen counter to show what is and is not caught (e.g. swap two sp88 legs' stateAfter, change `ac` accept to `image/png`, change a read hex). Report concrete mutations, their counter exit/finding ids, and whether they falsify the claim's wording. Also state which of the ten grammar rows are enforced only by the top-level `fixtureInputs` snapshot rather than per-leg data."
+  },
+  {
+   "name": "R88Critic",
+   "role": "critic",
+   "axes": [
+    "calibration"
+   ],
+   "milestone": "claims vs instruments",
+   "prompt": "# Assignment\nFalsify the claims as written (claims.json). C1: the sentence says `accept` is not a validator on a programmatic answer over ten token forms — does any measured fact in the scored receipt contradict it, and does the counter enforce exactly that scope (no wider)? Specifically: does the case-variant leg prove anything about the UA's tokenisation, or only that the attribute string and the programmatic answer are as recorded? Does the MIME-parameter leg measure a parameter at all? C2: the four drift statements — is each one a real repo-state mismatch test, or can a construction satisfy it without the work (do-nothing control)? Check `gate-selftest` in particular: does the runner's new gate actually execute the isolated modes, and can a broken instrument still pass it? Check `scorecard-tallies` for a section-boundary escape (a 10/10 that a later heading hides). Report a verdict per attack with the command and output."
+  },
+  {
+   "name": "R88Mut1",
+   "role": "mutation-tester",
+   "axes": [
+    "coverage",
+    "calibration"
+   ],
+   "milestone": "independent mutant sweep",
+   "prompt": "# Assignment\nIndependent mutation sweep, not the frozen kill-power list. Write your own mutants (at least 25 semantic edits) of /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-round88.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r88.mjs: weaken or flip one clause per mutant (grammar row values, per-leg state binding, read-hex binding, nonce/prior logic, the four drift statements, the selftest-mode assertions). Score each against the frozen battery (and, for the drift gate, against the live lane plus an isolated fixture where the statement should be red). Report killed/survived/crashed/unapplied per mutant, survivors with the exact clause left alive, and whether any survivor falsifies a claim's wording. Scratch under /fast/scratch/hyaku/tabi-r88/R88Mut1/; copy the instruments there before mutating (never edit lane bytes)."
+  },
+  {
+   "name": "R88Scout",
+   "role": "scout",
+   "axes": [
+    "coverage",
+    "freshness"
+   ],
+   "milestone": "source re-opening",
+   "prompt": "# Assignment\nRe-open the sources the new law cites. Fetch https://html.spec.whatwg.org/multipage/input.html (expect HTTP 200, ~687,515 B, sha256 b0202de1c0b4...), stage it under /fast/scratch/hyaku/tabi-r88/R88Scout/, and locate with exact line/anchor: (a) the `accept` attribute sentence and its word count; (b) the `showPicker()` SecurityError sentence and its File/Color exemption (word count); (c) any sentence that states or implies how a MIME parameter (`;q=`) or a case-variant type is parsed — if none is on that page, say so and name which linked page carries it (fetch it, record status/size/sha256 and a located quote). Verify staging is byte-identical to live (`cmp`). Report: for each quote, URL, access date, byte offset or anchor, ≤25-word located quote, and whether it grounds a claim in claims.json or is merely context. Do not add registry rows; this is a re-opening report."
+  },
+  {
+   "name": "R88Scribe",
+   "role": "scribe",
+   "axes": [
+    "depth",
+    "calibration"
+   ],
+   "milestone": "record drafts",
+   "prompt": "# Assignment\nDraft independently (write only under /fast/scratch/hyaku/tabi-r88/R88Scribe/ and your report): (a) the round-88 knowledge-note body for the three new token forms — laws, leg facts, declared limits (compare with the committed /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/chromium-showpicker-runtime-round-88.md and list divergences); (b) the lesson `## Gate` source rows for S223/S219 with quotes and word counts; (c) the SCORECARD capability row text for generation r88 and the round-88 section's claim table wording; (d) three `## Mistakes` candidates for round 88 with class/evidence/captured-by/fix (look at the round-87 rejected spot-check's D1 and at this round's mid-wave re-freeze history in plans/round-88.md). Do not edit lane files."
+  },
+  {
+   "name": "R88Connector",
+   "role": "connector",
+   "axes": [
+    "adjacency"
+   ],
+   "milestone": "sibling-overlap scan",
+   "prompt": "# Assignment\nSibling-overlap scan (read-only): grep /home/vgpnk/Projects/shokunin/*-shokunin/corpus/knowledge, SCORECARD.md, scripts for `accept=`, `setFileInputFiles`, `showPicker`, `fileChooserOpened`, `selftest 10/10`, and record-drift counters. Report which lanes have measured the same ground (paths + one-line state each), whether any would be contested if this round plates three new token forms or restores tallies, and any pattern this lane should reuse (e.g. another lane's drift gate shape or selftest-mode convention). No edits anywhere."
+  },
+  {
+   "name": "R88Sentinel",
+   "role": "sentinel",
+   "axes": [
+    "calibration"
+   ],
+   "milestone": "bounds and provenance audit",
+   "prompt": "# Assignment\nAdversarial bounds/provenance audit of the round so far: (1) every sha256 in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/freeze.txt vs committed bytes; (2) receipt identity (schema, lane basename, nonce tabi-r88-l1-86f1dcec, driver pin, fixture pin, distinct ports, 37 legs) read from the committed receipt, and whether the driver's sha256 equals the pin; (3) census artifacts /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-88/census/start.txt and census/end.txt carry pasteable output and `exit=0` (end may still be absent — report that honestly); (4) no seat wrote outside the lane (check `git -C /home/vgpnk/Projects/shokunin status --porcelain` for files naming tabi/round-88); (5) the do-nothing controls' exit codes and finding ids; (6) whether any lane record claims a value the committed bytes do not support — read SCORECARD's round-88 section, LOG's round-88 entry, SKILL's round-88 registry and the knowledge note against the scored outputs, and list every disagreement with its evidence. Report each as PASS/FINDING with the exact command output."
+  },
+  {
+   "name": "R88Simplifier",
+   "role": "simplifier",
+   "axes": [
+    "operability"
+   ],
+   "milestone": "instrument dead-weight review",
+   "prompt": "# Assignment\nYAGNI/dead-weight review of the round-88 instrument family, preserving verified behaviour. Read scripts/check-showpicker-round88.mjs, scripts/negatives-showpicker-round88.mjs, scripts/kill-power-round88.mjs, scripts/selftest-r88-gates.mjs and scripts/check-record-drift-r88.mjs. Identify: dead code paths, duplicated constants that can drift (e.g. the ANSWER/PNG/SECOND/DIR constants vs the driver's written files), unused parameters, and any `--selftest` block that duplicates another (the drift gate's fixture builder vs the counter's). For each candidate, say what it would cost to delete and what would break (cite the check id or battery case that would stop firing). Do NOT edit lane files: produce a ranked list with the evidence that the removal is safe, and name anything that looks like dead weight but is load-bearing."
+  }
+ ]
+}

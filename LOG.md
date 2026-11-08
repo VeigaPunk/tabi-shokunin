@@ -4021,21 +4021,23 @@ records; SOURCES §Search log round-86 entry; `.ufo/waves/round-86/lesson-proof/
 
 ## Round 88 — 2026-11-08 (attempt 1, Linux host)
 
-L1 `TabiR88`. Base `f16f992d` (the round-87 verifier spot-check commit); scored receipt D
-`86f1dcec`, instrument freeze D1 `86f1dcec` (probe run at D1 pins); nonce
-`tabi-r88-l1-86f1dcec`. Claims: C1 coverage — capability `chromium-showpicker-linux`
+L1 `TabiR88`. Base `f16f992d` (the round-87 verifier spot-check commit); instrument freeze D6
+`4daf8817` (D1 `86f1dcec` first freeze, D2 the selftest re-pin + genuine 37-leg priors, D3 the
+`gate-selftest` gate, D4 the kill-power mutant from-string, D5 the runner gate's own read bug, D6
+the critic-driven tally/selftest strengthening; `plans/round-88.md` §Re-freeze history); the scored receipt was produced once at the D1-derived nonce
+`tabi-r88-l1-86f1dcec`, and every later freeze touched only non-receipt instruments. Claims: C1 coverage — capability `chromium-showpicker-linux`
 generation r88, the three remaining `accept` token forms (`IMAGE/PNG`, `audio/*,video/*`,
 `image/png;q=0.9`), 37 legs / 102 checks; C2 calibration — the round-87 non-author spot-check
-routed defects D1–D4, `check-record-drift-r88` 3 → 0.
+routed defects D1–D4, `check-record-drift-r88` 4 → 0.
 
 Instruments (pins in `.ufo/waves/round-88/freeze.txt`): `chrome-cdp-showpicker-round88.mjs`
 (37 legs), `check-showpicker-round88.mjs` (102 checks), `negatives-showpicker-round88.mjs`
-(212 cases, coverage 102/102), `kill-power-round88.mjs` (69 mutants, 69/69),
-`selftest-r88-gates.mjs` (10 gates), `check-record-drift-r88.mjs` (4 statements).
+(215 cases, coverage 102/102), `kill-power-round88.mjs` (69 mutants, 69/69),
+`selftest-r88-gates.mjs` (11 gates), `check-record-drift-r88.mjs` (4 statements).
 Scored receipt `corpus/evidence/round88/chromium-showpicker/receipt.json` (0 failures).
 Do-nothing controls: `controls/c1/nowork-r87-under-r88.json` (exit 1, `schema`/`plan-frozen`
 among the findings) and `controls/c1/noreceipt.txt` (exit 2); the C2 before control is the
-same frozen gate on a base `f16f992d` worktree (3 mismatches, `scored/drift-before.json`).
+same frozen gate on a base `f16f992d` worktree (4 mismatches, `scored/drift-before.json`, measured by R88Exec3).
 
 Records: `corpus/knowledge/chromium-showpicker-runtime-round-88.md` (knowledge 100 → 101);
 `corpus/lessons/round-88.md`; `plans/round-88.md`; SCORECARD round-88 section + capability row

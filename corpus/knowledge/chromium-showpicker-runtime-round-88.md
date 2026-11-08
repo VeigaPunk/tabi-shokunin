@@ -13,7 +13,8 @@ frontier: `IMAGE/PNG` (case variant), `image/png;q=0.9` (MIME parameter) and `au
 
 ## The measured laws
 
-1. **`accept` is not a validator on a programmatic answer — now over the ten token forms.** Every leg
+1. **`accept` is not a validator on a programmatic answer — now over ten attribute-string values,
+   nine of them in-grammar.** Every leg
    delivers a file through `DOM.setFileInputFiles` to an input whose raw `accept` attribute is read
    back from the page (`fixtureInputs`), and in every case the delivered file lands in the input's
    `files` list with its bytes, fires trusted `input`+`change`, and the page reads the bytes back
@@ -22,8 +23,12 @@ frontier: `IMAGE/PNG` (case variant), `image/png;q=0.9` (MIME parameter) and `au
    - `accept="IMAGE/PNG"` (upper-case variant) answered with `image/png` bytes — `sp88-accept-case-png` (input `ac`);
    - `accept="audio/*,video/*"` (combined media-type list, no space after the comma) answered with
      `text/plain` — `sp88-accept-audiovideo-text` (`au`);
-   - `accept="image/png;q=0.9"` (MIME parameter) answered with `image/png` —
-     `sp88-accept-mimeparam-png` (`amc`).
+   - `accept="image/png;q=0.9"` answered with `image/png` — `sp88-accept-mimeparam-png` (`amc`).
+     The spec's token list admits only "A valid MIME type string with no parameters" (byte 425136),
+     and the mimesniff definition excludes `;`, so this value is **not** an `accept` grammar form:
+     it is a non-conforming attribute value whose behaviour the spec leaves unspecified. The leg
+     therefore measures a stronger thing than a grammar form — even a value the grammar rejects
+     does not filter a programmatic answer.
    The r86/r87 forms (`image/*`, `image/png, .txt`, `application/pdf`, `audio/*`, `video/*`,
    `image/png,application/pdf`, the whitespace variant) and the r84 extension-token law
    (`.txt` into `accept=".png"`) are the controls; the whole matrix is gated by
@@ -42,9 +47,11 @@ frontier: `IMAGE/PNG` (case variant), `image/png;q=0.9` (MIME parameter) and `au
 - **Acceptance is not filtering.** `DOM.setFileInputFiles` answers a chooser programmatically; the
   law says `accept` does not filter THAT path. What a user's dialog offers or rejects is not
   measured — headless opens no real dialog — and is not claimed.
-- **Seven token forms, not the whole grammar.** MIME parameters (`image/png;q=0.9`), case variants
-  (`IMAGE/PNG`), combined `audio/*,video/*` lists and the full WHATWG "unique security error"
-  ordering for every type stay unmeasured.
+- **Ten attribute-string values, nine of them in-grammar.** The case variant (`IMAGE/PNG`) is in
+  grammar ("ASCII case-insensitive match", byte 424423) and the combined list (`audio/*,video/*`)
+  is in grammar (the comma-split rule, byte 425894); `image/png;q=0.9` is out of grammar by the
+  spec's own wording (byte 425136). The parser's whitespace/comma normalization read from the DOM,
+  and the full WHATWG "unique security error" ordering for every type, stay unmeasured.
 - **The whitespace leg measures the raw attribute string**, not a parsed token list: the counter
   compares the page's `accept` string exactly, so parser normalization is not inferred from it.
 - **The colour arm is bounded to the file-chooser metric.** Zero `Page.fileChooserOpened` events do

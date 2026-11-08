@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-// Gate self-test for tabi round 83 (C1 `chromium-showpicker-linux` generation r84, C2 record drift).
+// Gate self-test for tabi round 88 (C1 `chromium-showpicker-linux` generation r88, C2 record drift).
 //
 // Runs every gate on the COMMITTED bytes in a fixed order and reports one verdict. Nothing is
 // written into the walked trees: every scratch output goes under --work and is copied into the
 // evidence tree only after the run (QUALITY 151).
 //
 // Usage: node selftest-r88-gates.mjs --lane <ABS lane> --work <ABS scratch> [--json] [--skip-killpower]
+// Gate `gate-selftest` runs each instrument's isolated --selftest mode (counter, battery,
+// kill power, drift gate); each asserts one stable finding id on a fixture outside the lane.
 // Exit 0: every gate green. 1: a gate failed. 2: usage.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -80,6 +82,21 @@ gate('tree-exempt-unmatched-refused', () => {
   const r = run('check-showpicker-round88.mjs', ['--lane', lane, '--receipt', receipt, '--expect-driver-sha256', expect.driver, '--expect-nonce', expect.nonce, '--expect-fixture-sha256', expect.fixture, '--prior-set', PS, '--tree-exempt-sha256', '1'.repeat(64), '--json']);
   const ids = r.json ? r.json.findings.map((f) => f.id) : [];
   return { ok: r.status === 1 && ids.includes('prior-set-unmatched-exempt'), detail: 'exit ' + r.status + ' findings ' + JSON.stringify(ids) };
+});
+gate('gate-selftest', () => {
+  const modes = [
+    ['check-showpicker-round88.mjs', ['--selftest', '--json']],
+    ['negatives-showpicker-round88.mjs', ['--selftest', '--json']],
+    ['kill-power-round88.mjs', ['--selftest', '--json']],
+    ['check-record-drift-r88.mjs', ['--selftest', '--lane', lane, '--json']],
+  ];
+  const out = modes.map(([s, args]) => {
+    const r = run(s, args);
+    const j = r.json;
+    return { script: s, exit: r.status, ok: !!j && j.ok === true && r.status === 0, detail: (r.stderr || '').slice(0, 200) };
+  });
+  const bad = out.filter((x) => !x.ok);
+  return { ok: bad.length === 0, detail: 'isolated --selftest modes: ' + JSON.stringify(out) };
 });
 gate('record-drift', () => {
   const r = run('check-record-drift-r88.mjs', ['--lane', lane, '--json']);

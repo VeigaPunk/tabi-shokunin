@@ -71,7 +71,8 @@ if (selftestMode) {
   const r = spawnSync(process.execPath, [path.join(fx, 'scripts', 'check-record-drift-r88.mjs'), '--lane', fx, '--json'], { encoding: 'utf8', timeout: 60000 });
   let j = null; try { j = JSON.parse(r.stdout); } catch {}
   const ids = j && j.results ? j.results.map((x) => x.id) : [];
-  const wantRed = ['scorecard-tallies', 'selftest-wording'];
+  const wantRed = ['scorecard-tallies', 'selftest-wording', 'gate-selftest'];
+  const okC = !j || !j.failed || j.failed.includes('quality161-sweep');
   const okA = r.status === 1 && j && wantRed.every((id) => j.failed.includes(id));
   const okB = j && j.claims === 4 && ids.length === 4;
   const out = { schema: 'tabi-r88-record-drift-selftest', exit: r.status, failed: j ? j.failed : null, ok: !!(okA && okB) };
@@ -98,23 +99,41 @@ const plan87 = read('plans/round-87.md') || '';
 const results = [];
 const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(detail) });
 
-// 1. the seven swept SCORECARD selftest tallies are restored to 9/9; each section must
-//    carry 9/9 and no 10/10 (bounded by the next section heading, so a later row cannot
-//    rescue an earlier section)
+// 1. the seven swept SCORECARD selftest tallies are restored to 9/9. Every `## Round N`
+//    occurrence for those rounds is checked (a duplicate/stub heading cannot hide a later
+//    section), and every `selftest 10/10` line anywhere in the file must live inside a
+//    Round 87 or Round 88 section (the two generations whose runners genuinely have ten gates).
 {
   const rows = scorecard.split('\n');
-  const sec = (re) => {
-    const i = rows.findIndex((l) => re.test(l));
-    if (i < 0) return { has9: false, has10: false };
-    const next = rows.findIndex((l, j) => j > i && /^## Round \d+/.test(l));
-    const seg = rows.slice(i, next < 0 ? rows.length : next).join('\n');
-    return { has9: /selftest 9\/9/.test(seg), has10: /selftest 10\/10/.test(seg) };
-  };
-  const secs = [/^## Round 44(\b| )/, /^## Round 68(\b| )/, /^## Round 79(\b| )/, /^## Round 80(\b| )/, /^## Round 81(\b| )/, /^## Round 84(\b| )/, /^## Round 85(\b| )/].map(sec);
-  const allRestored = secs.every((s) => s.has9 && !s.has10);
-  const tallyLines = rows.filter((l) => /selftest 10\/10/.test(l));
-  claim('scorecard-tallies', allRestored,
-    'secs=' + secs.map((s) => [s.has9, s.has10].join('/')).join(',') + ' tallyLines=' + tallyLines.length);
+  const heads = [];
+  rows.forEach((l, i) => { const m = /^## Round (\d+)/.exec(l); if (m) heads.push({ round: Number(m[1]), i, head: l }); });
+  const segmentsOf = (n) => heads.filter((h) => h.round === n).map((h) => {
+    const next = heads.find((x) => x.i > h.i);
+    const seg = rows.slice(h.i, next ? next.i : rows.length);
+    return { head: h.head, body: seg.join('\n') };
+  });
+  const swept = [44, 68, 79, 80, 81, 84, 85];
+  const bad = [];
+  for (const n of swept) {
+    const segs = segmentsOf(n);
+    if (segs.length === 0) { bad.push('round-' + n + '-missing'); continue; }
+    for (const s of segs) {
+      if (!/selftest 9\/9/.test(s.body)) bad.push('round-' + n + '-no-9');
+      if (/selftest 10\/10/.test(s.body)) bad.push('round-' + n + '-has-10');
+    }
+  }
+  // every 10/10 line must sit inside a Round 87 or 88 section
+  const sanctioned = [];
+  for (const h of heads) {
+    if (h.round !== 87 && h.round !== 88) continue;
+    const next = heads.find((x) => x.i > h.i);
+    for (let i = h.i; i < (next ? next.i : rows.length); i++) if (/selftest 10\/10/.test(rows[i])) sanctioned.push(i);
+  }
+  const tens = [];
+  rows.forEach((l, i) => { if (/selftest 10\/10/.test(l)) tens.push(i); });
+  const stray = tens.filter((i) => !sanctioned.includes(i));
+  claim('scorecard-tallies', bad.length === 0 && stray.length === 0,
+    'bad=' + JSON.stringify(bad) + ' tens=' + tens.length + ' sanctioned=' + sanctioned.length + ' stray=' + JSON.stringify(stray));
 }
 // 2. D2: the "10/10 at D7" wording is replaced by the D6 value, named in the round-88
 //    lesson together with the D7 wording itself

@@ -115,7 +115,7 @@ const MUTANTS = [
   ['dir-answer-uploaddropped', "isObj(wa.uploadDir) && same(wa.uploadDir, { name: DIR.name, files: DIR.files.map((f) => ({ name: f.name, size: f.size, sha256: f.hex ? sha256(Buffer.from(f.hex, 'hex')) : null })) })", "isObj(wa.uploadDir)"],
   ['accept-answer-bytes-dropped', "arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + ANSWER.hex", "typeof arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'string'"],
   ['click-open-count-dropped', "cw.clickWhileOpenChoosersBefore === 1 && cw.clickWhileOpenChoosersAfter === 2", "typeof cw.clickWhileOpenChoosersAfter === 'number'"],
-  ['no-selection-empty-dropped', "['s', 'm', 'd', 'k', 'dis', 'disd', 'aw', 'am', 'ap', 'cos', 'aa', 'av', 'a2', 'aws'].every((k) => Array.isArray(st[k]) && st[k].length === 0)", "['s', 'm', 'd', 'k', 'dis', 'disd', 'aw', 'am', 'ap', 'cos', 'aa', 'av', 'a2', 'aws'].every((k) => Array.isArray(st[k]))"],
+  ['no-selection-empty-dropped', "['s', 'm', 'd', 'k', 'dis', 'disd', 'aw', 'am', 'ap', 'cos', 'aa', 'av', 'a2', 'aws', 'ac', 'au', 'amc'].every((k) => Array.isArray(st[k]) && st[k].length === 0)", "['s', 'm', 'd', 'k', 'dis', 'disd', 'aw', 'am', 'ap', 'cos', 'aa', 'av', 'a2', 'aws', 'ac', 'au', 'amc'].every((k) => Array.isArray(st[k]))"],
   ['intercept-count-dropped', "if (opens !== want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);", ""],
   ['multiple-mode-bytes-dropped', "same(isObj(mm.stateAfter) ? mm.stateAfter.m : null, [[ANSWER.name, ANSWER.size, ANSWER.type, '']])", "isObj(mm.stateAfter)"],
   ['accept-mime-bytes-dropped', "arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex", "typeof arr(am.pageEvents).find((e) => e.type === 'read').ret === 'string'"],

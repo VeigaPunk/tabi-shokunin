@@ -9,9 +9,14 @@ parameters, case variants, combined lists); C2 calibration — the r87 spot-chec
 D1–D4 (the seven tallies, D2 wording, D3 gate self-tests, D4 freeze batching, and the
 QUALITY 161 sweep extended to the SCORECARD set).
 
-D **`86f1dcec`** — the first freeze (six instruments). A pre-freeze probe run at
-`tabi-r88-probe1-probe0001` (37 legs, 0 failures) confirmed the driver before the freeze; the
-scored run takes place at the D1 nonce `tabi-r88-l1-86f1dcec`.
+D **`4daf8817`** (D6; D1 `86f1dcec` first freeze, D2 `138bb883` the selftest re-pin and the genuine
+37-leg priors, D3 `93500a4e` the `gate-selftest` gate, D4 the kill-power mutant from-string, D5 the
+runner gate's own read bug, D6 the critic-driven tally/selftest strengthening — `plans/round-88.md`
+§Re-freeze history). The scored receipt was produced once, at the nonce
+`tabi-r88-l1-86f1dcec`; every later freeze touched only non-receipt instruments, so the receipt is
+the same receipt under test throughout. A pre-freeze probe run at `tabi-r88-probe1-probe0001`
+(37 legs, 0 failures) confirmed the driver before the freeze, and the two 37-leg probes are the
+prior set.
 
 Census start: exit 0, 223 rows (`census/start.txt`); end: pending.
 
@@ -39,8 +44,10 @@ and the r87 carrier rows).
 
 Rejected (with flip conditions):
 
-- **"The accept grammar is fully enumerated"** — ten token forms are measured; the parser's
-  whitespace/comma normalization read from the DOM stays frontier. Flip: one leg reading the
+- **"The accept grammar is fully enumerated"** — ten attribute-string values are measured, nine of
+  them in-grammar; `image/png;q=0.9` is out of the spec's grammar and is measured as a
+  non-conforming value (R88Scout located "A valid MIME type string with no parameters", byte
+  425136); the parser's whitespace/comma normalization read from the DOM stays frontier. Flip: one leg reading the
   DOM-parsed form rather than the raw string.
 - **"The dialog filters what the user sees"** — the receipt answers programmatically; the dialog
   is unmeasured. Flip: an interactive-dialog harness.
@@ -59,6 +66,6 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0 `tab
 ### Admitted / rejected claims
 
 C1 and C2 are frozen in `.ufo/waves/round-88/claims.json` (nonce `tabi-r88-l1-86f1dcec`,
-receipt D `86f1dcec`; instrument freeze D1 `86f1dcec`). Scored: counter clean **99** checks;
-battery **212** cases / 0 failed / coverage 99/99; kill power **69** mutants / 69 killed /
-0 survivors / 0 crashed / 0 unapplied; selftest **10/10**; record drift **3 → 0**.
+receipt D `86f1dcec`; instrument freeze D1 `86f1dcec`). Scored: counter clean **102** checks;
+battery **215** cases / 0 failed / coverage 102/102; kill power **69** mutants / 69 killed /
+0 survivors / 0 crashed / 0 unapplied; selftest **11/11**; record drift **4 → 0**.
