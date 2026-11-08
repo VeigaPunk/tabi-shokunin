@@ -1,0 +1,303 @@
+{
+ "seat": "R83Exec2",
+ "round": 83,
+ "wave": "w1",
+ "lane": "tabi-shokunin",
+ "nonce": "tabi-r83-l1-9d90392aca79",
+ "frozen": {
+  "driver": "scripts/chrome-cdp-showpicker-round83.mjs",
+  "driverSha256": "70b522cc896f4a9b89320d58313b56519499566256cb0b7dd0b3a8aac1944fce",
+  "counter": "scripts/check-showpicker-r83.mjs",
+  "counterSha256": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841",
+  "scoredReceipt": "corpus/evidence/round83/chromium-showpicker/receipt.json",
+  "scoredDriverSha256": "70b522cc896f4a9b89320d58313b56519499566256cb0b7dd0b3a8aac1944fce",
+  "scoredNonce": "tabi-r83-l1-c016710129da"
+ },
+ "probeV1": {
+  "role": "assigned probe: answer FIRST chooser event (evs[0]) with the same SECOND payload",
+  "driver": "probe-driver.mjs",
+  "driverSha256": "fbfbd2f4e1f009ec6f7299e452f393aedd8c0b97b5b5c5e682e5218c33657c74",
+  "diffSha256": "55b66e3c653f863c33234b6e3df85517f639f5caf9b772d20ce1d52acfdd403d",
+  "driverDiff": "const ev = evs.slice(-1)[0];  ->  const ev = evs[0];",
+  "fixtureSha256": "141ac5de6c3d28c2b7ecf599609fe707525d2e3e3f891547e35301233552d3b6",
+  "ports": {
+   "http": 19340,
+   "cdp": 19341,
+   "child": 19342
+  },
+  "stimulus": {
+   "leg": "sp83-second-chooser-answer",
+   "priorClick": "pad@360,40 (real click, transient activation)",
+   "trigger": "showPicker() on #s via Runtime.evaluate",
+   "clickWhileOpen": "real CDP mousePressed/mouseReleased at (160,670) on #s while chooser 1 pending",
+   "choosersBefore": 1,
+   "choosersAfter": 2,
+   "opens": [
+    {
+     "mode": "selectSingle",
+     "backendNodeId": 13,
+     "afterSendId": 19
+    },
+    {
+     "mode": "selectSingle",
+     "backendNodeId": 13,
+     "afterSendId": 23
+    }
+   ],
+   "answeredEventIndex": 0,
+   "answer": {
+    "files": [
+     "tabi-r83-second.txt"
+    ],
+    "setParams": {
+     "files": [
+      "/fast/scratch/hyaku/tabi-r83/R83Exec2/run-scratch/upload-cf8d33be4319/tabi-r83-second.txt"
+     ],
+     "backendNodeId": 13
+    },
+    "setSendId": 25,
+    "setResult": {},
+    "setError": null
+   },
+   "wire": [
+    {
+     "method": "DOM.setFileInputFiles",
+     "params": {
+      "files": [
+       "/fast/scratch/hyaku/tabi-r83/R83Exec2/run-scratch/upload-cf8d33be4319/tabi-r83-second.txt"
+      ],
+      "backendNodeId": 13
+     }
+    }
+   ]
+  },
+  "delivered": {
+   "stateAfter_s": [
+    [
+     "tabi-r83-second.txt",
+     28,
+     "text/plain",
+     ""
+    ]
+   ],
+   "sValue": "C:\\fakepath\\tabi-r83-second.txt",
+   "events": [
+    [
+     "input",
+     "s",
+     [
+      [
+       "tabi-r83-second.txt",
+       28,
+       "text/plain",
+       ""
+      ]
+     ],
+     null
+    ],
+    [
+     "change",
+     "s",
+     [
+      [
+       "tabi-r83-second.txt",
+       28,
+       "text/plain",
+       ""
+      ]
+     ],
+     null
+    ],
+    [
+     "read",
+     "s",
+     [
+      [
+       "tabi-r83-second.txt",
+       28,
+       "text/plain"
+      ]
+     ],
+     "hex:746162692d7238332d7365636f6e642d6174747269627574696f6e0a"
+    ]
+   ]
+  },
+  "counter": {
+   "exit": 0,
+   "verdict": "clean",
+   "checkCount": 74,
+   "findings": [],
+   "second-chooser-answer-law": true,
+   "invocation": "--expect-driver-sha256 <probe sha> --expect-fixture-sha256 <probe fixture> --prior-set .ufo/waves/round-83/controls/c1/prior-set.txt --prior corpus/evidence/round83/chromium-showpicker/receipt.json",
+   "note": "without --prior <scored receipt>, prior-set-complete names the scored receipt (it is the receipt under test in its own run); adding it as a prior makes the walk complete. The law check is independent of that."
+  }
+ },
+ "probeV2": {
+  "role": "supporting control: answer FIRST chooser event with DISTINCT first-choice bytes",
+  "driver": "probe-driver-firstbytes.mjs",
+  "driverSha256": "2944e6dc790d6b5d52537166392e35b7e897e1cfcb30b6907e7d4e81040842bd",
+  "diffSha256": "b2c41bab0ab168ebbef5b75f2d361ee23780f09c89b6a5d3ba6702373f39572f",
+  "fixtureSha256": "66665c386e395e32eb00e886d89df9544d94f679b40ea38e2689b871a7636afe",
+  "ports": {
+   "http": 19350,
+   "cdp": 19351,
+   "child": 19352
+  },
+  "stimulus": {
+   "leg": "sp83-second-chooser-answer",
+   "answeredEventIndex": 0,
+   "answer": {
+    "files": [
+     "tabi-r83-first.txt"
+    ],
+    "setParams": {
+     "files": [
+      "/fast/scratch/hyaku/tabi-r83/R83Exec2/run-scratch-v2/upload-591d7ea98d26/tabi-r83-first.txt"
+     ],
+     "backendNodeId": 12
+    },
+    "setSendId": 25,
+    "setResult": {},
+    "setError": null
+   },
+   "wire": [
+    {
+     "method": "DOM.setFileInputFiles",
+     "params": {
+      "files": [
+       "/fast/scratch/hyaku/tabi-r83/R83Exec2/run-scratch-v2/upload-591d7ea98d26/tabi-r83-first.txt"
+      ],
+      "backendNodeId": 12
+     }
+    }
+   ],
+   "openIds": [
+    12,
+    12
+   ]
+  },
+  "delivered": {
+   "stateAfter_s": [
+    [
+     "tabi-r83-first.txt",
+     22,
+     "text/plain",
+     ""
+    ]
+   ],
+   "sValue": "C:\\fakepath\\tabi-r83-first.txt",
+   "events": [
+    [
+     "input",
+     "s",
+     [
+      [
+       "tabi-r83-first.txt",
+       22,
+       "text/plain",
+       ""
+      ]
+     ],
+     null
+    ],
+    [
+     "change",
+     "s",
+     [
+      [
+       "tabi-r83-first.txt",
+       22,
+       "text/plain",
+       ""
+      ]
+     ],
+     null
+    ],
+    [
+     "read",
+     "s",
+     [
+      [
+       "tabi-r83-first.txt",
+       22,
+       "text/plain"
+      ]
+     ],
+     "hex:746162692d7238332d66697273742d63686f6963650a"
+    ]
+   ]
+  },
+  "counter": {
+   "exit": 1,
+   "verdict": "findings",
+   "checkCount": 74,
+   "findings": [
+    "plan-calls",
+    "leg-sp83-second-chooser-answer",
+    "second-chooser-answer-law"
+   ],
+   "second-chooser-answer-law": false,
+   "note": "the three findings are payload-identity consequences (answer.files/state/read + plan-calls answer-files). Event selection is not observable."
+  }
+ },
+ "scoredBaseline": {
+  "opens": [
+   {
+    "mode": "selectSingle",
+    "backendNodeId": 12,
+    "afterSendId": 19
+   },
+   {
+    "mode": "selectSingle",
+    "backendNodeId": 12,
+    "afterSendId": 23
+   }
+  ],
+  "ids": [
+   12,
+   12
+  ],
+  "answer": {
+   "files": [
+    "tabi-r83-second.txt"
+   ],
+   "setParams": {
+    "files": [
+     "/fast/scratch/hyaku/tabi-r83/scored/upload-da4990e59b27/tabi-r83-second.txt"
+    ],
+    "backendNodeId": 12
+   },
+   "setSendId": 25,
+   "setResult": {},
+   "setError": null
+  },
+  "stateAfter_s": [
+   [
+    "tabi-r83-second.txt",
+    28,
+    "text/plain",
+    ""
+   ]
+  ],
+  "readRet": [
+   "hex:746162692d7238332d7365636f6e642d6174747269627574696f6e0a"
+  ]
+ },
+ "structural": {
+  "Page.fileChooserOpened.params": [
+   "backendNodeId",
+   "frameId",
+   "mode"
+  ],
+  "DOM.setFileInputFiles.params": [
+   "files",
+   "backendNodeId"
+  ],
+  "no_event_handle": "Page.fileChooserOpened exposes no event/chooser handle; DOM.setFileInputFiles addresses a NODE. When both opens carry one backendNodeId (scored 12/12; V1 13/13; V2 12/12), answering evs[0] and evs[-1] are the same call."
+ },
+ "conclusion": {
+  "sameBytes": true,
+  "lawStillPasses": true,
+  "statement": "Answering the FIRST chooser event with the same distinct payload delivers byte-identical files (stateAfter.s identical, read ret identical) and the frozen counter's second-chooser-answer-law passes unchanged (74/74 clean). Byte attribution does NOT discriminate first vs second chooser: the two Page.fileChooserOpened events share backendNodeId and DOM.setFileInputFiles addresses the node, so the law is a payload/state law, not a per-event attribution law."
+ }
+}

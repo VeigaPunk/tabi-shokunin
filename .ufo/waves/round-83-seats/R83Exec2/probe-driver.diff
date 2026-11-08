@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-showpicker-round83.mjs	2026-11-08 00:22:00.193912617 -0300
++++ probe-driver.mjs	2026-11-08 02:12:12.060331999 -0300
+@@ -538,7 +538,7 @@
+         rec.clickWhileOpenChoosersAfter = chooserCount() - before;
+         rec.clickWhileOpenElement = await evalValue('document.elementFromPoint(' + cx + ',' + cy + ').id');
+         const evs = cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened');
+-        const ev = evs.slice(-1)[0];
++        const ev = evs[0];
+         rec.secondChooserBackendNodeId = ev ? ev.params.backendNodeId : null;
+         rec.firstChooserBackendNodeId = evs[0] ? evs[0].params.backendNodeId : null;
+         if (ev) {

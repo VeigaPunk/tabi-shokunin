@@ -1,0 +1,4297 @@
+{
+ "schema": "tabi-r83-r83mut1-mutation-sweep",
+ "seat": "R83Mut1",
+ "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "base": "4cdf4def31b1feecb6aed5dbfc048c47d41ec88d",
+ "digestsCommit": "9d90392aca79209c6f3b83a2c34797ebd588d27ac36ba48151778e3051494847",
+ "note": "independent conjunct-level mutants; the frozen kill-power-r83 list was not reused",
+ "counter": {
+  "path": "scripts/check-showpicker-r83.mjs",
+  "sha256": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841",
+  "pinned": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841"
+ },
+ "battery": {
+  "path": "scripts/negatives-showpicker-r83.mjs",
+  "sha256": "12c09cc15a4602c77faf7624d4556eb964545cf3a6277990c8a49ae89bd4a817",
+  "pinned": "12c09cc15a4602c77faf7624d4556eb964545cf3a6277990c8a49ae89bd4a817"
+ },
+ "invocation": {
+  "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+  "real": "corpus/evidence/round83/chromium-showpicker/receipt.json",
+  "receiptNonce": "tabi-r83-l1-c016710129da",
+  "driverSha256": "70b522cc896f4a9b89320d58313b56519499566256cb0b7dd0b3a8aac1944fce",
+  "fixtureSha256": "e86ceb4261607f02b762a4b70f2f3ff6451e8758953526f2b8340586eb84eb37",
+  "priorSet": ".ufo/waves/round-83/controls/c1/prior-set.txt",
+  "expectedBattery": "153 cases, coverage 74/74, exit 0 on pristine bytes"
+ },
+ "laneHashesBefore": {
+  "counter": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841",
+  "battery": "12c09cc15a4602c77faf7624d4556eb964545cf3a6277990c8a49ae89bd4a817",
+  "receipt": "3f9bbb60651d6f10a589561cd9638c4b5107517d770abf815c0991dd95a2bc9c",
+  "prior": "1ff644e590346d4c10018bbe0cc51a3b34d05b00396762126f0982e9bd5f7474"
+ },
+ "laneHashesAfter": {
+  "counter": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841",
+  "battery": "12c09cc15a4602c77faf7624d4556eb964545cf3a6277990c8a49ae89bd4a817",
+  "receipt": "3f9bbb60651d6f10a589561cd9638c4b5107517d770abf815c0991dd95a2bc9c",
+  "prior": "1ff644e590346d4c10018bbe0cc51a3b34d05b00396762126f0982e9bd5f7474"
+ },
+ "unchanged": true,
+ "total": 115,
+ "prepared": 115,
+ "unapplied": [],
+ "survived": 114,
+ "killed": 1,
+ "crashed": 0,
+ "killedUnexpectedExit": 0,
+ "survivors": [
+  {
+   "id": "m001",
+   "name": "fixture-root-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(r.fixture).sort(), ['child', 'origin', 'patch', 'sha256', 'viewport']) && isObj(r.fixture.child)",
+    "to": "isObj(r.fixture.child)"
+   },
+   "reason": "fixture-hash still pins sha/viewport/child keys; no case adds a top-level fixture key, so the frozen top-level shape is no longer pinned.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m002",
+   "name": "frame-tree-parent-unpinned",
+   "mutation": {
+    "from": "ftree.mainFrameParentId === null && ftree.mainFrameUrl === 'about:blank'",
+    "to": "ftree.mainFrameUrl === 'about:blank'"
+   },
+   "reason": "the frame-tree case mutates mainFrameUrl and the witnesses mutate mainFrameId/extra keys; none sets the top-level mainFrameParentId non-null.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m003",
+   "name": "plan-frozen-priorclick-unpinned",
+   "mutation": {
+    "from": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))",
+    "to": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, gesture: p.gesture ?? null })))"
+   },
+   "reason": "the plan-frozen case mutates gesture; no case mutates a leg record priorClick (plan-calls reads priorClick from PLAN, not from the leg), so the click coordinate is now unbound.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m004",
+   "name": "plan-frozen-intercept-unpinned",
+   "mutation": {
+    "from": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))",
+    "to": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))"
+   },
+   "reason": "plan-calls compares the sent intercept params to PLAN, not the leg record field; no case mutates leg.intercept, so plan-frozen no longer pins it.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m005",
+   "name": "leg-records-name-index-unbound",
+   "mutation": {
+    "from": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name && l.kind === PLAN[i].kind",
+    "to": "same(Object.keys(l).sort(), LEG_KEYS) && l.kind === PLAN[i].kind"
+   },
+   "reason": "the leg-records case deletes stderrHead; no case presents a renamed leg record to this check, so the per-index name binding is untested here (plan-frozen/leg-order bind names separately).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m006",
+   "name": "leg-records-kind-index-unbound",
+   "mutation": {
+    "from": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name && l.kind === PLAN[i].kind",
+    "to": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name"
+   },
+   "reason": "no battery case mutates a leg record kind, so the kind-to-PLAN binding inside leg-records is never exercised.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m007",
+   "name": "leg-records-wait-lower-unpinned",
+   "mutation": {
+    "from": "num(l.chooserWaitMs) && l.chooserWaitMs >= 0 && l.chooserWaitMs <= 3000",
+    "to": "num(l.chooserWaitMs) && l.chooserWaitMs <= 3000"
+   },
+   "reason": "w-leg-wait-unbounded exercises only the <=3000 side; no case sets a negative chooserWaitMs.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m008",
+   "name": "leg-records-armerr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.clickError)"
+   },
+   "reason": "no battery case mutates armError; the arm call error is now unconstrained.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m009",
+   "name": "leg-records-clickerr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError)"
+   },
+   "reason": "no battery case mutates clickError; the click send error is now unconstrained.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m010",
+   "name": "leg-records-triggererr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)"
+   },
+   "reason": "w-trigger2-error-dropped exercises trigger2Error only; no case mutates triggerError.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m011",
+   "name": "errOk-code-type-unpinned",
+   "mutation": {
+    "from": "(e.code === null || Number.isInteger(e.code)) && typeof e.message === 'string'",
+    "to": "typeof e.message === 'string'"
+   },
+   "reason": "the error witnesses keep the {code,message} key set but never set a non-integer code, so the code type check is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m012",
+   "name": "leg-marks-min-count-relaxed",
+   "mutation": {
+    "from": "arr(l.marks).length >= 3",
+    "to": "arr(l.marks).length >= 2"
+   },
+   "reason": "no battery case shortens a marks array; the minimum-count conjunct is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m013",
+   "name": "leg-marks-mark-object-unchecked",
+   "mutation": {
+    "from": "arr(l.marks).every((m, i, a) => isObj(m) && typeof m.name === 'string'",
+    "to": "arr(l.marks).every((m, i, a) => typeof m.name === 'string'"
+   },
+   "reason": "w-marks-name-type inserts a non-string name but still an object; no case inserts a non-object mark.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m014",
+   "name": "leg-marks-first-label-unpinned",
+   "mutation": {
+    "from": "arr(l.marks)[0].name === 'start' && arr(l.marks)[1].name === 'pre'",
+    "to": "arr(l.marks)[1].name === 'pre'"
+   },
+   "reason": "w-marks-start-labels changes both m[0] and m[1], so it still trips the retained pre check; no case changes only the first label.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m015",
+   "name": "ctx-count-exactness-relaxed",
+   "mutation": {
+    "from": "if (child.length !== 1) { ctxBad.push(leg.name + ':child-contexts ' + child.length); continue; }",
+    "to": "if (child.length < 1) { ctxBad.push(leg.name + ':child-contexts ' + child.length); continue; }"
+   },
+   "reason": "the context-binding case removes all child contexts (0); no case presents two child contexts, so >1 is now accepted.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m016",
+   "name": "ctx-origin-unbound",
+   "mutation": {
+    "from": "const child = cs.filter((c) => isObj(c) && c.origin === 'http://127.0.0.1:' + ports.child && c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId);",
+    "to": "const child = cs.filter((c) => isObj(c) && c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId);"
+   },
+   "reason": "the parent context is still excluded by frameId, so the real receipt yields one child context; no case moves a non-child default context under a different frameId.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m017",
+   "name": "ctx-frameid-type-unchecked",
+   "mutation": {
+    "from": "c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId",
+    "to": "c.isDefault === true && c.frameId !== leg.frameTree.mainFrameId"
+   },
+   "reason": "w-ctx-frameid-unique sets frameId equal to the main frame id (still a string), so only the inequality is exercised.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m018",
+   "name": "sendlog-min-length-relaxed",
+   "mutation": {
+    "from": "if (log.length < 10 || !log.every(",
+    "to": "if (log.length < 1 || !log.every("
+   },
+   "reason": "no battery case empties or shortens a cdpSendLog below 10 entries; the minimum-length gate is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m019",
+   "name": "sendlog-params-object-unchecked",
+   "mutation": {
+    "from": "ALLOWED_METHODS.has(c.method) && isObj(c.params))",
+    "to": "ALLOWED_METHODS.has(c.method))"
+   },
+   "reason": "no case sends a non-object params; the shape guard is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m020",
+   "name": "sendlog-navigate-once-unpinned",
+   "mutation": {
+    "from": "log.filter((c) => c.method === 'Page.navigate').length !== 1 || log.filter((c) => c.method === 'Page.getFrameTree').length !== 1",
+    "to": "log.filter((c) => c.method === 'Page.getFrameTree').length !== 1"
+   },
+   "reason": "w-sendlog-getframetree-once-dropped exercises the getFrameTree count; no case duplicates Page.navigate.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m021",
+   "name": "sendlog-browser-once-unpinned",
+   "mutation": {
+    "from": "|| log.filter((c) => c.method === 'Browser.getVersion').length !== 1)",
+    "to": ")"
+   },
+   "reason": "no battery case duplicates Browser.getVersion; only the getFrameTree duplicate is witnessed.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m022",
+   "name": "plan-calls-intercept-sendid-unbound",
+   "mutation": {
+    "from": "if (p.intercept && leg.interceptSendId !== log.find((c) => c.method === 'Page.setInterceptFileChooserDialog').id) planBad.push(leg.name + ':intercept-id');",
+    "to": ""
+   },
+   "reason": "the plan-calls case corrupts the intercept params (sequence mismatch); no case mutates interceptSendId, so the id coherence line is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m023",
+   "name": "plan-calls-prior-sendids-unbound",
+   "mutation": {
+    "from": "if (p.priorClick || CROSS.has(p.name)) { if (leg.priorPressId === null || leg.priorReleaseId === null || leg.priorReleaseId <= leg.priorPressId) planBad.push(leg.name + ':prior-ids'); }",
+    "to": "if (p.priorClick || CROSS.has(p.name)) { }"
+   },
+   "reason": "the renumber witness shifts ids and *SendId fields consistently; no case breaks the press/release id pairing or ordering.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m024",
+   "name": "plan-calls-trigger-sendid-unbound",
+   "mutation": {
+    "from": "if (!trig || leg.triggerSendId !== trig.id) planBad.push(leg.name + ':trigger-id');",
+    "to": "if (!trig) planBad.push(leg.name + ':trigger-id');"
+   },
+   "reason": "no case mutates triggerSendId away from the send-log id.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m025",
+   "name": "plan-calls-trigger2-unexpected-unchecked",
+   "mutation": {
+    "from": "if (leg.trigger2SendId !== null) planBad.push(leg.name + ':trigger2-unexpected');",
+    "to": ""
+   },
+   "reason": "w-trigger2-error-dropped mutates trigger2Error only; no case sets a trigger2SendId on a non-double-trigger leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m026",
+   "name": "plan-calls-click-sendids-unbound",
+   "mutation": {
+    "from": "if (clicks.length !== 4 || leg.clickPressId !== clicks[2].id || leg.clickReleaseId !== clicks[3].id || leg.clickReleaseId <= leg.clickPressId) planBad.push(leg.name + ':click-ids');",
+    "to": "if (clicks.length !== 4) planBad.push(leg.name + ':click-ids');"
+   },
+   "reason": "no battery case mutates clickPressId/clickReleaseId; only the click count is exercised elsewhere.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m027",
+   "name": "plan-calls-dismiss-sendid-unbound",
+   "mutation": {
+    "from": "if (dis) { if (leg.dismissSendId !== dis.id) planBad.push(leg.name + ':dismiss-id'); }",
+    "to": "if (dis) { }"
+   },
+   "reason": "no case mutates dismissSendId; the cancel-send id coherence is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m028",
+   "name": "plan-calls-answer-sendid-unbound",
+   "mutation": {
+    "from": "if (!set || !isObj(leg.answer) || leg.answer.setSendId !== set.id) planBad.push(leg.name + ':answer-id');",
+    "to": "if (!set || !isObj(leg.answer)) planBad.push(leg.name + ':answer-id');"
+   },
+   "reason": "the renumber witness shifts answer.setSendId with the send log ids; no case breaks the answer send id alone.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m029",
+   "name": "plan-calls-answer-files-relaxed",
+   "mutation": {
+    "from": "if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');",
+    "to": "if (!set) planBad.push(leg.name + ':answer-files');"
+   },
+   "reason": "no battery case changes the setFileInputFiles path count/name; only the answers' own law checks inspect the resulting state.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m030",
+   "name": "cdp-multiopen-threshold-relaxed",
+   "mutation": {
+    "from": "if (opens.length > 2) evBad.push(leg.name + ':multi-open');",
+    "to": "if (opens.length > 3) evBad.push(leg.name + ':multi-open');"
+   },
+   "reason": "no case produces three chooser events for one leg; the >2 cap is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m031",
+   "name": "cdp-method-whitelist-unpinned",
+   "mutation": {
+    "from": "if (nav.length !== 1 || el.some((e) => !['Page.fileChooserOpened', 'Page.frameNavigated'].includes(e.method)) || !el.every((e) => isObj(e) && isObj(e.params) && Number.isInteger(e.afterSendId))) evBad.push(leg.name + ':shape');",
+    "to": "if (nav.length !== 1 || !el.every((e) => isObj(e) && isObj(e.params) && Number.isInteger(e.afterSendId))) evBad.push(leg.name + ':shape');"
+   },
+   "reason": "no case appends a CDP event of any other method; the event-method allowlist is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m032",
+   "name": "cdp-nav-frameid-unbound",
+   "mutation": {
+    "from": "nav[0].params.frameId === lft.mainFrameId && nav[0].params.url ===",
+    "to": "nav[0].params.url ==="
+   },
+   "reason": "w-cdp-nav-url-dropped exercises the URL; no case mutates the frameNavigated frameId.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m033",
+   "name": "cdp-open-frame-unbound",
+   "mutation": {
+    "from": "if (!wantFrame || o.params.frameId !== wantFrame.frameId) evBad.push(leg.name + ':open-frame');",
+    "to": "if (!wantFrame) evBad.push(leg.name + ':open-frame');"
+   },
+   "reason": "the chooser-opening cases push events with the correct frame; no case mutates an opened event frameId.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m034",
+   "name": "cdp-cross-open-sendbinding-unbound",
+   "mutation": {
+    "from": "if (!(Number.isInteger(leg.priorReleaseId) && o.afterSendId >= leg.priorReleaseId && o.afterSendId <= leg.priorReleaseId + 3)) evBad.push(leg.name + ':open-binding');",
+    "to": "if (false) evBad.push(leg.name + ':open-binding');"
+   },
+   "reason": "the only cross-origin chooser push (cross-nonfile-chooser) uses the correct priorReleaseId; no case pushes a misbound cross chooser.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m035",
+   "name": "cdp-click-open-sendbinding-unbound",
+   "mutation": {
+    "from": "const bound = i === 0 ? o.afterSendId === leg.triggerSendId : (Number.isInteger(leg.clickReleaseId) && o.afterSendId >= leg.clickReleaseId && o.afterSendId <= leg.clickReleaseId + 3);",
+    "to": "const bound = i !== 0 || o.afterSendId === leg.triggerSendId;"
+   },
+   "reason": "no case mutates the afterSendId of the second chooser opened by the while-open click; only the first-open trigger binding remains.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m036",
+   "name": "frame-binding-frameid-regex-unpinned",
+   "mutation": {
+    "from": "typeof l.frameTree.mainFrameId === 'string' && /^[0-9A-F]{32}$/.test(l.frameTree.mainFrameId) && l.frameTree.mainFrameParentId === null",
+    "to": "typeof l.frameTree.mainFrameId === 'string' && l.frameTree.mainFrameParentId === null"
+   },
+   "reason": "wf-frame-tree-id-any mutates the receipt-level frameTree id, not a leg's; no case breaks a leg mainFrameId format.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m037",
+   "name": "event-types-typefield-unchecked",
+   "mutation": {
+    "from": "same(Object.keys(e).sort(), EVENT_KEYS) && typeof e.type === 'string' && num(e.ts)",
+    "to": "same(Object.keys(e).sort(), EVENT_KEYS) && num(e.ts)"
+   },
+   "reason": "the event-types case adds an extra key; no case sets a non-string type.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m038",
+   "name": "event-types-istrusted-type-unchecked",
+   "mutation": {
+    "from": "typeof e.isTrusted === 'boolean' && (e.act === null || typeof e.act === 'boolean')",
+    "to": "(e.act === null || typeof e.act === 'boolean')"
+   },
+   "reason": "the trust-law case sets isTrusted=false (still boolean) and the leg-shape check covers it; no case sets a non-boolean isTrusted.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m039",
+   "name": "event-types-act-type-unchecked",
+   "mutation": {
+    "from": "&& (e.act === null || typeof e.act === 'boolean')",
+    "to": ""
+   },
+   "reason": "no case sets a non-boolean/non-null page-event act (w-cross-nonfile-child-act mutates childEvents, not pageEvents).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m040",
+   "name": "event-types-target-type-unchecked",
+   "mutation": {
+    "from": "&& (e.target === null || typeof e.target === 'string')",
+    "to": ""
+   },
+   "reason": "the leg-shape cases change a target string to another string; no case sets a non-string target.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m041",
+   "name": "event-types-x-y-buttons-types-unchecked",
+   "mutation": {
+    "from": "&& (e.x === null || num(e.x)) && (e.y === null || num(e.y)) && (e.buttons === null || num(e.buttons))",
+    "to": "&& (e.buttons === null || num(e.buttons))"
+   },
+   "reason": "no case sets a non-numeric x or y; the click-while-open case changes buttons to another number, caught by leg-shape.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m042",
+   "name": "event-types-files-type-unchecked",
+   "mutation": {
+    "from": "&& (e.files === null || Array.isArray(e.files))",
+    "to": ""
+   },
+   "reason": "the accept-answer case sets files to another array; no case sets a non-array files value.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m043",
+   "name": "event-types-seq-integer-unchecked",
+   "mutation": {
+    "from": "Number.isInteger(e.seq) && typeof e.leg === 'string'",
+    "to": "typeof e.leg === 'string'"
+   },
+   "reason": "seq-monotonic sets another integer (99); no case sets a non-integer seq.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m044",
+   "name": "event-types-leg-type-unchecked",
+   "mutation": {
+    "from": "typeof e.leg === 'string' && num(e.at)",
+    "to": "num(e.at)"
+   },
+   "reason": "no case sets a non-string event leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m045",
+   "name": "event-quantum-at-unchecked",
+   "mutation": {
+    "from": "events.every((e) => isObj(e) && onGrid(e.ts) && onGrid(e.at))",
+    "to": "events.every((e) => isObj(e) && onGrid(e.ts))"
+   },
+   "reason": "the quantum case sets ts off-grid; no case sets at off-grid (at is otherwise only checked for window/order).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m046",
+   "name": "event-window-upper-unbound",
+   "mutation": {
+    "from": "e.at <= (settle ?? l.closedAt) && ",
+    "to": ""
+   },
+   "reason": "the window cases only test the lower bound and ordering; no case puts an event after settle.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m047",
+   "name": "leg-shape-trusted-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'act', 'xy', 'files', 'opened', 'state'])"
+   },
+   "reason": "the isTrusted mutation case (trust-law) also produces its own expected finding; no case requires leg-<name> for an isTrusted-only mismatch.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m048",
+   "name": "leg-shape-act-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'trusted', 'xy', 'files', 'opened', 'state'])"
+   },
+   "reason": "no battery case mutates a page-event act; only childEvents act is witnessed.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m049",
+   "name": "leg-shape-opened-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'state'])"
+   },
+   "reason": "the mode-law case changes an opened mode but expects mode-law; no case requires leg-<name> for an opened-only mismatch.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m050",
+   "name": "gesture-law-error-text-unpinned",
+   "mutation": {
+    "from": "(want.ok ? got.ret !== want.ret : (got.name !== want.name || got.message !== want.message))",
+    "to": "(want.ok ? got.ret !== want.ret : (got.name !== want.name))"
+   },
+   "reason": "the gesture-law case flips ok; order-law (not gesture-law) is the expected id for a wrong message, so gesture-law's text comparison is never required.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m051",
+   "name": "activation-hasbeenactive-unpinned",
+   "mutation": {
+    "from": "!same(leg.activationBefore, want[0]) || !same(leg.activationAfter, want[1])",
+    "to": "!same(leg.activationBefore && leg.activationBefore.isActive, want[0].isActive) || !same(leg.activationAfter && leg.activationAfter.isActive, want[1].isActive)"
+   },
+   "reason": "both activation cases flip isActive; no case changes only hasBeenActive.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m052",
+   "name": "mode-law-second-open-unchecked",
+   "mutation": {
+    "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push",
+    "to": "if (!d || opens[0].params.mode !== wantMode) modeBad.push"
+   },
+   "reason": "the click legs open two choosers; no case mutates the second opened mode, and the mode-law case mutates a single-open leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m053",
+   "name": "mode-law-descriptor-presence-unchecked",
+   "mutation": {
+    "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push",
+    "to": "if (opens.some((e) => e.params.mode !== wantMode)) modeBad.push"
+   },
+   "reason": "no case removes a fixtureInput descriptor; the d-presence guard is untested.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m054",
+   "name": "cross-child-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(co.childEvents).length === 5 && arr(co.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(co.childEvents).length === 5 && arr(co.childEvents).every((e) => e.act === true)"
+   },
+   "reason": "w-cross-nonfile-child-act flips act, not isTrusted; no case sets a child event isTrusted=false.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m055",
+   "name": "cross-childresult-message-unpinned",
+   "mutation": {
+    "from": "isObj(co.childResult) && same(co.childResult, CHILD_RESULT_LAW['sp83-cross-origin-nonfile'])",
+    "to": "isObj(co.childResult) && co.childResult.ok === CHILD_RESULT_LAW['sp83-cross-origin-nonfile'].ok && co.childResult.name === CHILD_RESULT_LAW['sp83-cross-origin-nonfile'].name"
+   },
+   "reason": "the cross-nonfile-result case flips ok; no case alters only the SecurityError message text.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m056",
+   "name": "order-cod-childresult-exactness-dropped",
+   "mutation": {
+    "from": "isObj(cod.childResult) && same(cod.childResult, CHILD_RESULT_LAW['sp83-cross-origin-nonfile-disabled']) && ",
+    "to": "isObj(cod.childResult) && "
+   },
+   "reason": "no battery case mutates the disabled cross-origin childResult at all (only sod.showPicker and cod.childLate are witnessed).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m057",
+   "name": "order-cod-childact-before-unbound",
+   "mutation": {
+    "from": "same(cod.childActivationBefore, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][0]) && same(cod.childActivationAfter, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][1])",
+    "to": "same(cod.childActivationAfter, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][1])"
+   },
+   "reason": "no case mutates the disabled cross-origin child activation.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m058",
+   "name": "order-cod-child-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(cod.childEvents).length === 5 && arr(cod.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(cod.childEvents).length === 5 && arr(cod.childEvents).every((e) => e.act === true)"
+   },
+   "reason": "w-order-cod-childlate mutates childLate; no case sets a cod child event isTrusted=false.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m059",
+   "name": "order-sod-open-count-unbound",
+   "mutation": {
+    "from": " && arr(sod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+    "to": ""
+   },
+   "reason": "no case opens a chooser on the same-origin disabled leg; the order check no longer asserts it opened nothing.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m060",
+   "name": "extras-parentcross-unbound",
+   "mutation": {
+    "from": "&& same(ex.parentCrossAccess, { contentDocument: null, windowDocument: 'SecurityError' }) && same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0])",
+    "to": "&& same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0])"
+   },
+   "reason": "the parentCrossAccess mutation case targets the base cross-origin leg; no case mutates an extra leg's cross-access object.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m061",
+   "name": "extras-childact-before-unbound",
+   "mutation": {
+    "from": "same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0]) && same(ex.childActivationAfter, CHILD_ACT_LAW[extra][1])",
+    "to": "same(ex.childActivationAfter, CHILD_ACT_LAW[extra][1])"
+   },
+   "reason": "w-extras-child-act flips an event act; no case mutates an extra leg's child activation.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m062",
+   "name": "extras-childlate-unbound",
+   "mutation": {
+    "from": "&& same(arr(ex.childEvents).map((e) => e.type + '@' + e.target), CHILD_EVENT_SHAPE[extra].seq) && ex.childLate === 0,",
+    "to": "&& same(arr(ex.childEvents).map((e) => e.type + '@' + e.target), CHILD_EVENT_SHAPE[extra].seq),"
+   },
+   "reason": "no case sets childLate on an extra cross-origin leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m063",
+   "name": "extras-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(ex.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(ex.childEvents).every((e) => e.act === true)"
+   },
+   "reason": "w-extras-child-act flips act; no case sets a non-trusted extra child event.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m064",
+   "name": "webkit-setparams-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(wa.answer.setParams).sort(), ['backendNodeId', 'files']) && arr(wa.answer.setParams.files).length === 1",
+    "to": "arr(wa.answer.setParams.files).length === 1"
+   },
+   "reason": "the webkit witnesses change the answer key set, uploadDir hash and state; none adds a setParams key.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m065",
+   "name": "webkit-answer-basename-unbound",
+   "mutation": {
+    "from": "path.basename(wa.answer.setParams.files[0]) === DIR.name && ",
+    "to": ""
+   },
+   "reason": "no case changes the setFileInputFiles path basename; state/uploadDir checks carry the directory name.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m066",
+   "name": "webkit-read-bytes-unpinned",
+   "mutation": {
+    "from": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2 && same(arr(wa.pageEvents).filter((e) => e.type === 'read').map((e) => e.ret), DIR.files.map((f) => 'hex:' + f.hex))",
+    "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2"
+   },
+   "reason": "no battery case mutates the bytes read from the webkitdirectory files.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m067",
+   "name": "webkit-state-unbound",
+   "mutation": {
+    "from": "same(waState, DIR_FILES) && ",
+    "to": ""
+   },
+   "reason": "the per-leg state case mutates stateAfter but expects leg-sp83-webkitdirectory-answer (the leg-shape check), not the law.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m068",
+   "name": "webkit-seterr-unchecked",
+   "mutation": {
+    "from": "same(wa.answer.setResult, {}) && wa.answer.setError === null && ",
+    "to": ""
+   },
+   "reason": "no case corrupts the directory answer setResult/setError.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m069",
+   "name": "accept-answer-files-unpinned",
+   "mutation": {
+    "from": "same(aa.answer.files, [ANSWER.name]) && ",
+    "to": ""
+   },
+   "reason": "no case changes the accept answer files argument; the state/upload/read checks remain.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m070",
+   "name": "accept-backendid-unbound",
+   "mutation": {
+    "from": "aa.answer.setParams.backendNodeId === nodeReport['sp83-accept-answer'][0] && ",
+    "to": ""
+   },
+   "reason": "no case changes the accept-answer backendNodeId (the multiple/second legs carry their own id cases).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m071",
+   "name": "accept-upload-sha-unpinned",
+   "mutation": {
+    "from": "same(aa.upload, { name: ANSWER.name, size: ANSWER.size, sha256: ANSWER.sha256 })",
+    "to": "isObj(aa.upload) && aa.upload.name === ANSWER.name && aa.upload.size === ANSWER.size"
+   },
+   "reason": "w-accept-upload-any changes the size; no case changes the accepted .txt sha256.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m072",
+   "name": "accept-seterr-unchecked",
+   "mutation": {
+    "from": "same(aa.answer.setResult, {}) && aa.answer.setError === null && ",
+    "to": ""
+   },
+   "reason": "no case corrupts the accept answer setResult/setError.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m073",
+   "name": "accept-read-count-unbound",
+   "mutation": {
+    "from": " && arr(aa.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + ANSWER.hex",
+    "to": " && arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + ANSWER.hex"
+   },
+   "reason": "the bytes witness mutates the read ret; no case changes the accept read count.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m074",
+   "name": "multiple-answer-files-unpinned",
+   "mutation": {
+    "from": "same(mm.answer.files, [ANSWER.name]) && ",
+    "to": ""
+   },
+   "reason": "no case changes the multiple answer files argument.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m075",
+   "name": "multiple-setparams-length-unbound",
+   "mutation": {
+    "from": "isObj(mm.answer.setParams) && arr(mm.answer.setParams.files).length === 1 && ",
+    "to": "isObj(mm.answer.setParams) && "
+   },
+   "reason": "no case changes the multiple answer file count; the state/basename/backend checks remain.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m076",
+   "name": "multiple-basename-unbound",
+   "mutation": {
+    "from": "path.basename(mm.answer.setParams.files[0]) === ANSWER.name && ",
+    "to": ""
+   },
+   "reason": "no case changes the multiple answer path basename.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m077",
+   "name": "multiple-seterr-unchecked",
+   "mutation": {
+    "from": "same(mm.answer.setResult, {}) && mm.answer.setError === null && ",
+    "to": ""
+   },
+   "reason": "no case corrupts the multiple answer setResult/setError.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m078",
+   "name": "multiple-upload-sha-unpinned",
+   "mutation": {
+    "from": "same(mm.upload, { name: ANSWER.name, size: ANSWER.size, sha256: ANSWER.sha256 })",
+    "to": "isObj(mm.upload) && mm.upload.name === ANSWER.name && mm.upload.size === ANSWER.size"
+   },
+   "reason": "no case changes the multiple-mode upload digest (the accept-leg witness changes a different leg).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m079",
+   "name": "multiple-read-count-unbound",
+   "mutation": {
+    "from": " && arr(mm.pageEvents).filter((e) => e.type === 'read').length === 1,",
+    "to": ","
+   },
+   "reason": "no case changes the multiple-mode read count.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m080",
+   "name": "accept-mime-answer-files-unpinned",
+   "mutation": {
+    "from": "same(am.answer.files, [PNG.name]) && ",
+    "to": ""
+   },
+   "reason": "no case changes the PNG answer files argument.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m081",
+   "name": "accept-mime-backendid-unbound",
+   "mutation": {
+    "from": "am.answer.setParams.backendNodeId === nodeReport['sp83-accept-mime-answer'][0] && ",
+    "to": ""
+   },
+   "reason": "no case changes the accept-mime answer backendNodeId.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m082",
+   "name": "accept-mime-upload-hex-unpinned",
+   "mutation": {
+    "from": "same(am.uploadPng, { name: PNG.name, size: PNG.size, sha256: PNG.sha256, hex: PNG.hex })",
+    "to": "isObj(am.uploadPng) && am.uploadPng.name === PNG.name && am.uploadPng.size === PNG.size && am.uploadPng.sha256 === PNG.sha256"
+   },
+   "reason": "the bytes witness mutates the page read ret; no case changes the uploadPng hex digest.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m083",
+   "name": "accept-mime-read-count-unbound",
+   "mutation": {
+    "from": " && arr(am.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex",
+    "to": " && arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex"
+   },
+   "reason": "the bytes witness mutates the read ret; no case changes the accept-mime read count.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m084",
+   "name": "second-chooser-first-open-id-unbound",
+   "mutation": {
+    "from": "sc.firstChooserBackendNodeId === scOpens[0].params.backendNodeId && ",
+    "to": ""
+   },
+   "reason": "the id witness mutates secondChooserBackendNodeId; no case mutates firstChooserBackendNodeId.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m085",
+   "name": "second-chooser-answer-files-unpinned",
+   "mutation": {
+    "from": "same(sc.answer.files, [SECOND.name]) && ",
+    "to": ""
+   },
+   "reason": "no case changes the second answer files argument.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m086",
+   "name": "second-chooser-read-count-unbound",
+   "mutation": {
+    "from": " && arr(sc.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + SECOND.hex",
+    "to": " && arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + SECOND.hex"
+   },
+   "reason": "the bytes witness mutates the read ret; no case changes the second-chooser read count.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m087",
+   "name": "second-chooser-seterr-unchecked",
+   "mutation": {
+    "from": "same(sc.answer.setResult, {}) && sc.answer.setError === null && ",
+    "to": ""
+   },
+   "reason": "no case corrupts the second-chooser answer setResult/setError.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m088",
+   "name": "second-chooser-upload-hex-unpinned",
+   "mutation": {
+    "from": "same(sc.uploadSecond, { name: SECOND.name, size: SECOND.size, sha256: SECOND.sha256, hex: SECOND.hex })",
+    "to": "isObj(sc.uploadSecond) && sc.uploadSecond.name === SECOND.name && sc.uploadSecond.size === SECOND.size && sc.uploadSecond.sha256 === SECOND.sha256"
+   },
+   "reason": "the bytes witness uses the page read ret; no case changes uploadSecond.hex.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m089",
+   "name": "noselection-state-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(st).sort(), ['d', 'dis', 'disd', 'k', 'm', 's', 'sValue']) && ",
+    "to": ""
+   },
+   "reason": "the no-selection case fills an array; no case adds or removes a state key on a non-answer leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m090",
+   "name": "noselection-svalue-unpinned",
+   "mutation": {
+    "from": "['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(st[k]) && st[k].length === 0) && st.sValue === ''",
+    "to": "['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(st[k]) && st[k].length === 0)"
+   },
+   "reason": "the per-leg cases set sValue on some legs but the leg-shape check is their expected id; no case requires no-selection-law for sValue alone.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m091",
+   "name": "noselection-nonanswer-dismiss-state-unchecked",
+   "mutation": {
+    "from": "if (leg.stateAfterDismiss !== null && !(isObj(leg.stateAfterDismiss) && ['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(leg.stateAfterDismiss[k]) && leg.stateAfterDismiss[k].length === 0))) stateBad.push(leg.name + ':dismiss-state');",
+    "to": ""
+   },
+   "reason": "no case sets stateAfterDismiss on a non-answer leg (the dismiss-state witness is on an answer leg).",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m092",
+   "name": "noselection-nonanswer-file-events-unchecked",
+   "mutation": {
+    "from": "if (arr(leg.pageEvents).some((e) => e.type === 'input' || e.type === 'change' || (e.files !== null && e.type !== 'cancel'))) stateBad.push(leg.name + ':file-event');",
+    "to": ""
+   },
+   "reason": "no case adds input/change/file events to a non-answer leg.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m094",
+   "name": "dismiss-nocancel-unchecked",
+   "mutation": {
+    "from": " && arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+    "to": ""
+   },
+   "reason": "the cancel-law case adds a cancel event but expects cancel-law; dismiss-law is only also-allowed there, so the no-cancel conjunct is never required.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m095",
+   "name": "trust-showpicker2-unchecked",
+   "mutation": {
+    "from": "(e.leg !== 'show-picker' && e.leg !== 'show-picker-2')",
+    "to": "(e.leg !== 'show-picker')"
+   },
+   "reason": "the pointer witness sets leg=show-picker; no case uses show-picker-2.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m096",
+   "name": "argv-tail-unpinned",
+   "mutation": {
+    "from": "if (!same(a, want) || typeof tok !== 'string'",
+    "to": "if (!same(a.slice(0, 9), want.slice(0, 9)) || a.length !== want.length || typeof tok !== 'string'"
+   },
+   "reason": "the host-argv case corrupts argv[7]; no case changes argv entries 9..16, which are now unverified beyond array length.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m097",
+   "name": "argv-token-charset-unpinned",
+   "mutation": {
+    "from": "/^[0-9a-f]{12}$/.test(tok)",
+    "to": "tok.length === 12"
+   },
+   "reason": "no case uses a 12-character non-hex launch token.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m098",
+   "name": "devtools-port-binding-relaxed",
+   "mutation": {
+    "from": "l.devtoolsListening.port === ports.cdp",
+    "to": "l.devtoolsListening.port >= 1024"
+   },
+   "reason": "the devtools case sets port=1; any privileged port >=1024 now passes even if it is not the argv CDP port.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m099",
+   "name": "teardown-probes-not-open",
+   "mutation": {
+    "from": "Object.values(l.teardown.portProbes).every((v) => v === 'closed')",
+    "to": "Object.values(l.teardown.portProbes).every((v) => v !== 'open')"
+   },
+   "reason": "the probe witness sets \"open\"; any other non-closed value (e.g. \"timeout\") now passes.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m100",
+   "name": "teardown-curl-not-zero",
+   "mutation": {
+    "from": "Object.values(l.teardown.postKillCurl).every((v) => v === 7)",
+    "to": "Object.values(l.teardown.postKillCurl).every((v) => v !== 0)"
+   },
+   "reason": "the curl witness sets 0; any other curl exit code (e.g. 28) now passes.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m101",
+   "name": "fixture-accept-unpinned",
+   "mutation": {
+    "from": "same(arr(r.fixtureInputs), FIXTURE_INPUTS)",
+    "to": "same(arr(r.fixtureInputs).map(({ accept, ...d }) => d), FIXTURE_INPUTS.map(({ accept, ...d }) => d))"
+   },
+   "reason": "the descriptor case changes rect.left; no case changes an accept attribute, which is now unpinned everywhere.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m102",
+   "name": "server-root-status-unpinned",
+   "mutation": {
+    "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce && s.status === 200)",
+    "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce)"
+   },
+   "reason": "the server witnesses change the run nonce, add a 200 non-root row and a second root row; none changes the root status.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m103",
+   "name": "server-nonroot-status-relaxed",
+   "mutation": {
+    "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status === 404)",
+    "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status !== 200)"
+   },
+   "reason": "the 404 witness pushes a 200; any other non-200 status (500) now passes.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m104",
+   "name": "child-server-root-status-unpinned",
+   "mutation": {
+    "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce && s.status === 200)",
+    "to": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce)"
+   },
+   "reason": "no case changes the child-root status; the witnesses use the run nonce, the 404 rule and the >=1 minimum.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m105",
+   "name": "child-server-nonchild-status-relaxed",
+   "mutation": {
+    "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path !== '/child.html').every((s) => s.status === 404)",
+    "to": "arr(l.childServerLog).filter((s) => isObj(s) && s.path !== '/child.html').every((s) => s.status !== 200)"
+   },
+   "reason": "the 404 witness pushes a 200; any other non-200 status now passes.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m106",
+   "name": "runwindow-lower-relaxed",
+   "mutation": {
+    "from": "t1 - t0 >= 12000",
+    "to": "t1 - t0 >= 11000"
+   },
+   "reason": "the run-window case sets exactly start+10000 ms, which still fails; a 10.5-11.9 s run is now accepted.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m107",
+   "name": "runwindow-upper-relaxed",
+   "mutation": {
+    "from": "t1 - t0 < 600000",
+    "to": "t1 - t0 < 700000"
+   },
+   "reason": "the upper witness sets exactly 700000 ms, which still fails (<); a 600-699 s run is now accepted.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m108",
+   "name": "replay-tolerance-tightened",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.005, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;"
+   },
+   "reason": "the forgery is an exact copy (0 ms) and the accept-retimed case shifts by 1 ms, both beyond the changed boundary, so no case probes 0.005-0.05 ms near-copies.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m109",
+   "name": "replay-frac-relaxed",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.9, GAP_FRAC = 0.75;"
+   },
+   "reason": "the forgery matches all 61 prior events, still >= ceil(0.9*61); a forger moving only 32-54 events now escapes the refusal threshold.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m110",
+   "name": "replay-refusal-boundary-strict",
+   "mutation": {
+    "from": "refused: np > 0 && absMatched >= absNeed",
+    "to": "refused: np > 0 && absMatched > absNeed"
+   },
+   "reason": "the forgery matches all 61 events (> 31), so the case still refuses; a receipt matching exactly absNeed events now passes.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m111",
+   "name": "replay-token-charset-unpinned",
+   "mutation": {
+    "from": "typeof l.launchToken === 'string' && /^[0-9a-f]{12}$/.test(l.launchToken) && priors.every",
+    "to": "typeof l.launchToken === 'string' && priors.every"
+   },
+   "reason": "no case uses a non-hex 12-character token in the replay-launch-token check; the host-argv check still carries its own regex.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m112",
+   "name": "unparsable-brace-heuristic-dropped",
+   "mutation": {
+    "from": " || txt.trimStart().startsWith('{')) && /tabi-chrome-cdp-showpicker-r83/.test(txt)) unparsable.push(w.path);",
+    "to": ") && /tabi-chrome-cdp-showpicker-r83/.test(txt)) unparsable.push(w.path);"
+   },
+   "reason": "the unparsable witness writes a .json file; a corrupt non-.json file that begins with \"{\" and names the schema is no longer refused.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m113",
+   "name": "ports-distinctness-unchecked",
+   "mutation": {
+    "from": "new Set([ports.http, ports.cdp, ports.child]).size === 3 && ",
+    "to": ""
+   },
+   "reason": "the ports case sets child=http, which is still caught by the fixture.child.origin binding; no case collides cdp with another port while keeping origins consistent.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m114",
+   "name": "ports-lower-bound-partial",
+   "mutation": {
+    "from": "[ports.http, ports.cdp, ports.child].every((p) => p >= 1024)",
+    "to": "ports.http >= 1024"
+   },
+   "reason": "w-ports-min changes only http; a cdp or child port below 1024 is now accepted.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  },
+  {
+   "id": "m115",
+   "name": "ports-cdp-integer-unchecked",
+   "mutation": {
+    "from": "Number.isInteger(ports.http) && Number.isInteger(ports.cdp) && Number.isInteger(ports.child)",
+    "to": "Number.isInteger(ports.http) && Number.isInteger(ports.child)"
+   },
+   "reason": "no case gives ports.cdp a non-integer value.",
+   "coverage": {
+    "declared": 74,
+    "covered": 74,
+    "uncovered": [],
+    "unknown": []
+   }
+  }
+ ],
+ "results": [
+  {
+   "id": "m001",
+   "name": "fixture-root-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(r.fixture).sort(), ['child', 'origin', 'patch', 'sha256', 'viewport']) && isObj(r.fixture.child)",
+    "to": "isObj(r.fixture.child)"
+   },
+   "mutatedSha256": "134b51f61a631171ff1f373c914691eb43670448c135b83887c033d2cb1bde47",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "fixture-hash still pins sha/viewport/child keys; no case adds a top-level fixture key, so the frozen top-level shape is no longer pinned.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m002",
+   "name": "frame-tree-parent-unpinned",
+   "mutation": {
+    "from": "ftree.mainFrameParentId === null && ftree.mainFrameUrl === 'about:blank'",
+    "to": "ftree.mainFrameUrl === 'about:blank'"
+   },
+   "mutatedSha256": "2300d95d93554b00788c4b90454b1879955ccf1e256db25bd94dd4d65bc968f0",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the frame-tree case mutates mainFrameUrl and the witnesses mutate mainFrameId/extra keys; none sets the top-level mainFrameParentId non-null.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m003",
+   "name": "plan-frozen-priorclick-unpinned",
+   "mutation": {
+    "from": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))",
+    "to": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, gesture: p.gesture ?? null })))"
+   },
+   "mutatedSha256": "79fe4605d55d6f8e09dfc27c313f7357d9812e78f48b17958f14d3f97747fa80",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the plan-frozen case mutates gesture; no case mutates a leg record priorClick (plan-calls reads priorClick from PLAN, not from the leg), so the click coordinate is now unbound.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m004",
+   "name": "plan-frozen-intercept-unpinned",
+   "mutation": {
+    "from": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, intercept: l.intercept, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, intercept: p.intercept, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))",
+    "to": "same(legs.map((l) => (isObj(l) ? { name: l.name, kind: l.kind, target: l.target, priorClick: l.priorClick, gesture: l.gesture } : null)), PLAN.map((p) => ({ name: p.name, kind: p.kind, target: p.target, priorClick: p.priorClick ?? null, gesture: p.gesture ?? null })))"
+   },
+   "mutatedSha256": "15588837417c1fc24c3b7ee29ba326e00837aece6276c2f10746aae8e346eaf2",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "plan-calls compares the sent intercept params to PLAN, not the leg record field; no case mutates leg.intercept, so plan-frozen no longer pins it.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m005",
+   "name": "leg-records-name-index-unbound",
+   "mutation": {
+    "from": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name && l.kind === PLAN[i].kind",
+    "to": "same(Object.keys(l).sort(), LEG_KEYS) && l.kind === PLAN[i].kind"
+   },
+   "mutatedSha256": "963043a5502fcb3a01609436ae06d36a7cbcbc5b260cbe97d8df5dc2d179d6e7",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the leg-records case deletes stderrHead; no case presents a renamed leg record to this check, so the per-index name binding is untested here (plan-frozen/leg-order bind names separately).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m006",
+   "name": "leg-records-kind-index-unbound",
+   "mutation": {
+    "from": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name && l.kind === PLAN[i].kind",
+    "to": "same(Object.keys(l).sort(), LEG_KEYS) && l.name === PLAN[i].name"
+   },
+   "mutatedSha256": "c38fc8b613275e48357a2fb8f0f213698d3a4f5f1c5b8be80bfbe71c0c6d5ba6",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates a leg record kind, so the kind-to-PLAN binding inside leg-records is never exercised.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m007",
+   "name": "leg-records-wait-lower-unpinned",
+   "mutation": {
+    "from": "num(l.chooserWaitMs) && l.chooserWaitMs >= 0 && l.chooserWaitMs <= 3000",
+    "to": "num(l.chooserWaitMs) && l.chooserWaitMs <= 3000"
+   },
+   "mutatedSha256": "994a2e731296f3ac59bff9cecfa74f0d280e29d2592160444fe0135104f1539e",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-leg-wait-unbounded exercises only the <=3000 side; no case sets a negative chooserWaitMs.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m008",
+   "name": "leg-records-armerr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.clickError)"
+   },
+   "mutatedSha256": "56717089305c3cce65256bd4195f603d85e26fa18417fa00073014191a7e6302",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates armError; the arm call error is now unconstrained.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m009",
+   "name": "leg-records-clickerr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError)"
+   },
+   "mutatedSha256": "7ceae22602dcdd877945e27a0f6387ffc8e94dc3ca8ac564de2e826f6dc13e49",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates clickError; the click send error is now unconstrained.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m010",
+   "name": "leg-records-triggererr-unchecked",
+   "mutation": {
+    "from": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.triggerError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)",
+    "to": "errOk(l.interceptError) && errOk(l.priorClickError) && errOk(l.trigger2Error) && errOk(l.dismissError) && errOk(l.armError) && errOk(l.clickError)"
+   },
+   "mutatedSha256": "529dfbe649a4ba77ff33865f2daa92daa40b2a463370034c5f886384593da2df",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-trigger2-error-dropped exercises trigger2Error only; no case mutates triggerError.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m011",
+   "name": "errOk-code-type-unpinned",
+   "mutation": {
+    "from": "(e.code === null || Number.isInteger(e.code)) && typeof e.message === 'string'",
+    "to": "typeof e.message === 'string'"
+   },
+   "mutatedSha256": "68656c3d522901281a9175f1a2e2cdd28a1ce5d8a685bb34766497788a8cb1f8",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the error witnesses keep the {code,message} key set but never set a non-integer code, so the code type check is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m012",
+   "name": "leg-marks-min-count-relaxed",
+   "mutation": {
+    "from": "arr(l.marks).length >= 3",
+    "to": "arr(l.marks).length >= 2"
+   },
+   "mutatedSha256": "17f8398d398885eac27a6a31d473103b0039831bce93204d8cbf291132f2e823",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case shortens a marks array; the minimum-count conjunct is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m013",
+   "name": "leg-marks-mark-object-unchecked",
+   "mutation": {
+    "from": "arr(l.marks).every((m, i, a) => isObj(m) && typeof m.name === 'string'",
+    "to": "arr(l.marks).every((m, i, a) => typeof m.name === 'string'"
+   },
+   "mutatedSha256": "f8e36210c7d5cf3062033ca2a4aa60902dd94eec3bc7b397f0386fca5148a56f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-marks-name-type inserts a non-string name but still an object; no case inserts a non-object mark.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m014",
+   "name": "leg-marks-first-label-unpinned",
+   "mutation": {
+    "from": "arr(l.marks)[0].name === 'start' && arr(l.marks)[1].name === 'pre'",
+    "to": "arr(l.marks)[1].name === 'pre'"
+   },
+   "mutatedSha256": "4f979e7fe079bce39b1f30348e570acda321bdc47c439bc90d1acb33bdfb2ba6",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-marks-start-labels changes both m[0] and m[1], so it still trips the retained pre check; no case changes only the first label.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m015",
+   "name": "ctx-count-exactness-relaxed",
+   "mutation": {
+    "from": "if (child.length !== 1) { ctxBad.push(leg.name + ':child-contexts ' + child.length); continue; }",
+    "to": "if (child.length < 1) { ctxBad.push(leg.name + ':child-contexts ' + child.length); continue; }"
+   },
+   "mutatedSha256": "2d3a0dab3dd3bcd16b0914a279b0efbf1f3f5830a3aaff7b0213a93070e11ddc",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the context-binding case removes all child contexts (0); no case presents two child contexts, so >1 is now accepted.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m016",
+   "name": "ctx-origin-unbound",
+   "mutation": {
+    "from": "const child = cs.filter((c) => isObj(c) && c.origin === 'http://127.0.0.1:' + ports.child && c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId);",
+    "to": "const child = cs.filter((c) => isObj(c) && c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId);"
+   },
+   "mutatedSha256": "b9a261ae342ba63ec85a885d26257609a6b4860effad943b3a120c76043651b9",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the parent context is still excluded by frameId, so the real receipt yields one child context; no case moves a non-child default context under a different frameId.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m017",
+   "name": "ctx-frameid-type-unchecked",
+   "mutation": {
+    "from": "c.isDefault === true && typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId",
+    "to": "c.isDefault === true && c.frameId !== leg.frameTree.mainFrameId"
+   },
+   "mutatedSha256": "463556b53fb8d028d5da81fa757dc6288cb9d9f13f481dd216dc6773a9dc2ac8",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-ctx-frameid-unique sets frameId equal to the main frame id (still a string), so only the inequality is exercised.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m018",
+   "name": "sendlog-min-length-relaxed",
+   "mutation": {
+    "from": "if (log.length < 10 || !log.every(",
+    "to": "if (log.length < 1 || !log.every("
+   },
+   "mutatedSha256": "fb2184b439d15e4f34796499b35feb5705245efccbefb45971bc6e8fe0f69d98",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case empties or shortens a cdpSendLog below 10 entries; the minimum-length gate is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m019",
+   "name": "sendlog-params-object-unchecked",
+   "mutation": {
+    "from": "ALLOWED_METHODS.has(c.method) && isObj(c.params))",
+    "to": "ALLOWED_METHODS.has(c.method))"
+   },
+   "mutatedSha256": "72b828271d904227a11b8be5827d81c51feb6c102c75b84a86421f070f9d6d9f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sends a non-object params; the shape guard is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m020",
+   "name": "sendlog-navigate-once-unpinned",
+   "mutation": {
+    "from": "log.filter((c) => c.method === 'Page.navigate').length !== 1 || log.filter((c) => c.method === 'Page.getFrameTree').length !== 1",
+    "to": "log.filter((c) => c.method === 'Page.getFrameTree').length !== 1"
+   },
+   "mutatedSha256": "2959d5f438ee1242bbdc1c567f150c69715d2abfec79cfbbbb9ce20978267bcf",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-sendlog-getframetree-once-dropped exercises the getFrameTree count; no case duplicates Page.navigate.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m021",
+   "name": "sendlog-browser-once-unpinned",
+   "mutation": {
+    "from": "|| log.filter((c) => c.method === 'Browser.getVersion').length !== 1)",
+    "to": ")"
+   },
+   "mutatedSha256": "863de561826a379c35a201c9b9e339b1110b1439e5e59c44a043220139c6768f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case duplicates Browser.getVersion; only the getFrameTree duplicate is witnessed.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m022",
+   "name": "plan-calls-intercept-sendid-unbound",
+   "mutation": {
+    "from": "if (p.intercept && leg.interceptSendId !== log.find((c) => c.method === 'Page.setInterceptFileChooserDialog').id) planBad.push(leg.name + ':intercept-id');",
+    "to": ""
+   },
+   "mutatedSha256": "418a0eaafe042607a3bbe47c701984e7f3f817bfb13266d078405fe9b291c192",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the plan-calls case corrupts the intercept params (sequence mismatch); no case mutates interceptSendId, so the id coherence line is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m023",
+   "name": "plan-calls-prior-sendids-unbound",
+   "mutation": {
+    "from": "if (p.priorClick || CROSS.has(p.name)) { if (leg.priorPressId === null || leg.priorReleaseId === null || leg.priorReleaseId <= leg.priorPressId) planBad.push(leg.name + ':prior-ids'); }",
+    "to": "if (p.priorClick || CROSS.has(p.name)) { }"
+   },
+   "mutatedSha256": "87116fedf0cfd553907963057eb5db513cb8caaf2d23dd3bc1d8b550c91c5d6f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the renumber witness shifts ids and *SendId fields consistently; no case breaks the press/release id pairing or ordering.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m024",
+   "name": "plan-calls-trigger-sendid-unbound",
+   "mutation": {
+    "from": "if (!trig || leg.triggerSendId !== trig.id) planBad.push(leg.name + ':trigger-id');",
+    "to": "if (!trig) planBad.push(leg.name + ':trigger-id');"
+   },
+   "mutatedSha256": "26b7573a73e7d3e76f2293750e9da1cb14ef60220602e8f06614155237d7ff35",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case mutates triggerSendId away from the send-log id.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m025",
+   "name": "plan-calls-trigger2-unexpected-unchecked",
+   "mutation": {
+    "from": "if (leg.trigger2SendId !== null) planBad.push(leg.name + ':trigger2-unexpected');",
+    "to": ""
+   },
+   "mutatedSha256": "e04208f04d7ed25801465117723b2321f9a7dd220eb3969b5880eb3e07e21513",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-trigger2-error-dropped mutates trigger2Error only; no case sets a trigger2SendId on a non-double-trigger leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m026",
+   "name": "plan-calls-click-sendids-unbound",
+   "mutation": {
+    "from": "if (clicks.length !== 4 || leg.clickPressId !== clicks[2].id || leg.clickReleaseId !== clicks[3].id || leg.clickReleaseId <= leg.clickPressId) planBad.push(leg.name + ':click-ids');",
+    "to": "if (clicks.length !== 4) planBad.push(leg.name + ':click-ids');"
+   },
+   "mutatedSha256": "85bac00dbfd0f97f1c4417139fe57acaa4eeafb124f1b6f5f05298bb8d921f28",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates clickPressId/clickReleaseId; only the click count is exercised elsewhere.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m027",
+   "name": "plan-calls-dismiss-sendid-unbound",
+   "mutation": {
+    "from": "if (dis) { if (leg.dismissSendId !== dis.id) planBad.push(leg.name + ':dismiss-id'); }",
+    "to": "if (dis) { }"
+   },
+   "mutatedSha256": "94e4702a716d5e50f6780015c493aa5092f25811180ea3bf6eb4604a42ffd485",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case mutates dismissSendId; the cancel-send id coherence is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m028",
+   "name": "plan-calls-answer-sendid-unbound",
+   "mutation": {
+    "from": "if (!set || !isObj(leg.answer) || leg.answer.setSendId !== set.id) planBad.push(leg.name + ':answer-id');",
+    "to": "if (!set || !isObj(leg.answer)) planBad.push(leg.name + ':answer-id');"
+   },
+   "mutatedSha256": "839918bc9247c39e3a63b31cd45b8ca1c4b8ceae79ce7a3da440116949151f0b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the renumber witness shifts answer.setSendId with the send log ids; no case breaks the answer send id alone.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m029",
+   "name": "plan-calls-answer-files-relaxed",
+   "mutation": {
+    "from": "if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');",
+    "to": "if (!set) planBad.push(leg.name + ':answer-files');"
+   },
+   "mutatedSha256": "8d2c2e5c46ac9861d2589ce68daf4936753a3340af75ec597581258281006750",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case changes the setFileInputFiles path count/name; only the answers' own law checks inspect the resulting state.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m030",
+   "name": "cdp-multiopen-threshold-relaxed",
+   "mutation": {
+    "from": "if (opens.length > 2) evBad.push(leg.name + ':multi-open');",
+    "to": "if (opens.length > 3) evBad.push(leg.name + ':multi-open');"
+   },
+   "mutatedSha256": "5190cfed3a73b825b10d6ec042678046e79ba4cfa800c0c7e54af95a2cb69c0f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case produces three chooser events for one leg; the >2 cap is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m031",
+   "name": "cdp-method-whitelist-unpinned",
+   "mutation": {
+    "from": "if (nav.length !== 1 || el.some((e) => !['Page.fileChooserOpened', 'Page.frameNavigated'].includes(e.method)) || !el.every((e) => isObj(e) && isObj(e.params) && Number.isInteger(e.afterSendId))) evBad.push(leg.name + ':shape');",
+    "to": "if (nav.length !== 1 || !el.every((e) => isObj(e) && isObj(e.params) && Number.isInteger(e.afterSendId))) evBad.push(leg.name + ':shape');"
+   },
+   "mutatedSha256": "8480c602a1b95dbc82a6e0af0d0aeb63aeaf8943cc3c2c679d1f17e0a2fffdbb",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case appends a CDP event of any other method; the event-method allowlist is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m032",
+   "name": "cdp-nav-frameid-unbound",
+   "mutation": {
+    "from": "nav[0].params.frameId === lft.mainFrameId && nav[0].params.url ===",
+    "to": "nav[0].params.url ==="
+   },
+   "mutatedSha256": "be7d8f202c214d7bd59006a0a7b3cad6f292e37e64f38418701f707c2faaf569",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-cdp-nav-url-dropped exercises the URL; no case mutates the frameNavigated frameId.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m033",
+   "name": "cdp-open-frame-unbound",
+   "mutation": {
+    "from": "if (!wantFrame || o.params.frameId !== wantFrame.frameId) evBad.push(leg.name + ':open-frame');",
+    "to": "if (!wantFrame) evBad.push(leg.name + ':open-frame');"
+   },
+   "mutatedSha256": "4277c5fe30f47bf811a927a3ae325388d01cf3f8c6b3ee1c3ba36fae3a86f0d2",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the chooser-opening cases push events with the correct frame; no case mutates an opened event frameId.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m034",
+   "name": "cdp-cross-open-sendbinding-unbound",
+   "mutation": {
+    "from": "if (!(Number.isInteger(leg.priorReleaseId) && o.afterSendId >= leg.priorReleaseId && o.afterSendId <= leg.priorReleaseId + 3)) evBad.push(leg.name + ':open-binding');",
+    "to": "if (false) evBad.push(leg.name + ':open-binding');"
+   },
+   "mutatedSha256": "a77765251271a5ac83d8f76b043f49e9f1b02c46180c925cf361511ec614cbea",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the only cross-origin chooser push (cross-nonfile-chooser) uses the correct priorReleaseId; no case pushes a misbound cross chooser.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m035",
+   "name": "cdp-click-open-sendbinding-unbound",
+   "mutation": {
+    "from": "const bound = i === 0 ? o.afterSendId === leg.triggerSendId : (Number.isInteger(leg.clickReleaseId) && o.afterSendId >= leg.clickReleaseId && o.afterSendId <= leg.clickReleaseId + 3);",
+    "to": "const bound = i !== 0 || o.afterSendId === leg.triggerSendId;"
+   },
+   "mutatedSha256": "983afb47cdf1480641d82507a9db37f73252a2417a131f43b2acaacee7c4b7dd",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case mutates the afterSendId of the second chooser opened by the while-open click; only the first-open trigger binding remains.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m036",
+   "name": "frame-binding-frameid-regex-unpinned",
+   "mutation": {
+    "from": "typeof l.frameTree.mainFrameId === 'string' && /^[0-9A-F]{32}$/.test(l.frameTree.mainFrameId) && l.frameTree.mainFrameParentId === null",
+    "to": "typeof l.frameTree.mainFrameId === 'string' && l.frameTree.mainFrameParentId === null"
+   },
+   "mutatedSha256": "f2bf9fc3cb79a4459259f0affd0ca4cb0a625d1f2500b8aa2f9b4f63fa5f5a01",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "wf-frame-tree-id-any mutates the receipt-level frameTree id, not a leg's; no case breaks a leg mainFrameId format.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m037",
+   "name": "event-types-typefield-unchecked",
+   "mutation": {
+    "from": "same(Object.keys(e).sort(), EVENT_KEYS) && typeof e.type === 'string' && num(e.ts)",
+    "to": "same(Object.keys(e).sort(), EVENT_KEYS) && num(e.ts)"
+   },
+   "mutatedSha256": "4141fc9b173d693b9900f7392adc8156da1aa7c2dfd87c290e1f85be28d5f3c9",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the event-types case adds an extra key; no case sets a non-string type.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m038",
+   "name": "event-types-istrusted-type-unchecked",
+   "mutation": {
+    "from": "typeof e.isTrusted === 'boolean' && (e.act === null || typeof e.act === 'boolean')",
+    "to": "(e.act === null || typeof e.act === 'boolean')"
+   },
+   "mutatedSha256": "d88cd8eccf241568ad15d95c74a3edb6bc8f94a9cb07629806ae34381420e6a8",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the trust-law case sets isTrusted=false (still boolean) and the leg-shape check covers it; no case sets a non-boolean isTrusted.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m039",
+   "name": "event-types-act-type-unchecked",
+   "mutation": {
+    "from": "&& (e.act === null || typeof e.act === 'boolean')",
+    "to": ""
+   },
+   "mutatedSha256": "f6fd967af856c544ad0fac4ed32ab7a1402ae2fbc77cfce6cc92cec74bb924d9",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sets a non-boolean/non-null page-event act (w-cross-nonfile-child-act mutates childEvents, not pageEvents).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m040",
+   "name": "event-types-target-type-unchecked",
+   "mutation": {
+    "from": "&& (e.target === null || typeof e.target === 'string')",
+    "to": ""
+   },
+   "mutatedSha256": "d9f87a726572c7cd97b7023f58d77510e1398388ca74b66a1c62855d5901e70b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the leg-shape cases change a target string to another string; no case sets a non-string target.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m041",
+   "name": "event-types-x-y-buttons-types-unchecked",
+   "mutation": {
+    "from": "&& (e.x === null || num(e.x)) && (e.y === null || num(e.y)) && (e.buttons === null || num(e.buttons))",
+    "to": "&& (e.buttons === null || num(e.buttons))"
+   },
+   "mutatedSha256": "b6f3ed0062780f07d471e47797706ed9599e88f70cb0bcd13d33ccbc0a674c0e",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sets a non-numeric x or y; the click-while-open case changes buttons to another number, caught by leg-shape.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m042",
+   "name": "event-types-files-type-unchecked",
+   "mutation": {
+    "from": "&& (e.files === null || Array.isArray(e.files))",
+    "to": ""
+   },
+   "mutatedSha256": "ba2824fc3c3831beaace9b4fef157b563a644fc66e93b8f3600529d0959877ea",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the accept-answer case sets files to another array; no case sets a non-array files value.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m043",
+   "name": "event-types-seq-integer-unchecked",
+   "mutation": {
+    "from": "Number.isInteger(e.seq) && typeof e.leg === 'string'",
+    "to": "typeof e.leg === 'string'"
+   },
+   "mutatedSha256": "1624dec8d0585f2311dcb09176bb5c4e10d5164a8c9c641d214234b23c47efc9",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "seq-monotonic sets another integer (99); no case sets a non-integer seq.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m044",
+   "name": "event-types-leg-type-unchecked",
+   "mutation": {
+    "from": "typeof e.leg === 'string' && num(e.at)",
+    "to": "num(e.at)"
+   },
+   "mutatedSha256": "4cfbe1b0d8e4bd44b16bdddfa8de37de5e16b5a92eef2af57f2f3a5bff5faadb",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sets a non-string event leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m045",
+   "name": "event-quantum-at-unchecked",
+   "mutation": {
+    "from": "events.every((e) => isObj(e) && onGrid(e.ts) && onGrid(e.at))",
+    "to": "events.every((e) => isObj(e) && onGrid(e.ts))"
+   },
+   "mutatedSha256": "10c3f10fa8bde9ab0411f9aafed22987ec21e7281478627f9d220b1baf62a0f4",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the quantum case sets ts off-grid; no case sets at off-grid (at is otherwise only checked for window/order).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m046",
+   "name": "event-window-upper-unbound",
+   "mutation": {
+    "from": "e.at <= (settle ?? l.closedAt) && ",
+    "to": ""
+   },
+   "mutatedSha256": "5842b61334d629e9f527cdd20dce60b17b850c4715774edf68208a4a6983647f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the window cases only test the lower bound and ordering; no case puts an event after settle.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m047",
+   "name": "leg-shape-trusted-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'act', 'xy', 'files', 'opened', 'state'])"
+   },
+   "mutatedSha256": "d144c213f17e28cfe3af3c8a6957b30107691b8dcee5325fa6aaafe1d635f4d7",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the isTrusted mutation case (trust-law) also produces its own expected finding; no case requires leg-<name> for an isTrusted-only mismatch.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m048",
+   "name": "leg-shape-act-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'trusted', 'xy', 'files', 'opened', 'state'])"
+   },
+   "mutatedSha256": "a1e70f3bf305f9536af5c479270a24ef4bfa474dbd143787e87d71856cc8d69d",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates a page-event act; only childEvents act is witnessed.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m049",
+   "name": "leg-shape-opened-unchecked",
+   "mutation": {
+    "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+    "to": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'state'])"
+   },
+   "mutatedSha256": "4df0a80cc7f30d18b581c897bc237c1af151423c2dd08775a74606d2ad107f17",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the mode-law case changes an opened mode but expects mode-law; no case requires leg-<name> for an opened-only mismatch.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m050",
+   "name": "gesture-law-error-text-unpinned",
+   "mutation": {
+    "from": "(want.ok ? got.ret !== want.ret : (got.name !== want.name || got.message !== want.message))",
+    "to": "(want.ok ? got.ret !== want.ret : (got.name !== want.name))"
+   },
+   "mutatedSha256": "a422a4fcc4cf648df4c9edb9d859d0edb4fe0237865f746aca5e3ab75622585e",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the gesture-law case flips ok; order-law (not gesture-law) is the expected id for a wrong message, so gesture-law's text comparison is never required.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m051",
+   "name": "activation-hasbeenactive-unpinned",
+   "mutation": {
+    "from": "!same(leg.activationBefore, want[0]) || !same(leg.activationAfter, want[1])",
+    "to": "!same(leg.activationBefore && leg.activationBefore.isActive, want[0].isActive) || !same(leg.activationAfter && leg.activationAfter.isActive, want[1].isActive)"
+   },
+   "mutatedSha256": "7ffa52a8876edaa618d8c0d976f470ce3ef1f663cc492045bfea06f36c3904f8",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "both activation cases flip isActive; no case changes only hasBeenActive.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m052",
+   "name": "mode-law-second-open-unchecked",
+   "mutation": {
+    "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push",
+    "to": "if (!d || opens[0].params.mode !== wantMode) modeBad.push"
+   },
+   "mutatedSha256": "f93af89e7e7ba2aa6e781ef787dfa52655ef19b0943cdc3ac3c51dd9b623461d",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the click legs open two choosers; no case mutates the second opened mode, and the mode-law case mutates a single-open leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m053",
+   "name": "mode-law-descriptor-presence-unchecked",
+   "mutation": {
+    "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push",
+    "to": "if (opens.some((e) => e.params.mode !== wantMode)) modeBad.push"
+   },
+   "mutatedSha256": "17fa39f236997f08df54096f55da811dfbb2de5ded06147383c22abcf2a8b67a",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case removes a fixtureInput descriptor; the d-presence guard is untested.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m054",
+   "name": "cross-child-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(co.childEvents).length === 5 && arr(co.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(co.childEvents).length === 5 && arr(co.childEvents).every((e) => e.act === true)"
+   },
+   "mutatedSha256": "0e92b6fdef8e66760bd882a22bc5278bcd8197a224de7f1dc6d04838e5bf8851",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-cross-nonfile-child-act flips act, not isTrusted; no case sets a child event isTrusted=false.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m055",
+   "name": "cross-childresult-message-unpinned",
+   "mutation": {
+    "from": "isObj(co.childResult) && same(co.childResult, CHILD_RESULT_LAW['sp83-cross-origin-nonfile'])",
+    "to": "isObj(co.childResult) && co.childResult.ok === CHILD_RESULT_LAW['sp83-cross-origin-nonfile'].ok && co.childResult.name === CHILD_RESULT_LAW['sp83-cross-origin-nonfile'].name"
+   },
+   "mutatedSha256": "5ec3605f162220863c2040c68b1f407d550140d5f668835f498f777c4988d5c2",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the cross-nonfile-result case flips ok; no case alters only the SecurityError message text.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m056",
+   "name": "order-cod-childresult-exactness-dropped",
+   "mutation": {
+    "from": "isObj(cod.childResult) && same(cod.childResult, CHILD_RESULT_LAW['sp83-cross-origin-nonfile-disabled']) && ",
+    "to": "isObj(cod.childResult) && "
+   },
+   "mutatedSha256": "9d8d19bdcae9ab0aaf291e738729fe726e02c909dabfdd15a1cbf2a58574c92f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates the disabled cross-origin childResult at all (only sod.showPicker and cod.childLate are witnessed).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m057",
+   "name": "order-cod-childact-before-unbound",
+   "mutation": {
+    "from": "same(cod.childActivationBefore, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][0]) && same(cod.childActivationAfter, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][1])",
+    "to": "same(cod.childActivationAfter, CHILD_ACT_LAW['sp83-cross-origin-nonfile-disabled'][1])"
+   },
+   "mutatedSha256": "a4774494fd9810498460f65f39a63e71993c3947085023b4a9a74a18bba238bf",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case mutates the disabled cross-origin child activation.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m058",
+   "name": "order-cod-child-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(cod.childEvents).length === 5 && arr(cod.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(cod.childEvents).length === 5 && arr(cod.childEvents).every((e) => e.act === true)"
+   },
+   "mutatedSha256": "442d41da1be8c5e7fdd539108074d5e9a96b30364204628b9458b63e3017e8fa",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-order-cod-childlate mutates childLate; no case sets a cod child event isTrusted=false.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m059",
+   "name": "order-sod-open-count-unbound",
+   "mutation": {
+    "from": " && arr(sod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+    "to": ""
+   },
+   "mutatedSha256": "b7f37196b86dadf050cba5a34f2f30c7dd6e6ce72410be090354e77d9efff817",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case opens a chooser on the same-origin disabled leg; the order check no longer asserts it opened nothing.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m060",
+   "name": "extras-parentcross-unbound",
+   "mutation": {
+    "from": "&& same(ex.parentCrossAccess, { contentDocument: null, windowDocument: 'SecurityError' }) && same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0])",
+    "to": "&& same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0])"
+   },
+   "mutatedSha256": "8c87229a04046b00f16f49dab5dc6164dde00a7e33149f6f7b1f280a378acc92",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the parentCrossAccess mutation case targets the base cross-origin leg; no case mutates an extra leg's cross-access object.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m061",
+   "name": "extras-childact-before-unbound",
+   "mutation": {
+    "from": "same(ex.childActivationBefore, CHILD_ACT_LAW[extra][0]) && same(ex.childActivationAfter, CHILD_ACT_LAW[extra][1])",
+    "to": "same(ex.childActivationAfter, CHILD_ACT_LAW[extra][1])"
+   },
+   "mutatedSha256": "ad67935d439729769751ee14314a84e4c78513c8fabaa02e7fa0977cec2a1259",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-extras-child-act flips an event act; no case mutates an extra leg's child activation.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m062",
+   "name": "extras-childlate-unbound",
+   "mutation": {
+    "from": "&& same(arr(ex.childEvents).map((e) => e.type + '@' + e.target), CHILD_EVENT_SHAPE[extra].seq) && ex.childLate === 0,",
+    "to": "&& same(arr(ex.childEvents).map((e) => e.type + '@' + e.target), CHILD_EVENT_SHAPE[extra].seq),"
+   },
+   "mutatedSha256": "62777fd440741bde517d23febebccefae74f44ddea1ab95e59914382e0ad6536",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sets childLate on an extra cross-origin leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m063",
+   "name": "extras-istrusted-unchecked",
+   "mutation": {
+    "from": "arr(ex.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+    "to": "arr(ex.childEvents).every((e) => e.act === true)"
+   },
+   "mutatedSha256": "39b7b97f73952968c26f24973dea77f13400af51228c172fd8a9e9ddddea97d9",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-extras-child-act flips act; no case sets a non-trusted extra child event.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m064",
+   "name": "webkit-setparams-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(wa.answer.setParams).sort(), ['backendNodeId', 'files']) && arr(wa.answer.setParams.files).length === 1",
+    "to": "arr(wa.answer.setParams.files).length === 1"
+   },
+   "mutatedSha256": "3bbc2065ffe9b0989091321989a369662e806621b914fd2b84fa75fecb2ea0fa",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the webkit witnesses change the answer key set, uploadDir hash and state; none adds a setParams key.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m065",
+   "name": "webkit-answer-basename-unbound",
+   "mutation": {
+    "from": "path.basename(wa.answer.setParams.files[0]) === DIR.name && ",
+    "to": ""
+   },
+   "mutatedSha256": "caea48ff14d7a3c69708847c6613ab963cbb5ce58dcb72eadc1921023252aa32",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the setFileInputFiles path basename; state/uploadDir checks carry the directory name.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m066",
+   "name": "webkit-read-bytes-unpinned",
+   "mutation": {
+    "from": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2 && same(arr(wa.pageEvents).filter((e) => e.type === 'read').map((e) => e.ret), DIR.files.map((f) => 'hex:' + f.hex))",
+    "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2"
+   },
+   "mutatedSha256": "ad750726bad6af594073f85adb0986202f37dcabea0deb2189ad09b9772d8ab2",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no battery case mutates the bytes read from the webkitdirectory files.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m067",
+   "name": "webkit-state-unbound",
+   "mutation": {
+    "from": "same(waState, DIR_FILES) && ",
+    "to": ""
+   },
+   "mutatedSha256": "ce6206e34642e292efed58394b9b39177f3c281d57fabf3dd73998b91c7219b6",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the per-leg state case mutates stateAfter but expects leg-sp83-webkitdirectory-answer (the leg-shape check), not the law.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m068",
+   "name": "webkit-seterr-unchecked",
+   "mutation": {
+    "from": "same(wa.answer.setResult, {}) && wa.answer.setError === null && ",
+    "to": ""
+   },
+   "mutatedSha256": "b29cd6a5f9c177364ec613b34f867e07c5287482bb1f7639adc3ebe719c859e7",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case corrupts the directory answer setResult/setError.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m069",
+   "name": "accept-answer-files-unpinned",
+   "mutation": {
+    "from": "same(aa.answer.files, [ANSWER.name]) && ",
+    "to": ""
+   },
+   "mutatedSha256": "5f7a0b03e43749e037ee2099de065fe7b080f2efd1074103e88405da29b19f04",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the accept answer files argument; the state/upload/read checks remain.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m070",
+   "name": "accept-backendid-unbound",
+   "mutation": {
+    "from": "aa.answer.setParams.backendNodeId === nodeReport['sp83-accept-answer'][0] && ",
+    "to": ""
+   },
+   "mutatedSha256": "543fef655ac0c4f7c3f502f65c9c8e55e653079c9e42fced973d98f186b5e1dc",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the accept-answer backendNodeId (the multiple/second legs carry their own id cases).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m071",
+   "name": "accept-upload-sha-unpinned",
+   "mutation": {
+    "from": "same(aa.upload, { name: ANSWER.name, size: ANSWER.size, sha256: ANSWER.sha256 })",
+    "to": "isObj(aa.upload) && aa.upload.name === ANSWER.name && aa.upload.size === ANSWER.size"
+   },
+   "mutatedSha256": "f0b9bed5c9157d32659fb13564141e6324149487cacbbecd52820c5018853df8",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-accept-upload-any changes the size; no case changes the accepted .txt sha256.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m072",
+   "name": "accept-seterr-unchecked",
+   "mutation": {
+    "from": "same(aa.answer.setResult, {}) && aa.answer.setError === null && ",
+    "to": ""
+   },
+   "mutatedSha256": "a88848dfdc54c49f3d316016ee1b53b45c50add623b2028f8c735ccd8f0a0435",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case corrupts the accept answer setResult/setError.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m073",
+   "name": "accept-read-count-unbound",
+   "mutation": {
+    "from": " && arr(aa.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + ANSWER.hex",
+    "to": " && arr(aa.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + ANSWER.hex"
+   },
+   "mutatedSha256": "04dc1604100f1ff88d49db35909327d56d1a79a67276a92e3c175434d707f53e",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the bytes witness mutates the read ret; no case changes the accept read count.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m074",
+   "name": "multiple-answer-files-unpinned",
+   "mutation": {
+    "from": "same(mm.answer.files, [ANSWER.name]) && ",
+    "to": ""
+   },
+   "mutatedSha256": "00c5075fd4c8fd3814aa45651be0dc6274dcc2b05b1b8ba06bf9907f47ed696a",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the multiple answer files argument.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m075",
+   "name": "multiple-setparams-length-unbound",
+   "mutation": {
+    "from": "isObj(mm.answer.setParams) && arr(mm.answer.setParams.files).length === 1 && ",
+    "to": "isObj(mm.answer.setParams) && "
+   },
+   "mutatedSha256": "84d3eb47243fe838494b8b675f141e8d5bdffc4479856e66fc144702689b3230",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the multiple answer file count; the state/basename/backend checks remain.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m076",
+   "name": "multiple-basename-unbound",
+   "mutation": {
+    "from": "path.basename(mm.answer.setParams.files[0]) === ANSWER.name && ",
+    "to": ""
+   },
+   "mutatedSha256": "071c3217bcb19ff58a2788c11c0346abd22d80b55e5cb10d7bc406b8d8cdbb95",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the multiple answer path basename.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m077",
+   "name": "multiple-seterr-unchecked",
+   "mutation": {
+    "from": "same(mm.answer.setResult, {}) && mm.answer.setError === null && ",
+    "to": ""
+   },
+   "mutatedSha256": "e557bd29710b0985aed613308ea2e6baeef7468ef3f03fc9eade9b93fb46b7c2",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case corrupts the multiple answer setResult/setError.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m078",
+   "name": "multiple-upload-sha-unpinned",
+   "mutation": {
+    "from": "same(mm.upload, { name: ANSWER.name, size: ANSWER.size, sha256: ANSWER.sha256 })",
+    "to": "isObj(mm.upload) && mm.upload.name === ANSWER.name && mm.upload.size === ANSWER.size"
+   },
+   "mutatedSha256": "7a77c7ba8933315cfdd3e7123817cbec7253fb63ca9f54f1a62cc4e5beda18a0",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the multiple-mode upload digest (the accept-leg witness changes a different leg).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m079",
+   "name": "multiple-read-count-unbound",
+   "mutation": {
+    "from": " && arr(mm.pageEvents).filter((e) => e.type === 'read').length === 1,",
+    "to": ","
+   },
+   "mutatedSha256": "cf8009a9ea770892852f069500a1ec4216a2d788399353df0e9c1adb5f7c8d6c",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the multiple-mode read count.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m080",
+   "name": "accept-mime-answer-files-unpinned",
+   "mutation": {
+    "from": "same(am.answer.files, [PNG.name]) && ",
+    "to": ""
+   },
+   "mutatedSha256": "82dd448912bfc30bfeb5886ec5d3dc6535247ee875fc73a1d4bf79514a1a1d41",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the PNG answer files argument.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m081",
+   "name": "accept-mime-backendid-unbound",
+   "mutation": {
+    "from": "am.answer.setParams.backendNodeId === nodeReport['sp83-accept-mime-answer'][0] && ",
+    "to": ""
+   },
+   "mutatedSha256": "698941c5e522bacffc99fc1c16b90cf2359708b5cca55cfdd1957b0c57cb8243",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the accept-mime answer backendNodeId.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m082",
+   "name": "accept-mime-upload-hex-unpinned",
+   "mutation": {
+    "from": "same(am.uploadPng, { name: PNG.name, size: PNG.size, sha256: PNG.sha256, hex: PNG.hex })",
+    "to": "isObj(am.uploadPng) && am.uploadPng.name === PNG.name && am.uploadPng.size === PNG.size && am.uploadPng.sha256 === PNG.sha256"
+   },
+   "mutatedSha256": "4447f2fd76d6f02de2218970648e0680bf4004df660d3827eb96a081d974c1a1",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the bytes witness mutates the page read ret; no case changes the uploadPng hex digest.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m083",
+   "name": "accept-mime-read-count-unbound",
+   "mutation": {
+    "from": " && arr(am.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex",
+    "to": " && arr(am.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + PNG.hex"
+   },
+   "mutatedSha256": "f1476de549662061c1a19a3f63f37e28d90ad68e291fb0080b78618924fb685f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the bytes witness mutates the read ret; no case changes the accept-mime read count.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m084",
+   "name": "second-chooser-first-open-id-unbound",
+   "mutation": {
+    "from": "sc.firstChooserBackendNodeId === scOpens[0].params.backendNodeId && ",
+    "to": ""
+   },
+   "mutatedSha256": "34fea82661837ae7c48a0e8f10f7e761ea2f99627f9ba97fd6cd8956ea0fb15b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the id witness mutates secondChooserBackendNodeId; no case mutates firstChooserBackendNodeId.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m085",
+   "name": "second-chooser-answer-files-unpinned",
+   "mutation": {
+    "from": "same(sc.answer.files, [SECOND.name]) && ",
+    "to": ""
+   },
+   "mutatedSha256": "d9e86052241a66f81647e9d8ee5f25c214427d920069f2a83198a87c0adeeb7d",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the second answer files argument.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m086",
+   "name": "second-chooser-read-count-unbound",
+   "mutation": {
+    "from": " && arr(sc.pageEvents).filter((e) => e.type === 'read').length === 1 && arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + SECOND.hex",
+    "to": " && arr(sc.pageEvents).find((e) => e.type === 'read').ret === 'hex:' + SECOND.hex"
+   },
+   "mutatedSha256": "78cefc9bc2bb7408d86bd6e750cfc6dfd11d311c2a9d1e61e0cd274c5c955826",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the bytes witness mutates the read ret; no case changes the second-chooser read count.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m087",
+   "name": "second-chooser-seterr-unchecked",
+   "mutation": {
+    "from": "same(sc.answer.setResult, {}) && sc.answer.setError === null && ",
+    "to": ""
+   },
+   "mutatedSha256": "fb3666d311573d09e2fa95567441cd528ce600674be48cb74d592ef680001108",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case corrupts the second-chooser answer setResult/setError.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m088",
+   "name": "second-chooser-upload-hex-unpinned",
+   "mutation": {
+    "from": "same(sc.uploadSecond, { name: SECOND.name, size: SECOND.size, sha256: SECOND.sha256, hex: SECOND.hex })",
+    "to": "isObj(sc.uploadSecond) && sc.uploadSecond.name === SECOND.name && sc.uploadSecond.size === SECOND.size && sc.uploadSecond.sha256 === SECOND.sha256"
+   },
+   "mutatedSha256": "e21cb803bd3a3be73067c7bf59607d180fc1c9c07af8f750ef616572c7c3c160",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the bytes witness uses the page read ret; no case changes uploadSecond.hex.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m089",
+   "name": "noselection-state-keyset-unpinned",
+   "mutation": {
+    "from": "same(Object.keys(st).sort(), ['d', 'dis', 'disd', 'k', 'm', 's', 'sValue']) && ",
+    "to": ""
+   },
+   "mutatedSha256": "c0b9c03c61eaf6e09b8f4cc24e948203023f3ad16a4152850580390dd16d727f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the no-selection case fills an array; no case adds or removes a state key on a non-answer leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m090",
+   "name": "noselection-svalue-unpinned",
+   "mutation": {
+    "from": "['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(st[k]) && st[k].length === 0) && st.sValue === ''",
+    "to": "['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(st[k]) && st[k].length === 0)"
+   },
+   "mutatedSha256": "8d9e439106c42af8f031df9ded31052152a42aaffd46501fb02869160191f53c",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the per-leg cases set sValue on some legs but the leg-shape check is their expected id; no case requires no-selection-law for sValue alone.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m091",
+   "name": "noselection-nonanswer-dismiss-state-unchecked",
+   "mutation": {
+    "from": "if (leg.stateAfterDismiss !== null && !(isObj(leg.stateAfterDismiss) && ['s', 'm', 'd', 'k', 'dis', 'disd'].every((k) => Array.isArray(leg.stateAfterDismiss[k]) && leg.stateAfterDismiss[k].length === 0))) stateBad.push(leg.name + ':dismiss-state');",
+    "to": ""
+   },
+   "mutatedSha256": "cfcbaf716607b31d26c718ec270fba8eff35824a2131f287e011805a53f1aa65",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case sets stateAfterDismiss on a non-answer leg (the dismiss-state witness is on an answer leg).",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m092",
+   "name": "noselection-nonanswer-file-events-unchecked",
+   "mutation": {
+    "from": "if (arr(leg.pageEvents).some((e) => e.type === 'input' || e.type === 'change' || (e.files !== null && e.type !== 'cancel'))) stateBad.push(leg.name + ':file-event');",
+    "to": ""
+   },
+   "mutatedSha256": "8d9ce6855cbd678885117885639003366fc52a1ebee7d00cd09582f373876fe1",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case adds input/change/file events to a non-answer leg.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m093",
+   "name": "intercept-cross-okcall-from-showpicker",
+   "mutation": {
+    "from": "const okCall = CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok === true && leg.name !== 'sp83-cross-origin-color' : isObj(leg.showPicker) && leg.showPicker.ok === true;",
+    "to": "const okCall = isObj(leg.showPicker) && leg.showPicker.ok === true;"
+   },
+   "mutatedSha256": "5996393a0bdf7f1ed360e134a551acfceedc32f56e855045ec539db829e36914",
+   "batteryExit": 1,
+   "outcome": "killed",
+   "battery": {
+    "cases": 153,
+    "failed": 1,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    },
+    "firstFailures": [
+     {
+      "case": "w-gesture-unexpected-dropped",
+      "expect": "gesture-law",
+      "detail": "exit 1 expected gesture-law got [\"gesture-law\",\"intercept-law\"] extra [\"intercept-law\"]"
+     }
+    ]
+   }
+  },
+  {
+   "id": "m094",
+   "name": "dismiss-nocancel-unchecked",
+   "mutation": {
+    "from": " && arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+    "to": ""
+   },
+   "mutatedSha256": "9166ed07099c6b716ca6dc7783b72fc1c23e33d47ea72af7cf5187932202718c",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the cancel-law case adds a cancel event but expects cancel-law; dismiss-law is only also-allowed there, so the no-cancel conjunct is never required.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m095",
+   "name": "trust-showpicker2-unchecked",
+   "mutation": {
+    "from": "(e.leg !== 'show-picker' && e.leg !== 'show-picker-2')",
+    "to": "(e.leg !== 'show-picker')"
+   },
+   "mutatedSha256": "1d6d95520ef50c5f92744ac0e9bc4e27a47c755bd8eed589e6d49a2a4cd92a2d",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the pointer witness sets leg=show-picker; no case uses show-picker-2.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m096",
+   "name": "argv-tail-unpinned",
+   "mutation": {
+    "from": "if (!same(a, want) || typeof tok !== 'string'",
+    "to": "if (!same(a.slice(0, 9), want.slice(0, 9)) || a.length !== want.length || typeof tok !== 'string'"
+   },
+   "mutatedSha256": "0e1731ac3fe3481a066a1a37325314b485f61cf33c5d833d9d86b53b33bd33b4",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the host-argv case corrupts argv[7]; no case changes argv entries 9..16, which are now unverified beyond array length.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m097",
+   "name": "argv-token-charset-unpinned",
+   "mutation": {
+    "from": "/^[0-9a-f]{12}$/.test(tok)",
+    "to": "tok.length === 12"
+   },
+   "mutatedSha256": "3f010724a9c312c66827da2837265dc0b399c85dd00499cd59e3e6c8598a528b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case uses a 12-character non-hex launch token.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m098",
+   "name": "devtools-port-binding-relaxed",
+   "mutation": {
+    "from": "l.devtoolsListening.port === ports.cdp",
+    "to": "l.devtoolsListening.port >= 1024"
+   },
+   "mutatedSha256": "9c108d9e7955e6e8f0f3df24fc552fa5842bd9f2daaa60493c0b304be09edc1a",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the devtools case sets port=1; any privileged port >=1024 now passes even if it is not the argv CDP port.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m099",
+   "name": "teardown-probes-not-open",
+   "mutation": {
+    "from": "Object.values(l.teardown.portProbes).every((v) => v === 'closed')",
+    "to": "Object.values(l.teardown.portProbes).every((v) => v !== 'open')"
+   },
+   "mutatedSha256": "e5d740a0e07584e070b76cf28d5739d9e8a5fb74b8d0a25f9f5308128918d205",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the probe witness sets \"open\"; any other non-closed value (e.g. \"timeout\") now passes.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m100",
+   "name": "teardown-curl-not-zero",
+   "mutation": {
+    "from": "Object.values(l.teardown.postKillCurl).every((v) => v === 7)",
+    "to": "Object.values(l.teardown.postKillCurl).every((v) => v !== 0)"
+   },
+   "mutatedSha256": "6fcc129e3dd9ceb0f7e55a6775339a7ee9069d08dafc4c18e9b5761f125e973b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the curl witness sets 0; any other curl exit code (e.g. 28) now passes.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m101",
+   "name": "fixture-accept-unpinned",
+   "mutation": {
+    "from": "same(arr(r.fixtureInputs), FIXTURE_INPUTS)",
+    "to": "same(arr(r.fixtureInputs).map(({ accept, ...d }) => d), FIXTURE_INPUTS.map(({ accept, ...d }) => d))"
+   },
+   "mutatedSha256": "671260e3ec8388d25e97011e4207c54c5d83af032f668cfbedd2010645f9f49f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the descriptor case changes rect.left; no case changes an accept attribute, which is now unpinned everywhere.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m102",
+   "name": "server-root-status-unpinned",
+   "mutation": {
+    "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce && s.status === 200)",
+    "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce)"
+   },
+   "mutatedSha256": "15da3049abd47871d24128c8f11ae73e62c94d9541d9341b5b0f3bf7677af77f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the server witnesses change the run nonce, add a 200 non-root row and a second root row; none changes the root status.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m103",
+   "name": "server-nonroot-status-relaxed",
+   "mutation": {
+    "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status === 404)",
+    "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status !== 200)"
+   },
+   "mutatedSha256": "aa76f7f936e1538974919d29f4d9c05c5b2af113dfb8ef59a5cea25c28d95841",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the 404 witness pushes a 200; any other non-200 status (500) now passes.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m104",
+   "name": "child-server-root-status-unpinned",
+   "mutation": {
+    "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce && s.status === 200)",
+    "to": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce)"
+   },
+   "mutatedSha256": "83a47b930a12ea632d0d18a15fe27a9f9db895c3689ed233f4e4ff2a39aabe5b",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case changes the child-root status; the witnesses use the run nonce, the 404 rule and the >=1 minimum.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m105",
+   "name": "child-server-nonchild-status-relaxed",
+   "mutation": {
+    "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path !== '/child.html').every((s) => s.status === 404)",
+    "to": "arr(l.childServerLog).filter((s) => isObj(s) && s.path !== '/child.html').every((s) => s.status !== 200)"
+   },
+   "mutatedSha256": "6311e4d01a2fba505d97320b5e5504a87e64d412a9d8be7df8fb8794b18a1e76",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the 404 witness pushes a 200; any other non-200 status now passes.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m106",
+   "name": "runwindow-lower-relaxed",
+   "mutation": {
+    "from": "t1 - t0 >= 12000",
+    "to": "t1 - t0 >= 11000"
+   },
+   "mutatedSha256": "8d8d8496a234f84a9f9b0dbc28e9096328b60a5b8373ada7d044f60d10266e6f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the run-window case sets exactly start+10000 ms, which still fails; a 10.5-11.9 s run is now accepted.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m107",
+   "name": "runwindow-upper-relaxed",
+   "mutation": {
+    "from": "t1 - t0 < 600000",
+    "to": "t1 - t0 < 700000"
+   },
+   "mutatedSha256": "7e8c07d8855c8e2790b012489b53e5079fcbc775939747748b3bed3d8319b047",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the upper witness sets exactly 700000 ms, which still fails (<); a 600-699 s run is now accepted.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m108",
+   "name": "replay-tolerance-tightened",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.005, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;"
+   },
+   "mutatedSha256": "3525ac13d0c4cf498497bf641613b0069061a9ba57c2f04cfc29e91f4c41d644",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the forgery is an exact copy (0 ms) and the accept-retimed case shifts by 1 ms, both beyond the changed boundary, so no case probes 0.005-0.05 ms near-copies.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m109",
+   "name": "replay-frac-relaxed",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.9, GAP_FRAC = 0.75;"
+   },
+   "mutatedSha256": "0be7b298eabf9aa1feb46b0c4fdcee74e185c80b916d9927907f4bac7e986919",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the forgery matches all 61 prior events, still >= ceil(0.9*61); a forger moving only 32-54 events now escapes the refusal threshold.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m110",
+   "name": "replay-refusal-boundary-strict",
+   "mutation": {
+    "from": "refused: np > 0 && absMatched >= absNeed",
+    "to": "refused: np > 0 && absMatched > absNeed"
+   },
+   "mutatedSha256": "dfbe95b14fd2a7a0710c4d3a9544a555a1ea6ff8b48e2547f1031832397b38eb",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the forgery matches all 61 events (> 31), so the case still refuses; a receipt matching exactly absNeed events now passes.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m111",
+   "name": "replay-token-charset-unpinned",
+   "mutation": {
+    "from": "typeof l.launchToken === 'string' && /^[0-9a-f]{12}$/.test(l.launchToken) && priors.every",
+    "to": "typeof l.launchToken === 'string' && priors.every"
+   },
+   "mutatedSha256": "1518101a9ba732cfe43f062640509ff42faa21f6882d17a9a5aca39dd3a15c59",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case uses a non-hex 12-character token in the replay-launch-token check; the host-argv check still carries its own regex.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m112",
+   "name": "unparsable-brace-heuristic-dropped",
+   "mutation": {
+    "from": " || txt.trimStart().startsWith('{')) && /tabi-chrome-cdp-showpicker-r83/.test(txt)) unparsable.push(w.path);",
+    "to": ") && /tabi-chrome-cdp-showpicker-r83/.test(txt)) unparsable.push(w.path);"
+   },
+   "mutatedSha256": "2e4e378e9d540c37fae331cd25ed8bc5c41b59703c99cb5eb5cee24b737a88a4",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the unparsable witness writes a .json file; a corrupt non-.json file that begins with \"{\" and names the schema is no longer refused.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m113",
+   "name": "ports-distinctness-unchecked",
+   "mutation": {
+    "from": "new Set([ports.http, ports.cdp, ports.child]).size === 3 && ",
+    "to": ""
+   },
+   "mutatedSha256": "c95a891d8f78d16c78780a62b5b469c64167e47d4c98349b7f5649b2b4da0798",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "the ports case sets child=http, which is still caught by the fixture.child.origin binding; no case collides cdp with another port while keeping origins consistent.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m114",
+   "name": "ports-lower-bound-partial",
+   "mutation": {
+    "from": "[ports.http, ports.cdp, ports.child].every((p) => p >= 1024)",
+    "to": "ports.http >= 1024"
+   },
+   "mutatedSha256": "93f8d168ee40d8133abdd078ac61276207c3570ad9f1fdc247d2cd95c105fe0f",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "w-ports-min changes only http; a cdp or child port below 1024 is now accepted.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  },
+  {
+   "id": "m115",
+   "name": "ports-cdp-integer-unchecked",
+   "mutation": {
+    "from": "Number.isInteger(ports.http) && Number.isInteger(ports.cdp) && Number.isInteger(ports.child)",
+    "to": "Number.isInteger(ports.http) && Number.isInteger(ports.child)"
+   },
+   "mutatedSha256": "b50a6000c65c809dc5be894862433dcc3eb4d22662282514f40f178bc2dbcc1a",
+   "batteryExit": 0,
+   "outcome": "survived",
+   "survivorReason": "no case gives ports.cdp a non-integer value.",
+   "battery": {
+    "cases": 153,
+    "failed": 0,
+    "coverage": {
+     "declared": 74,
+     "covered": 74,
+     "uncovered": [],
+     "unknown": []
+    }
+   }
+  }
+ ]
+}

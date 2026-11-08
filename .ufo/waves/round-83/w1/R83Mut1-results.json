@@ -1,0 +1,61 @@
+{
+  "status": "complete",
+  "seat": "R83Mut1",
+  "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+  "deliverables": {
+    "mutants.json": ".ufo/waves/round-83-seats/R83Mut1/mutants.json",
+    "mutants_sha256": "a56f5e61708ea0aad9c299d3ecb14334f6574e0a5264c5d47c001666b79ede61",
+    "report": ".ufo/waves/round-83/w1/R83Mut1.md",
+    "report_sha256": "bb82b14a0d55951f816e1edcdc212a06b5115c03d08602e712555d34101cbb26",
+    "receipts": ".ufo/waves/round-83-seats/R83Mut1/receipts/ (sweep-results.json, witness-results.json, witness-results-threshold.json, witness-results-112.json, preflight.json, replay-boundary-31.json, before/after hashes)",
+    "scripts": ".ufo/waves/round-83-seats/R83Mut1/scripts/ (sweep runner, witness harness+spec, threshold and mirror witnesses)"
+  },
+  "counts": {
+    "mutants_written": 115,
+    "exact_killpower_reuse": 0,
+    "executed_and_counted": 111,
+    "killed": 1,
+    "crashed": 0,
+    "survivors": 110,
+    "behavioral_escapes": 77,
+    "redundant_conjuncts": 33,
+    "vacuous_excluded": 4,
+    "bytes_rederived_and_matched": "115/115"
+  },
+  "baseline": {
+    "frozen_battery": "153 cases, 0 failed, coverage 74/74, exit 0",
+    "pristine_counter": "clean 74/74",
+    "pins_match_freeze": true,
+    "receipt_nonce_used": "tabi-r83-l1-c016710129da"
+  },
+  "key_findings": {
+    "replay_thresholds": "Concrete boundary receipt built from controls/c1/probes/prior1.json (30/61 events shifted +100 ms with marks; exactly 31 matches): pristine refuses replay-event-timeline; replay-frac-relaxed (FRAC 0.5->0.9, absNeed 31->55) and replay-refusal-boundary-strict (>= -> >) both accept it clean. replay-tolerance-tightened is a dead knob: event-time-quantum's 0.1 ms grid makes TOL<0.05 behaviorally identical, so it is excluded as vacuous.",
+    "run_window": "finishedAt = start+11000 ms accepted after >=12000 -> >=11000; start+650000 ms accepted after <600000 -> <700000; battery witnesses use exactly 10000/700000 ms.",
+    "sendlog_min_length": "A 9-entry cross-origin send log (prologue + intercept + child click, ids rebound) is clean under log.length<10 -> <1 and refused only by the pristine length gate.",
+    "answer_attribution": "Behaviorally escaped subfields: webkit setParams key set/page-read bytes/setResult+setError; accept answer.files/backendNodeId/upload sha256/setResult+setError; multiple answer.files/setResult+setError/upload sha256; accept-mime answer.files/backendNodeId/upload hex; second-chooser answer.files/setResult+setError/upload hex; non-answer stateAfterDismiss. Delivered state/mode and read ret bytes remain pinned.",
+    "cross_origin_laws": "Behaviorally escaped: co/cod child-event isTrusted, co/cod childResult message text, cod childActivationBefore and exact childResult, and extra-leg (month/week/time/number/range) parentCrossAccess, childActivationBefore, childLate and child-event isTrusted. Base-leg ok/name and childLate retain cases.",
+    "protocol_records": "Behaviorally escaped: plan-frozen priorClick and intercept records, leg-records arm/click/trigger errors, negative chooserWaitMs, non-integer error code, marks[0] label, context count>1/origin/frameId type, send-log params type, duplicate navigate/Browser.getVersion, plan-calls id fields, CDP method allowlist/nav+open frame ids/second-open binding, frame-binding frameId regex, page-event leg type/off-grid at/upper window, leg-shape act, hasBeenActive, show-picker-2 trust, ports distinctness+lower bounds+cdp integer typing, devtools port>=1024, teardown value relaxations, fixture accept, server statuses, argv tail, token charset (redundant), unparsable '{' heuristic (mirror-lane witness)."
+  },
+  "killed_mutant": {
+    "id": "m093",
+    "name": "intercept-cross-okcall-from-showpicker",
+    "why": "w-gesture-unexpected-dropped: mutated okCall raised cross-leg want to 1 and added intercept-law as an extra finding (expected gesture-law only)."
+  },
+  "vacuous_excluded": [
+    "leg-marks-min-count-relaxed (length>=3 implied by start/pre/settle positions)",
+    "leg-marks-mark-object-unchecked (no JSON non-object can carry a string name)",
+    "mode-law-descriptor-presence-unchecked (missing descriptor impossible under fixture-descriptors+plan-frozen)",
+    "replay-tolerance-tightened (0.1 ms event grid makes TOL<0.05 equivalent)"
+  ],
+  "lane_integrity": {
+    "counter_sha256": "7b9f9ec429427cfb4cf9b974f860e9726ce72b3d1127cb9e50a00d2d9ee5f841",
+    "battery_sha256": "12c09cc15a4602c77faf7624d4556eb964545cf3a6277990c8a49ae89bd4a817",
+    "receipt_sha256": "3f9bbb60651d6f10a589561cd9638c4b5107517d770abf815c0991dd95a2bc9c",
+    "prior_set_sha256": "1ff644e590346d4c10018bbe0cc51a3b34d05b00396762126f0982e9bd5f7474",
+    "lane_unchanged": true,
+    "walked_tree_baseline_after_report": "clean 74/74",
+    "scratch_deleted": "/fast/scratch/hyaku/tabi-r83/R83Mut1/"
+  },
+  "tooling": "none installed or upgraded (Node v24.21.0 preinstalled)",
+  "report_trailer": ".ufo/waves/round-83/w1/R83Mut1.md"
+}

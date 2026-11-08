@@ -1,0 +1,28 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-showpicker-round83.mjs	2026-11-08 00:22:00.193912617 -0300
++++ probe-driver-firstbytes.mjs	2026-11-08 02:14:50.675040961 -0300
+@@ -181,7 +181,7 @@
+   { name: 'sp83-cross-origin-range', kind: 'showpicker-cross-origin', target: 'rg', childButton: 'go10', intercept: { enabled: true }, priorClick: null, gesture: false },
+   { name: 'sp83-multiple-mode', kind: 'showpicker-answer', target: 'm', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, files: ['tabi-r83-a.txt'] },
+   { name: 'sp83-accept-mime-answer', kind: 'showpicker-answer', target: 'k', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, files: ['tabi-r83-b.png'] },
+-  { name: 'sp83-second-chooser-answer', kind: 'showpicker-second-chooser-answer', target: 's', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, clickAt: [160, 670], files: ['tabi-r83-second.txt'] },
++  { name: 'sp83-second-chooser-answer', kind: 'showpicker-second-chooser-answer', target: 's', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, clickAt: [160, 670], files: ['tabi-r83-first.txt'] },
+ ];
+ 
+ let launchSeq = 0;
+@@ -275,6 +275,7 @@
+   fs.writeFileSync(path.join(uploadDir, 'tabi-r83-b.png'), uploadPng);
+   const uploadSecond = Buffer.from('tabi-r83-second-attribution\n');
+   fs.writeFileSync(path.join(uploadDir, 'tabi-r83-second.txt'), uploadSecond);
++  fs.writeFileSync(path.join(uploadDir, 'tabi-r83-first.txt'), Buffer.from('tabi-r83-first-choice\n'));
+   rec.uploadPng = { name: 'tabi-r83-b.png', size: uploadPng.length, sha256: sha256(uploadPng), hex: uploadPng.toString('hex') };
+   rec.uploadSecond = { name: 'tabi-r83-second.txt', size: uploadSecond.length, sha256: sha256(uploadSecond), hex: uploadSecond.toString('hex') };
+   const dirName = 'tabi-r83-dir';
+@@ -538,7 +539,7 @@
+         rec.clickWhileOpenChoosersAfter = chooserCount() - before;
+         rec.clickWhileOpenElement = await evalValue('document.elementFromPoint(' + cx + ',' + cy + ').id');
+         const evs = cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened');
+-        const ev = evs.slice(-1)[0];
++        const ev = evs[0];
+         rec.secondChooserBackendNodeId = ev ? ev.params.backendNodeId : null;
+         rec.firstChooserBackendNodeId = evs[0] ? evs[0].params.backendNodeId : null;
+         if (ev) {

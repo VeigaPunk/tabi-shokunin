@@ -2,7 +2,7 @@
 
 ## Work performed
 
-**Declared claims (frozen before scoring, `.ufo/waves/round-83/claims.json`, D `492e271e8226`):**
+**Declared claims (frozen before scoring, `.ufo/waves/round-83/claims.json`, D `b6496e6f5d4f`):**
 
 - **C1 — coverage, capability `chromium-showpicker-linux` generation r83** (sourced: S219/S220
   re-opened). Predicate `C1-SHOWPICKER-R83`. Fifteen legs: cross-origin `type=number` and `type=range`
@@ -25,7 +25,7 @@
   receipt is the committed prior (`.../controls/c1/probes/prior1.json`).
 - Scored run at the frozen nonce: 15 legs, 0 failures, counter exit 0 **74 checks clean**
   (`corpus/evidence/round83/chromium-showpicker/receipt.json`).
-- Battery 84 cases / 0 failed with coverage 74/74 (`.../scored/battery-a.json`); kill power 50
+- Battery 153 cases / 0 failed with coverage 74/74 (the 84 r83 cases plus 69 imported R82Mut1 witnesses); kill power 50/50 on the frozen list (`.../scored/battery-a.json`); kill power 50
   mutants / 50 killed / 0 survived / 0 crashed (`.../scored/killpower-a.json`); selftest 9/9
   (`.../scored/selftest.out`).
 - Pre-freeze repairs fixed by measurement, not by widening: a missing `clickAt` in the counter PLAN
@@ -86,7 +86,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the open L0 `tab
 
 - expansion: **improved** — knowledge 94 → 95, four frontier legs moved into core with receipt field
   paths, registry held byte-identical.
-- quality: **improved** — 74-check counter clean, battery 84/84 with full coverage, kill power 50/50,
+- quality: **improved** — 74-check counter clean, battery 153/153 with full coverage, kill power 50/50,
   selftest 9/9; a survivor was removed as a redundant rule rather than papered over.
 - discernment: **improved** — the r82 spotcheck's routed defects are corrected of record with
   re-executed controls (not presence greps); rejected generalisations carry flip conditions.

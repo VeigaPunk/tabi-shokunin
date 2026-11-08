@@ -22,11 +22,14 @@ receipt field path that carries it.
 3. **A real PNG answered into an `accept=".png"` input is accepted with its bytes**
    (`legs[13].stateAfter.k`, `read` ret `hex:` + PNG hex). Together with the r81/r82 `.txt`
    acceptance, the token grammar holds both the extension and MIME forms as hints, not validators.
-4. **The SECOND chooser is answerable by its bytes, not its id.** `legs[14]` opens two choosers with
-   the SAME `backendNodeId` (`firstChooserBackendNodeId === secondChooserBackendNodeId`), then answers
-   the last event with distinct bytes (`tabi-r83-second.txt`); the input delivers THOSE bytes
-   (`legs[14].stateAfter.s`, `read` ret hex). Answering by id cannot discriminate; the delivered bytes
-   are the attribution.
+4. **The SECOND chooser's answer delivers its payload, but the id does not attribute it.** `legs[14]`
+   opens two choosers with the SAME `backendNodeId` (`firstChooserBackendNodeId ===
+   secondChooserBackendNodeId`), then answers the last event with distinct bytes
+   (`tabi-r83-second.txt`); the input delivers THOSE bytes (`legs[14].stateAfter.s`, `read` ret hex).
+   Measured limit (R83Review2 + R83Exec2): answering `evs[0]` instead of the last event delivers
+   byte-identical files and the frozen law still passes, and every id-equality conjunct is droppable
+   with the battery still exiting 0 — the shared id carries no attribution. The law is a
+   payload/state law plus an id-equality clause.
 5. **The r82 seven laws are carried forward.** Cross-origin `type=color` exempt; `type=month`/`week`/
    `time` SecurityError; the origin-before-mutability order discriminator; directory expansion with
    `webkitRelativePath`; `.txt` into `accept=".png"` accepted; click-while-open opens a second chooser
@@ -37,8 +40,9 @@ receipt field path that carries it.
 - The receipt records the browser's own event stream; it does not prove WHY Chromium exempts color
   or why number/range throw (the same black-box discrimination as r81–r82).
 - Remaining input types (`tel`, `search`, `text`) are carried from S219 enumeration, not measured.
-- The shared `backendNodeId` is browser-assigned; byte attribution is a property of this answer
-  pair, not a general guarantee for every chooser pair.
+- The shared `backendNodeId` is browser-assigned and non-discriminating: the frozen law cannot tell
+  which of the two chooser events was answered (R83Exec2's `evs[0]` answer passes). Byte equality
+  is a property of the payload, not of the event.
 
 ## Frontier (named, not held)
 

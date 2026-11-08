@@ -4066,7 +4066,7 @@ Capabilities (this round):
 
 | Capability | What it can now do | Evidence pointer | First-working round |
 |---|---|---|---|
-| `chromium-showpicker-linux` (generation r83) | As r82, and now: cross-origin `type=number`/`range` inputs throw SecurityError; a `multiple` input answered opens `selectMultiple` and accepts the answer; a real PNG into `accept=".png"` is accepted with its bytes; the second chooser (same `backendNodeId` as the first) is answerable by its delivered bytes. | `corpus/evidence/round83/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-83.md` | 79 |
+| `chromium-showpicker-linux` (generation r83) | As r82, and now: cross-origin `type=number`/`range` inputs throw SecurityError; a `multiple` input answered opens `selectMultiple`, its file list and upload bytes are bound (the page-read hex is not — narrowing 1); a real PNG into `accept=".png"` is accepted with its bytes; the second chooser's answer delivers its payload while the shared `backendNodeId` carries no attribution (narrowing 2, R83Exec2). | `corpus/evidence/round83/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-83.md` | 79 |
 
 Knowledge 94 → 95 (`corpus/knowledge/chromium-showpicker-runtime-round-83.md`). Registry 223
 (no new rows; S219/S220 re-opened). SKILL.md `## Round 83 gate registry` registers
