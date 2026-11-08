@@ -257,6 +257,121 @@ Per the round's ruling, no `pacman` transaction was attempted.
 
 ---
 
+## Post-integration verification (seat re-measurement at `db032725`)
+
+The L1 committed this report together with the record fixes as `db032725` ("round-88: D7
+re-freeze (counter guards, real selftest witnesses), scored battery/killpower/selftest + drift
+before/after, **scribe F1-F7 record fixes**, narrowings 1-7, wave seat reports"). This section
+records which of my findings landed, which did not, and what remains.
+
+**Six of seven landed.** Re-measured at `db032725`:
+
+| # | finding | landed? | evidence at `db032725` |
+|---|---|---|---|
+| F1 | note `recheck:` line names r87 | **fixed** | `check-showpicker-r87.mjs` count in the note = **0**; the line now reads `check-showpicker-round88.mjs … --expect-driver-sha256 8c015fa4… --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 8f93405128f1… --prior-set .ufo/waves/round-88/controls/c1/prior-set.txt --json` → **exit 0, 102 checks** — the exact form my draft gave |
+| F2 | C1 cell "battery 212" | **fixed** | the cell now reads `battery 215/0/coverage 102/102` |
+| F3 | C1 cell "selftest 10/10" | **PARTIAL — see below** | the cell still reads `selftest 10/10` |
+| F4 | C2 cell names 3 of 4 before-statements | **fixed** | the cell now reads `**4 mismatches** (`scorecard-tallies`, `selftest-wording`, `gate-selftest`, `quality161-sweep` …)` |
+| F5 | lesson says "ten-form" | **fixed** | the S223 row now reads "the normative ground for the acceptance law over ten attribute-string values, **nine of them in-grammar**" |
+| F6 | note "0/34 divergent per-leg copies" | **fixed** | `0/34` count in the note = **0** |
+| F7 | note "99 checks" + r87 fixture/child hashes | **fixed** | `99 checks` = **0**; `10e444f7`/`bbb22189` = **0** |
+
+The `## Mistakes` section (deliverable (d)) was created — `corpus/lessons/round-88.md` now has
+`## Gate` and `## Mistakes` — and the two `scored/drift-*.json` artifacts exist and are committed
+(`drift-a.json`: mismatches 0; `drift-before.json`: mismatches 4, all four ids named), matching my
+independent base-worktree measurement.
+
+### The one residual: F3's `selftest 10/10` in the r88 C1 claim cell
+
+`SCORECARD.md` line 4237, the r88 C1 claim-row cell, still reads:
+
+```
+after: the scored receipt → exit 0, `verdict clean`, **102 checks**, 0 findings; battery 215/0/coverage 102/102; kill power 69/69/0/0/0; selftest 10/10
+```
+
+The runner has **11** gates, not 10 — seat measurement at `db032725`:
+
+```
+grep -cE "gate\('[a-z0-9-]+'" scripts/selftest-r88-gates.mjs   → 11
+  battery, capability-status, counter-clean, gate-selftest, kill-power,
+  noreceipt-control, nowork-control, pins-match-freeze, record-drift,
+  tree-exempt-path-refused, tree-exempt-unmatched-refused
+git show HEAD:.ufo/waves/round-88/scored/selftest.json | jq '.cases, .clean, (.results|length)'
+  → 11, true, 11
+```
+
+and every sibling record in the same commit says **11**: `SKILL.md` ("11 gates: the ten r87 gates
+plus `gate-selftest`"), `corpus/lessons/round-88.md` ("selftest **11/11**"), the SCORECARD's own
+trailing line ("selftest 11/11"), and `plans/round-88.md` line 155 ("selftest 11/11"). The D7
+commit's own subject says "real selftest witnesses" — the eleventh gate is exactly the
+`gate-selftest` witness added at D3.
+
+So the cell is the **last** r88 record carrying a pre-D3 tally. The fix is one token:
+`selftest 10/10` → `selftest 11/11`. It is a record-text fix in the same class as F2, which the
+same commit made in the same cell two clauses earlier — so the omission is a slip in applying
+F2/F3 as a pair, not a deliberate reading. The L1 should confirm the intended reading; my seat
+measured that the scored artifact has 11 cases and is `clean`, so `11/11` is what the cell should
+say.
+
+**Note on the drift gate's coverage of this residual.** It is not caught: the D6/D7
+`scorecard-tallies` statement governs the *seven historical* rounds' `9/9`/`10/10` tallies and
+requires every `selftest 10/10` line in the file to sit inside a Round 87/88 section — the r88
+cell's `10/10` **does** sit inside the Round 88 section, so the statement is satisfied while the
+number is wrong. That is the M2 gap in Appendix D, now demonstrated on a live value rather than a
+hypothetical one: the gate can confirm *where* a tally sits but not *what it says* about the
+round's own run. This is worth citing in the M2 row as the worked example.
+
+### The pre-file ledger over-claims this residual (audit note)
+
+The L1 wrote `.ufo/waves/round-88/claim-falsification.tsv` at 09:10:55 — after my report at
+09:10:43 — and its row for this seat reads:
+
+```
+C2	w1/R88Scribe.md  falsifies-wording  plans/round-88.md §Narrowings item 3
+  F1-F7 record defects incl. the note's inherited r87 recheck line; all fixed in the records before filing
+```
+
+**"all fixed" is not accurate for F3.** Seat re-measurement at `db032725`, the commit the ledger
+row refers to, and again against the working tree:
+
+```
+awk 'NR==4237' SCORECARD.md | grep -o "selftest [0-9/]*"   →  selftest 10/10
+grep -cE "gate\('[a-z0-9-]+'" scripts/selftest-r88-gates.mjs →  11
+jq -r '.cases' .ufo/waves/round-88/scored/selftest.json     →  11
+```
+
+The D7 commit corrected **battery 212 → 215** in the same cell but left `selftest 10/10`; the
+runner has eleven gates and the scored selftest artifact records eleven cases. So F3 is
+**partially** applied: the battery figure landed, the selftest figure did not. The ledger row's
+"all fixed in the records before filing" should read "F1, F2, F4, F5, F6, F7 fixed; **F3's
+`selftest 10/10` → `11/11` remains open in the r88 C1 claim cell**" — or the cell should be
+corrected and the row then become accurate.
+
+I am flagging this because the ledger is the artifact a non-author spot-check reads to judge
+whether the round's records were corrected, and it is the only place in the lane where F3 is
+characterised as closed. The lane is otherwise consistent on 11/11 (`SKILL.md` "11 gates", the
+lesson "selftest **11/11**", the SCORECARD trailing line "selftest 11/11", `plans/round-88.md`
+line 155 "selftest 11/11", and the commit subject "real selftest witnesses"), which makes the one
+cell the outlier rather than a deliberate reading.
+
+This is a record-fix observation, not a challenge to the ledger's verdict on C2: the drift gate
+runs green, the round's measurements hold, and the frozen predicate, counter, pins, priors,
+thresholds and kill rules are untouched.
+
+### What did not change (verified, so the L1 need not re-check)
+
+- The round's **measurements** are unchanged and hold: counter `clean` / 102 checks / 0 findings;
+  battery 215 cases, 0 failed, coverage 102/102; kill power 69 mutants, 69 killed, 0 survived /
+  0 crashed / 0 unapplied; selftest 11 gates, `clean: true`; drift 0 at HEAD and 4 at base; the
+  scored receipt unchanged.
+- The **frozen predicate, counter, pins, priors, thresholds and kill rules** are unchanged by any
+  fix above. `claims.json` C2 `killRule` still reads "after mismatches != 0 or before mismatches
+  != 4 -> NOT verified (before amended from 3 to the measured 4; see frozenAmendments)" — the
+  numeral was already disclosed and was not moved again.
+- The **capability row** and the **trailing "Scored (r88)" line** are correct and untouched.
+
+---
+
 # Appendix A — Draft: round-88 knowledge-note body (three new token forms)
 
 **Status: DRAFT for TabiR88 (L1) to integrate. Not written into the lane.**
@@ -966,6 +1081,30 @@ this into M2's row rather than making it a fourth candidate: it is the same clas
 and the same absence of gate coverage. The lane's own `scored/drift-before.json` (written
 09:06:37) now records exactly this — `mismatches 4`, all four named — so the *artifact* is right
 and only the *cell prose* lags.
+
+**The worked example, now live (added after the L1's D7 commit `db032725`).** The L1 applied the
+F2/F3 fix pair to the r88 C1 claim cell and corrected **battery 212 → 215** but left
+**selftest 10/10** in place, in the same cell, two clauses later. The runner has **11** gates and
+`scored/selftest.json` records `"cases": 11, "clean": true`; `SKILL.md` says "11 gates", the
+lesson says "selftest **11/11**", the SCORECARD's trailing line says "selftest 11/11" and
+`plans/round-88.md` line 155 says "selftest 11/11" — the cell is the last record carrying the
+pre-D3 tally. **The drift gate does not catch it**, and the reason is exactly this row's
+subject: the D6/D7 `scorecard-tallies` statement governs the *seven historical* rounds' `9/9`/
+`10/10` tallies and requires every `selftest 10/10` line to sit inside a Round 87/88 section.
+The r88 cell's `10/10` **does** sit inside the Round 88 section, so the statement is satisfied
+while the number is wrong. The gate can confirm *where* a tally sits; it cannot confirm *what the
+number says* about the round's own run. This is M2 demonstrated on a live value rather than
+hypothetically — cite it in the row.
+
+**And the pre-file ledger inherited the over-claim.** The L1's
+`.ufo/waves/round-88/claim-falsification.tsv` row for this seat reads "F1-F7 record defects incl.
+the note's inherited r87 recheck line; **all fixed in the records before filing**" — but the
+`selftest 10/10` in the r88 C1 cell is still there, in the same commit that fixed
+`battery 212 → 215` two clauses earlier. The ledger is the artifact a non-author spot-check
+reads to judge whether the records were corrected, and it is the only place in the lane where
+F3 is characterised as closed; every other r88 record already says 11/11. The row should say
+"F1, F2, F4, F5, F6, F7 fixed; F3's `selftest 10/10` → `11/11` remains open in the r88 C1 claim
+cell" — or the cell should be corrected and the row then become accurate.
 
 ### M3 — `narrowing-partial-sweep` (the in-grammar correction did not reach every record)
 
