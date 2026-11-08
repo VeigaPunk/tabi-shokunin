@@ -175,7 +175,13 @@ gates have all executed green once, and batch every repair.
    `webkitdirectory` page-read hex, `answer.files`, `answer.setParams.backendNodeId` and read
    multiplicity: the frozen counter enforces each clause, but no battery case witnesses some of
    them, so a counter weakening can pass. Routed to r89 as battery cases.
-7. **The counter's replay limit block can be made self-contradictory without a red.** R88Mut1's
+7. **The drift gate's `--selftest` leaks its fixture directory.** Its scratch root
+   (`$HYAKU_SCRATCH` default `/fast/scratch/hyaku`) is created per run and never removed; the D7
+   selftest runs left 14 `tabi-r88-driftfix-*` trees (≈40 KB each) behind, cleaned by hand after
+   landing. Routed to r89: remove the fixture in a `finally`/`process.on('exit')` hook (same
+   defect class as §7.4 of the addendum — a counter that writes a scratch root it does not
+   reclaim).
+8. **The counter's replay limit block can be made self-contradictory without a red.** R88Mut1's
    `show-replay-refused-strict` moves the escape minimum to 88 events while the emitted sentence
    still says 89; the frozen battery stays green because the limit sentence is prose. Routed to
    r89: bind the limit sentence to the computed `absNeed` (the r87 rule class).
