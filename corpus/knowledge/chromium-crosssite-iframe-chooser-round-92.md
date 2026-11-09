@@ -137,3 +137,12 @@ on the session the chooser arrived on.*
   at 93, and a 5000 ms observation window on three X legs saw exactly one chooser per leg, on the
   iframe session, none between 1500 and 5000 ms.
 
+
+## Correction (round 94; appended, the text above is not rewritten)
+
+The §Wave probes reading "consistent with `backendNodeId` being scoped to the reporting session's
+document tree [INFERENCE]" is superseded: Blink resolves a `backendNodeId` in the id map of the
+renderer PROCESS that receives the command (r93 S231/S232; r94 S233/S234). The page-session
+`Node is not a file input element` came from a collision with the parent renderer's own id 2 (r93),
+and with a padded child the same call misses (`No node found for given backend id`, r94
+`corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`).

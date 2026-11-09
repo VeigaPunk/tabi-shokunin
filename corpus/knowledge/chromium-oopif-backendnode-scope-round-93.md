@@ -219,3 +219,14 @@ leg of every variant. These are wave probes outside the frozen wording (limits 3
   `inspector_dom_agent.cc`), digests in `.ufo/waves/round-93/sources/sha256.txt`; the two files this
   note quotes were re-fetched from `chromium.googlesource.com` at tag 155.0.8059.84 and their
   sha256 match the staged copies.
+
+## Correction (round 94; appended, the text above is not rewritten)
+
+Rule 2 above contrasts the observed `Node is not a file input element` with
+`No node found for given backend id`. Round 94 produced that miss for the same cross-site setup:
+with 300 painted elements before the child's input (B = 302), the page session's `DOM.describeNode`
+and `DOM.setFileInputFiles` both answer `No node found for given backend id`. Which text appears
+depends on whether the parent renderer has a live node numbered B (r94 R94Critic2: pad 1 collides
+with a non-root `about:blank` `#document`, a busier parent collides with a `#text`). Neither error
+text is a stable signature of a foreign id; this note's law holds for its own fixture (a lone input,
+B = 2). See `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`.

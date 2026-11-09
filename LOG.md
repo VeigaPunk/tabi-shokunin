@@ -4267,3 +4267,40 @@ Records (attempt 2): `corpus/lessons/round-93.md` (gate, two mined mistakes, cor
 gate runs); SCORECARD round-93 section and capability row; README `## Round 93 coverage`; the wave
 evidence `w1/`, `w1-results.json` and the falsification ledger. **C1 VERIFIED on its frozen
 predicate** (pending non-author closure).
+
+## Round 94 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR94`. Base `d7744d04` (the round-93 verifier spot-check commit; lane clean; no earlier r94
+attempt in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability
+`chromium-oopif-backendnode-collision-linux`: a cross-site iframe chooser's `backendNodeId` sent on the
+PAGE session collides with the parent's own root (pad 0) or misses (300 painted spans before the
+input), resolved in the parent renderer's own id map (r93 declared limit 3). Sourced by S233 (Blink
+`identifiers_factory.cc`: `IntIdForNode` → `GetDomNodeId`) and S234 (Blink `node.cc`: `GetDomNodeId` →
+`DOMNodeIds::IdForNode`), both opened this round.
+
+Motivating evidence: the r93 note's law named "a `#document`" without saying whose (r93 limit 3), and
+R93Critic3 read it as the parent root; the L1's pre-freeze probes (`.ufo/waves/round-94/probes/`) showed
+painted padding moves B from 2 to 302 and turns the page-session lookup into a miss.
+
+Freeze commit `2308b6ce` (`claims.json.frozenAt` 21:49:37, committed 21:49:42): `plans/round-94.md`,
+`.ufo/waves/round-94/claims.json`, driver `chrome-cdp-backendnode-collision-round94.mjs` (pin
+`518f40ff9b34`), counter `check-backendnode-collision-round94.mjs` (`d7fd2cbe0899`), battery
+`negatives-backendnode-collision-round94.mjs` (`b750ee17b778`), probes, staged sources and the executed
+controls (attempt 3; attempts 1-2 kept: orphaned chromium after signal controls, a SIGTERM race scored
+rc 1, a sweep missing chromium's rewritten argv — mined mistake 1). Scored commit `012776cf`: `--live`
+rc 0, clean, 165 checks, nonce `tabi-r94-live-240f4c5100c3`.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 3 critic, 1 mutation-tester, 1 reviewer,
+1 sentinel, 1 scout, 1 scribe, 1 connector; attack-side seats critic×3 + mutation-tester + reviewer +
+sentinel + connector = 7/12; reviewer+critic+mutation-tester = 5/12, 42 %; the L1 holds the planner
+seat). All 12 settled and filed; every C1 verdict `neutral`. Wave outcome: clean live reproductions
+(R94Exec1 ×2, R94Exec2 ×3 + 10 reps, R94Critic2 ×1); R94Critic2/R94Critic3 sharpen the mechanism
+(membership not comparison; B fixed at first render) outside the predicate; R94Mut 65/70 killed;
+R94Sentinel F1-F4 routed to r95; R94Connector found three own-lane statements to correct.
+
+Records: `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`, evidence receipt,
+S233/S234 + search-log entry, SKILL `## Round 94 gate registry`, README `## Round 94 coverage` and an
+appended r93-summary correction, appended corrections in the r92 and r93 notes,
+`corpus/lessons/round-94.md` (gate, two mined mistakes, corrections, wave), SCORECARD round-94
+section and capability row, the wave evidence and the falsification ledger. **C1 VERIFIED on its frozen
+predicate** (pending non-author closure).

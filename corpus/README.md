@@ -1209,3 +1209,23 @@ page session names the `INPUT` and answers. Ids are per renderer process (S231/S
 `corpus/knowledge/chromium-oopif-backendnode-scope-round-93.md`; evidence
 `corpus/evidence/round93/chromium-oopif-backendnode-scope/receipt.json`; gate
 `check-cross-session-answer-round93`. Pending non-author closure.
+
+## Round 94 coverage
+
+Capability `chromium-oopif-backendnode-collision-linux`: a cross-site (`localhost`) iframe chooser's
+`backendNodeId` B, sent on the PAGE session, is resolved in the parent renderer's own id map. With an
+unpadded child it collides with the parent's own root (`#document`, backendNodeId B, `documentURL` =
+the parent URL; `DOM.setFileInputFiles(B)` fails with `Node is not a file input element`); with 300
+painted elements before the input B exceeds every id in the parent's tree and both `DOM.describeNode`
+and `DOM.setFileInputFiles` fail with `No node found for given backend id`. Same-site control: B on
+the page session is the `INPUT`. Mechanism S231–S234 (`IntIdForNode` → `GetDomNodeId` →
+`DOMNodeIds::IdForNode`). `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`;
+evidence `corpus/evidence/round94/chromium-oopif-backendnode-collision/receipt.json`; gate
+`check-backendnode-collision-round94`. Pending non-author closure.
+
+## Correction — round 93 coverage summary (round 94; append-only)
+
+The `## Round 93 coverage` paragraph states unconditionally that B on the page session "names a
+`#document` node". That holds for the r93 fixture (a lone input, B = 2). Round 94 shows the outcome
+depends on the parent renderer's live ids: with a padded child the same call answers
+`No node found for given backend id` (see `## Round 94 coverage`).

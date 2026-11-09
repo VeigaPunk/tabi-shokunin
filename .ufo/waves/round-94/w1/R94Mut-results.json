@@ -1,0 +1,801 @@
+{
+  "frozenCounterSha256": "d7fd2cbe0899ec59b639752d99f3cd22594dbe600300596cdcc6ce30abf2a95a",
+  "batteryPin": "518f40ff9b34727254a3bb0cd30603c70ce8488a911fa3a26a55273220f9686f",
+  "batterySha256": "b750ee17b7784d23fbc6c13f5356d1485f05f5702023e48f928730b6cfcd7822",
+  "positiveReceipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-94/controls/receipt-positive.json",
+  "positiveReceiptSha256": "f511f644e0a0073d4bce0f8d2001cb6836c1e4e6e55fe5a153962a5fc4eafa7c",
+  "mutantCount": 70,
+  "killed": 65,
+  "survived": 5,
+  "killedOnlyByPositiveBreak": [
+    "M04-chromium-includes",
+    "M16-leg-error",
+    "M17-browser-version",
+    "M18-child-host",
+    "M19-leg-pad",
+    "M20-child-url-port",
+    "M21-parent-host",
+    "M23-iframe-targetId",
+    "M25-chooser-session",
+    "M26-chooser-frame",
+    "M28-describe-chooser-session",
+    "M29-describe-chooser-B",
+    "M30-answer-session",
+    "M31-answer-B",
+    "M32-answer-error",
+    "M33-child-files",
+    "M34-child-click",
+    "M35-C-describe-error",
+    "M36-C-describe-B",
+    "M37-C-describe-docurl",
+    "M38-C-root-B",
+    "M40-C-pierce-ge-to-le",
+    "M41-C-pierce-inputS",
+    "M42-C-cross-NOTFILE",
+    "M43-C-cross-B-unbound",
+    "M44-C-cross-files-delivered",
+    "M45-M-describe-NONODE",
+    "M46-M-root-ne",
+    "M47-M-pierce-lt",
+    "M49-M-pierce-inputS",
+    "M50-M-cross-NONODE",
+    "M51-M-cross-files-delivered",
+    "M52-S-describe-input",
+    "M53-S-describe-B",
+    "M54-S-root",
+    "M55-S-pierce-inputS",
+    "M57-S-cross-null",
+    "M58-want-order",
+    "M59-want-drop-M",
+    "M61-NOFILE-const",
+    "M62-NONODE-const",
+    "M63-host-swap",
+    "M64-C-pad-cond",
+    "M66-rootIsParent-doc",
+    "M67-rootIsParent-url",
+    "M68-isInputS-file",
+    "M69-ppOk-int",
+    "M70-arm-C-branch"
+  ],
+  "results": [
+    {
+      "id": "M01-schema-eq",
+      "theme": "global",
+      "old": "check('schema', receipt.schema === SCHEMA",
+      "line": "check('schema', receipt.schema !== SCHEMA",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "do-nothing-r93-receipt"
+      ]
+    },
+    {
+      "id": "M02-nonce-eq",
+      "theme": "global",
+      "old": "check('nonce', receipt.nonce === expectNonce",
+      "line": "check('nonce', receipt.nonce !== expectNonce",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "wrong-nonce"
+      ]
+    },
+    {
+      "id": "M03-driver-pin-and",
+      "theme": "global",
+      "old": "receipt.driverSha256 === pin && driverSha === pin",
+      "line": "receipt.driverSha256 === pin || driverSha === pin",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "driver-sha-forged"
+      ]
+    },
+    {
+      "id": "M04-chromium-includes",
+      "theme": "global",
+      "old": "receipt.chromium.includes(CHROMIUM_TAG)",
+      "line": "receipt.chromium.includes('zzz-nope')",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M05-cross-host",
+      "theme": "global",
+      "old": "receipt.crossHost === 'localhost'",
+      "line": "receipt.crossHost === '127.0.0.1'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "cross-host-same-site"
+      ]
+    },
+    {
+      "id": "M06-reps-eq",
+      "theme": "global",
+      "old": "receipt.reps === reps",
+      "line": "receipt.reps !== reps",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "reps-identity"
+      ]
+    },
+    {
+      "id": "M07-pad-eq",
+      "theme": "global",
+      "old": "receipt.pad === PAD",
+      "line": "receipt.pad !== PAD",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "pad-identity"
+      ]
+    },
+    {
+      "id": "M08-ports-range-lo",
+      "theme": "ports",
+      "old": "p >= 1024 && p <= 65535",
+      "line": "p >= 0 && p <= 65535",
+      "killed": false,
+      "rc": 0,
+      "positiveOk": true,
+      "killedBy": []
+    },
+    {
+      "id": "M09-ports-range-hi",
+      "theme": "ports",
+      "old": "p >= 1024 && p <= 65535",
+      "line": "p >= 1024 && p <= 99999",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "port-out-of-range"
+      ]
+    },
+    {
+      "id": "M10-ports-distinct",
+      "theme": "ports",
+      "old": "new Set([ports.http, ports.child, ports.cdp]).size === 3",
+      "line": "new Set([ports.http, ports.child, ports.cdp]).size >= 1",
+      "killed": false,
+      "rc": 0,
+      "positiveOk": true,
+      "killedBy": []
+    },
+    {
+      "id": "M11-leg-set-eq",
+      "theme": "leg-set",
+      "old": "check('leg-set', eq(legs.map",
+      "line": "check('leg-set', !eq(legs.map",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "drop-leg",
+        "dup-leg-contradictory",
+        "leg-order-swapped",
+        "fabricated-leg-label",
+        "arm-relabel-m-as-c"
+      ]
+    },
+    {
+      "id": "M12-failures-len",
+      "theme": "global",
+      "old": "receipt.failures.length === 0",
+      "line": "receipt.failures.length >= 0",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "failures-listed-legs-clean"
+      ]
+    },
+    {
+      "id": "M13-fresh-browser-regex",
+      "theme": "fresh",
+      "old": "/^[0-9a-f-]{36}$/.test(b)",
+      "line": "/^[0-9a-f-]+$/.test(b)",
+      "killed": false,
+      "rc": 0,
+      "positiveOk": true,
+      "killedBy": []
+    },
+    {
+      "id": "M14-fresh-browser-distinct",
+      "theme": "fresh",
+      "old": "new Set(ids).size === ids.length",
+      "line": "new Set(ids).size >= 1",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "browser-reused"
+      ]
+    },
+    {
+      "id": "M15-leg-arm-and",
+      "theme": "leg",
+      "old": "!!m && l.arm === arm && l.rep === Number(m[2])",
+      "line": "!!m && (l.arm === arm || l.rep === Number(m[2]))",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "arm-field-relabel"
+      ]
+    },
+    {
+      "id": "M16-leg-error",
+      "theme": "leg",
+      "old": "check('leg-error', l.error === null",
+      "line": "check('leg-error', l.error !== null",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M17-browser-version",
+      "theme": "leg",
+      "old": "l.browserVersion === BROWSER",
+      "line": "l.browserVersion !== BROWSER",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M18-child-host",
+      "theme": "leg",
+      "old": "l.childHost === host",
+      "line": "l.childHost !== host",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M19-leg-pad",
+      "theme": "leg",
+      "old": "l.pad === pad",
+      "line": "l.pad !== pad",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M20-child-url-port",
+      "theme": "leg",
+      "old": "Number(cu.port) === ports.child",
+      "line": "Number(cu.port) !== ports.child",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M21-parent-host",
+      "theme": "leg",
+      "old": "pu.hostname === '127.0.0.1'",
+      "line": "pu.hostname === 'localhost'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M22-iframe-len",
+      "theme": "C/M",
+      "old": "attachedIframes.length === 1 && !!bit && bit.length === 1",
+      "line": "attachedIframes.length >= 1 && !!bit && bit.length >= 1",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "c-two-iframes"
+      ]
+    },
+    {
+      "id": "M23-iframe-targetId",
+      "theme": "C/M",
+      "old": "bit[0].targetId === attachedIframes[0].targetId",
+      "line": "bit[0].targetId !== attachedIframes[0].targetId",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M24-chooser-len",
+      "theme": "chooser",
+      "old": "choosers.length === 1",
+      "line": "choosers.length >= 1",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "dup-chooser"
+      ]
+    },
+    {
+      "id": "M25-chooser-session",
+      "theme": "chooser",
+      "old": "c0.session === session",
+      "line": "c0.session !== session",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M26-chooser-frame",
+      "theme": "chooser",
+      "old": "c0.frameId === l.childFrameId",
+      "line": "c0.frameId !== l.childFrameId",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M27-chooser-posint-drop",
+      "theme": "chooser",
+      "old": "c0.frameId === l.childFrameId && isPosInt(B)",
+      "line": "c0.frameId === l.childFrameId && true",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "chooser-zero-backend"
+      ]
+    },
+    {
+      "id": "M28-describe-chooser-session",
+      "theme": "chooser",
+      "old": "dc.session === session",
+      "line": "dc.session !== session",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M29-describe-chooser-B",
+      "theme": "chooser",
+      "old": "dc.B === B && dc.backendNodeId === B",
+      "line": "dc.B !== B && dc.backendNodeId !== B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M30-answer-session",
+      "theme": "answer",
+      "old": "l.answer.session === session",
+      "line": "l.answer.session !== session",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M31-answer-B",
+      "theme": "answer",
+      "old": "l.answer.B === B",
+      "line": "l.answer.B !== B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M32-answer-error",
+      "theme": "answer",
+      "old": "l.answer.error === null",
+      "line": "l.answer.error !== null",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M33-child-files",
+      "theme": "answer",
+      "old": "eq(l.childFiles, [ANSWER])",
+      "line": "eq(l.childFiles, [])",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M34-child-click",
+      "theme": "answer",
+      "old": "eq(l.childClicks, [{ target: 's', isTrusted: true }])",
+      "line": "eq(l.childClicks, [{ target: 's', isTrusted: false }])",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M35-C-describe-error",
+      "theme": "C",
+      "old": "dp.error === null && dp.nodeName === '#document'",
+      "line": "dp.error === NO_NODE && dp.nodeName === '#document'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M36-C-describe-B",
+      "theme": "C",
+      "old": "dp.backendNodeId === B && dp.documentURL === l.parentUrl",
+      "line": "dp.backendNodeId !== B && dp.documentURL !== l.parentUrl",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M37-C-describe-docurl",
+      "theme": "C",
+      "old": "dp.documentURL === l.parentUrl",
+      "line": "dp.documentURL !== l.parentUrl",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M38-C-root-B",
+      "theme": "C",
+      "old": "rootIsParent && root.backendNodeId === B",
+      "line": "rootIsParent && root.backendNodeId !== B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M39-C-pierce-ge-to-gt",
+      "theme": "C",
+      "old": "pp.inputS === 0 && pp.maxBackendNodeId >= B",
+      "line": "pp.inputS === 0 && pp.maxBackendNodeId > B",
+      "killed": false,
+      "rc": 0,
+      "positiveOk": true,
+      "killedBy": []
+    },
+    {
+      "id": "M40-C-pierce-ge-to-le",
+      "theme": "C",
+      "old": "pp.inputS === 0 && pp.maxBackendNodeId >= B",
+      "line": "pp.inputS === 0 && pp.maxBackendNodeId <= B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M41-C-pierce-inputS",
+      "theme": "C",
+      "old": "pp.inputS === 0 && pp.maxBackendNodeId >= B",
+      "line": "pp.inputS === 1 && pp.maxBackendNodeId >= B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M42-C-cross-NOTFILE",
+      "theme": "C",
+      "old": "l.crossAnswer.error === NOT_FILE_INPUT",
+      "line": "l.crossAnswer.error === NO_NODE",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M43-C-cross-B-unbound",
+      "theme": "C",
+      "old": "session === 'page' && l.crossAnswer.B === B && l.crossAnswer.error === NOT_FILE_INPUT",
+      "line": "session === 'page' && l.crossAnswer.B === B + 1 && l.crossAnswer.error === NOT_FILE_INPUT",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M44-C-cross-files-delivered",
+      "theme": "C",
+      "old": "l.crossAnswer.error === NOT_FILE_INPUT && eq(l.filesAfterCross, [])",
+      "line": "l.crossAnswer.error === NOT_FILE_INPUT && eq(l.filesAfterCross, [ANSWER])",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M45-M-describe-NONODE",
+      "theme": "M",
+      "old": "dp.error === NO_NODE && dp.nodeName === null",
+      "line": "dp.error === NOT_FILE_INPUT && dp.nodeName === null",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M46-M-root-ne",
+      "theme": "M",
+      "old": "root.backendNodeId !== B",
+      "line": "root.backendNodeId === B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M47-M-pierce-lt",
+      "theme": "M",
+      "old": "pp.maxBackendNodeId < B",
+      "line": "pp.maxBackendNodeId >= B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M48-M-pierce-lt-to-le",
+      "theme": "M",
+      "old": "pp.maxBackendNodeId < B",
+      "line": "pp.maxBackendNodeId <= B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": true,
+      "killedBy": [
+        "m-pierce-reaches-B"
+      ]
+    },
+    {
+      "id": "M49-M-pierce-inputS",
+      "theme": "M",
+      "old": "pp.inputS === 0 && isPosInt(B) && pp.maxBackendNodeId < B",
+      "line": "pp.inputS === 1 && isPosInt(B) && pp.maxBackendNodeId < B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M50-M-cross-NONODE",
+      "theme": "M",
+      "old": "l.crossAnswer.error === NO_NODE && eq(l.filesAfterCross, [])",
+      "line": "l.crossAnswer.error === NOT_FILE_INPUT && eq(l.filesAfterCross, [])",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M51-M-cross-files-delivered",
+      "theme": "M",
+      "old": "l.crossAnswer.error === NO_NODE && eq(l.filesAfterCross, [])",
+      "line": "l.crossAnswer.error === NO_NODE && eq(l.filesAfterCross, [ANSWER])",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M52-S-describe-input",
+      "theme": "S",
+      "old": "isInputS(dp) && dp.session === 'page'",
+      "line": "!isInputS(dp) && dp.session === 'page'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M53-S-describe-B",
+      "theme": "S",
+      "old": "dp.B === B && dp.backendNodeId === B",
+      "line": "dp.B !== B && dp.backendNodeId !== B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M54-S-root",
+      "theme": "S",
+      "old": "check('page-root', rootIsParent, id",
+      "line": "check('page-root', !rootIsParent, id",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M55-S-pierce-inputS",
+      "theme": "S",
+      "old": "pp.inputS === 1 && pp.maxBackendNodeId >= B",
+      "line": "pp.inputS === 0 && pp.maxBackendNodeId >= B",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M56-S-pierce-ge-to-gt",
+      "theme": "S",
+      "old": "pp.inputS === 1 && pp.maxBackendNodeId >= B",
+      "line": "pp.inputS === 1 && pp.maxBackendNodeId > B",
+      "killed": false,
+      "rc": 0,
+      "positiveOk": true,
+      "killedBy": []
+    },
+    {
+      "id": "M57-S-cross-null",
+      "theme": "S",
+      "old": "l.crossAnswer === null && l.filesAfterCross === null",
+      "line": "l.crossAnswer !== null && l.filesAfterCross !== null",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M58-want-order",
+      "theme": "construction",
+      "old": "['C', 'M', 'S']",
+      "line": "['C', 'S', 'M']",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M59-want-drop-M",
+      "theme": "construction",
+      "old": "['C', 'M', 'S']",
+      "line": "['C', 'S']",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M60-pad-const",
+      "theme": "construction",
+      "old": "const PAD = 300;",
+      "line": "const PAD = 0;",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "pad-identity"
+      ]
+    },
+    {
+      "id": "M61-NOFILE-const",
+      "theme": "construction",
+      "old": "const NOT_FILE_INPUT = 'Node is not a file input element'",
+      "line": "const NOT_FILE_INPUT = 'No node found for given backend id'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M62-NONODE-const",
+      "theme": "construction",
+      "old": "const NO_NODE = 'No node found for given backend id'",
+      "line": "const NO_NODE = 'Node is not a file input element'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M63-host-swap",
+      "theme": "construction",
+      "old": "const host = cross ? 'localhost' : '127.0.0.1'",
+      "line": "const host = cross ? '127.0.0.1' : 'localhost'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M64-C-pad-cond",
+      "theme": "construction",
+      "old": "const pad = arm === 'C' ? 0 : PAD;",
+      "line": "const pad = arm === 'C' ? PAD : 0;",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M65-chooser-B-binding",
+      "theme": "construction",
+      "old": "const B = c0.backendNodeId;",
+      "line": "const B = c0.backendNodeId + 1;",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": [
+        "m-pierce-reaches-B",
+        "chooser-zero-backend"
+      ]
+    },
+    {
+      "id": "M66-rootIsParent-doc",
+      "theme": "construction",
+      "old": "root.nodeName === '#document'",
+      "line": "root.nodeName === 'HTML'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M67-rootIsParent-url",
+      "theme": "construction",
+      "old": "root.documentURL === l.parentUrl",
+      "line": "root.documentURL !== l.parentUrl",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M68-isInputS-file",
+      "theme": "construction",
+      "old": "attr(shape, 'type') === 'file'",
+      "line": "attr(shape, 'type') === 'text'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M69-ppOk-int",
+      "theme": "construction",
+      "old": "Number.isInteger(pp.maxBackendNodeId)",
+      "line": "typeof pp.maxBackendNodeId === 'string'",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    },
+    {
+      "id": "M70-arm-C-branch",
+      "theme": "construction",
+      "old": "if (arm === 'C') {",
+      "line": "if (arm === 'M') {",
+      "killed": true,
+      "rc": 1,
+      "positiveOk": false,
+      "killedBy": []
+    }
+  ]
+}

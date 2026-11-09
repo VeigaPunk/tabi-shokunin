@@ -4474,3 +4474,37 @@ detached group the counter kills on its own signals (R93Sentinel S4/S5); battery
 R93Mut survivors (out-of-range port, S-arm `filesAfterCross` non-null, driver-file pin, `verdict`
 field); receipt fields binding B on describe/cross/answer and the page `#document`'s
 `documentURL` (R93Critic1 hardening, R93Critic3's parent-document reading). Retired: none.
+
+## Round 94 (2026-11-08, Linux host) — C1 capability `chromium-oopif-backendnode-collision-linux` (new)
+
+Base `d7744d04` (the round-93 verifier spot-check commit). ONE claim. Freeze commit `2308b6ce`
+(plan, `claims.json` frozenAt 21:49:37 committed 21:49:42, driver/counter/battery bytes, pre-freeze
+controls incl. attempts 1-2 disclosed, probes, staged sources); scored commit `012776cf` (`--live` run,
+nonce `tabi-r94-live-240f4c5100c3`). Axes at start: all six at 9. C1 works coverage (a lowest tie at 9)
+and is a capability acquisition: whose node a cross-site iframe chooser's `backendNodeId` names on the
+page session (r93 declared limit 3) and the miss branch of the same lookup.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-oopif-backendnode-collision-linux` (sourced: S233/S234) | `node scripts/check-backendnode-collision-round94.mjs --lane <ABS lane> --expect-driver-sha256 518f40ff9b34727254a3bb0cd30603c70ce8488a911fa3a26a55273220f9686f --live --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-BACKENDNODE-COLLISION-R94`, exit 0 iff 0 findings) | before (base `d7744d04`): the command does not exist (`git cat-file -e` rc 128); the r93 receipt under the frozen counter → rc 1 (14 finding ids). Controls at freeze: wrong-site rc 1, pad-0 rc 1, positive rc 0 at 165 checks, busy-port / counter-SIGTERM / driver-SIGKILL `setup` rc 2 with 0 chromium left, battery 74/74. After (`012776cf`): rc 0, `clean`, 165 checks, 0 findings, 9 legs; reproduced clean by R94Exec1 ×2, R94Exec2 ×3 + a 10-rep run (522 checks), R94Critic2 ×1 | measured, pending non-author closure |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below. Measured commit: `012776cf08db` (scored run; the receipt's `revision` field records
+`2308b6ce`, the master tip when the counter ran).
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-oopif-backendnode-collision-linux` | On Chromium 155.0.8059.84 `--headless=new`, show that a cross-site iframe chooser's `backendNodeId` B sent on the page session resolves in the parent renderer's own map: pad 0 → the parent's root (`#document`, id B, `documentURL` = parent URL; `Node is not a file input element`); 300 painted spans before the input → `No node found for given backend id` with B above every id in the parent's tree; same-site control → the INPUT | `corpus/evidence/round94/chromium-oopif-backendnode-collision/receipt.json`; `.ufo/waves/round-94/scored/c1-live.json`; `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md` | 94 |
+
+Knowledge 106 → 107. Registry 232 → 234 (S233 Blink `identifiers_factory.cc`, S234 Blink `node.cc`,
+both at tag 155.0.8059.84). `SKILL.md` `## Round 94 gate registry`. Limits: `plans/round-94.md`
+§Declared limits 1-6. Calibration record: three earlier tabi statements r94 contradicts got appended
+corrections (r92 note, r93 note, README r93 summary; R94Connector).
+
+Planned (r95): `--live` receipt tamper-evidence (R94Sentinel F1: nonce on argv, predictable receipt
+path); host-resource launch failure → `setup` not `findings` (F2) and receipt-path directory → `setup`
+(F4); `driverRun` in own-signal setup JSON (F3); battery cases for ports < 1024, duplicate ports,
+non-UUID browser ids and `max == B` boundaries, and over-reporting-counter negatives (R94Mut); wave kill
+selectors scoped to the seat's own ports/scratch. Retired: none.
