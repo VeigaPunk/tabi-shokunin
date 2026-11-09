@@ -160,3 +160,41 @@ Exit 0 and `verdict: clean` → C1 after-state met.
 4. D1 (item 4): the report names the measured revision (`claims.json`/receipt `revision`) separately from
    the commit that ships the run.
 5. Carried: r93 §8 item 5 (append-only check aware of SOURCES table inserts) and r91 items 3/5.
+
+## Post-wave amendment A1 (addendum §8; recorded after the wave, before filing)
+
+Cause: `.ufo/waves/round-95/w1/R95Critic1.md` (verdict `falsifies-wording`) mapped every predicate sentence
+to the counter and found sentences the counter does not check on a receipt. The counter bytes, the
+scored run and every number are unchanged; this amendment narrows the claim's WORDING to what the
+instrument enforces. The verified claim is the predicate above read with these five narrowings:
+
+1. **Driver-enforced clauses (R95Critic1 W1, W2).** "within 1500 ms" and the call order "snapshot taken
+   after the chooser, before any page-session `describeNode`" are enforced by the pinned driver bytes
+   (sha256 checked before the `--live` run), not by the counter on a receipt; the receipt carries no
+   timestamps. They hold for the `--live` counting command only.
+2. **Parent-input binding (W5).** "T is one of the parent's file inputs `#pN`" is checked on T's own
+   attributes (`INPUT`, `type=file`, `id` ∈ `p0..p5`); the counter does not cross-check T's backendNodeId
+   against the `#pN` entry of the snapshot's input list. Under `--live` both come from one walk of one
+   snapshot (driver bytes); in `--receipt` mode this is limit 6.
+3. **"Exactly one attached and one listed iframe target" (W4)** means exactly one attached target of type
+   `iframe` and exactly one listed target of type `iframe`; attached targets of other types are not
+   counted.
+4. **Miss branch of `describeNode` (N3).** "returns exactly the error `No node found for given backend
+   id`" is checked as: the recorded error string equals it and the recorded `nodeName` is null; other
+   recorded fields of an errored describe are not checked.
+5. **Z "every backendNodeId in the snapshot is below B" (W3)** is checked as the snapshot's recorded
+   maximum backendNodeId < B (the driver computes the maximum over the full pierced walk).
+
+Not amended (counter STRICTER than the sentence, so a clean verdict still implies the sentence; R95Critic1
+N1, N2): S legs require the post-cross file reads to be absent as well as the cross answer; every leg
+requires integer `maxBackendNodeId` and `inputS` in the snapshot.
+6. **`--live` trust boundary (R95Sentinel, `.ufo/waves/round-95/w1/R95Sentinel.md` §3, verdict
+   `falsifies-wording`).** Limit 6 as frozen names only `--receipt` mode. A same-UID process can read the
+   nonce (`/proc/<pid>/environ`) and the receipt path (`/proc/<pid>/cmdline`) of a `--live` run and
+   substitute the receipt before the counter reads it (variants A and B, under the seat's scratch only);
+   the counter does not bind `receipt.ports` to its `--ports` nor reject a driver exit status 1 when a
+   receipt exists. The claim is narrowed to: the `--live` verdict is a statement about the receipt the
+   counter read, with the host's same-UID process space trusted not to write it; limit 6 extends to
+   `--live` under a same-UID writer. Not retroactive: no seat observed substitution of the scored run,
+   and the scored receipt's leg outcomes are reproduced by six independent `--live` runs of the pinned
+   driver (R95Exec1 ×2, R95Exec2 ×2, R95Sentinel baseline, plus the L1's positive control).

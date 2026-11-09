@@ -4508,3 +4508,40 @@ path); host-resource launch failure → `setup` not `findings` (F2) and receipt-
 (F4); `driverRun` in own-signal setup JSON (F3); battery cases for ports < 1024, duplicate ports,
 non-UUID browser ids and `max == B` boundaries, and over-reporting-counter negatives (R94Mut); wave kill
 selectors scoped to the seat's own ports/scratch. Retired: none.
+
+## Round 95 (2026-11-08, Linux host) — C1 capability `chromium-oopif-backendnode-misdelivery-linux` (new)
+
+Base `7b3912bb` (the round-94 verifier spot-check commit). ONE claim. Freeze commit `1ecbca38` (plan,
+`claims.json` frozenAt 22:59:07 committed 22:59:12, driver/counter/battery bytes, executed pre-freeze
+controls, probes, staged S235 source); scored commit `360d7cc9` (`--live` run, nonce
+`tabi-r95-live-36ad06703d0b`; measured revision `1ecbca38`, the master tip when the counter ran). Axes
+at start: all six at 9. C1 works coverage (a lowest tie at 9) and is a capability acquisition: the
+third branch of a page-session lookup of a cross-site iframe chooser's `backendNodeId` — a parent file
+input at id B is FILLED, with no error — bound with the other two branches to one per-leg law checked
+against the page's own pierced snapshot.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-oopif-backendnode-misdelivery-linux` (sourced: S235) | `node scripts/check-backendnode-misdelivery-round95.mjs --lane <ABS lane> --expect-driver-sha256 24947b00d8a158ad3fea8f5fb035757b6b98aebf48e85d18d506433619e2ee82 --live --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-BACKENDNODE-MISDELIVERY-R95`, exit 0 iff 0 findings; wording narrowed after the wave by `plans/round-95.md` §Post-wave amendment A1, counter and numbers unchanged) | before (base `7b3912bb`): the command does not exist (`git cat-file -e` rc 128); the r94 receipt under the frozen counter → rc 1 (15 finding ids). Controls at freeze: no-reach (`--qs 0,1,2,3`) rc 1 (branch ids), wrong-site rc 1, positive rc 0 at 336 checks, busy-port / counter-SIGTERM / driver-SIGKILL / receipt-dir / launch-failure `setup` rc 2 with 0 chromium left, battery 77/77. After (scored, `360d7cc9`): rc 0, `clean`, 336 checks, 0 findings, 18 legs; misdelivery P286-1, collision 11 P legs, miss Z-1..3 | verified (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-oopif-backendnode-misdelivery-linux` | On Chromium 155.0.8059.84 `--headless=new`, show that a cross-site iframe chooser's `backendNodeId` B sent on the page session acts on exactly the node the parent renderer holds at id B: a parent `<input type=file>` → `DOM.setFileInputFiles` returns no error and fills the PARENT's input (child stays empty); another node (`#text`, UA shadow `file-upload-button`) → `Node is not a file input element`; none → `No node found for given backend id` | `corpus/evidence/round95/chromium-oopif-backendnode-misdelivery/receipt.json`; `.ufo/waves/round-95/scored/c1-live.json`; `corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md` | 95 |
+
+Knowledge 107 → 108. Registry 234 → 235 (S235 Blink `file_input_type.cc` at tag 155.0.8059.84). `SKILL.md`
+`## Round 95 gate registry` (incl. the mined gate `check-scored-receipts-round95`). Limits:
+`plans/round-95.md` §Declared limits 1-6 and §Post-wave amendment A1. Calibration record: appended
+corrections in the r92, r93 and r94 notes and the README r93/r94 summaries (R95Connector).
+
+Planned (r96): battery cases for the 17 R95Mut survivors (URL host/fragment, errored-but-intact snapshot,
+`#document` root, renamed parent input, describe-page miss fields, S-leg snapshot node, answer session,
+`id` ∉ `p0..p5` file input at B) and the R95Critic1 receipt-mode gaps (T ↔ `#pN` id binding, extra
+non-iframe attached targets); the branch-misdelivery clause's flake risk (R95Exec2: 9/40 P legs at
+`--reps 10`, P(0 in a default run) ≈ 0.01-0.05) — a fixture that pins the misdelivery phase or a
+counted rate; R95Critic3's lead: Puppeteer 25.16.0 `waitForFileChooser` never sees an OOPIF chooser
+(listener and interception on the page session only) — a client-library capability. Retired: none.

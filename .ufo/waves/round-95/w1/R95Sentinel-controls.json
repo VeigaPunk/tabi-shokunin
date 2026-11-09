@@ -1,0 +1,66 @@
+{
+ "predicate": "C1-BACKENDNODE-MISDELIVERY-R95",
+ "seat": "R95Sentinel",
+ "ports_used": {
+  "a-d": [
+   32051,
+   32052,
+   32053
+  ],
+  "baseline-e": [
+   32054,
+   32055,
+   32056
+  ],
+  "forgery": [
+   32051,
+   32052,
+   32053
+  ]
+ },
+ "rc_lines": [
+  "d-receipt-dir rc=2",
+  "a-busyport rc=2",
+  "a-busyport leftover-cdp=0",
+  "0 leftover-scratch=0",
+  "0",
+  "b-counter-sigterm rc=2",
+  "b-counter-sigterm leftover-cdp=0",
+  "0 leftover-scratch=0",
+  "0",
+  "c-driver-sigkill rc=2",
+  "c-driver-sigkill leftover-cdp=0",
+  "0 leftover-scratch=0",
+  "0",
+  "e-launchfail rc=2 (driverRun.status 3, launchFailures 6; 0 chromium left)"
+ ],
+ "a-busyport": {
+  "verdict": "setup",
+  "detail": "driver refused (exit 2): {\"error\":\"usage\",\"detail\":\"free-port precheck: port 32051 busy: listen EADDRINUSE: address already in use 127.0.0.1:32051\"}",
+  "driverRun.status": 2
+ },
+ "b-counter-sigterm": {
+  "verdict": "setup",
+  "interruptedBy": "SIGTERM"
+ },
+ "c-driver-sigkill": {
+  "verdict": "setup",
+  "signal": "SIGKILL",
+  "orphansSwept": 14
+ },
+ "d-receipt-dir": {
+  "verdict": "setup",
+  "detail": "receipt path is not a regular file: /fast/scratch/hyaku/tabi-r95/R95Sentinel/dir-receipt.json"
+ },
+ "e-launchfail": {
+  "verdict": "setup",
+  "detail": "chromium never answered its DevTools endpoint (driver exit 3, host resource failure)",
+  "driverRun.status": 3
+ },
+ "f-unwritable-scratch": {
+  "rc": 1,
+  "stdout_bytes": 0,
+  "stderr_head": "node:fs:3134\n  return binding.mkdtemp(prefix, options.encoding);\n                 ^\n\nError: EACCES: permission denied, mkdtemp '/fast/scratch/hyaku/tabi-r95/R95Sentinel/ro-scratch/receipt-XXXXXX'\n    at Object.mkdtempSync (node:fs:3134:18)\n    at file:///home/vgpnk/Projects/shokunin/tabi-shokunin/sc",
+  "note": "contract says rc 2 setup; observed rc 1 with uncaught EACCES, no JSON"
+ }
+}

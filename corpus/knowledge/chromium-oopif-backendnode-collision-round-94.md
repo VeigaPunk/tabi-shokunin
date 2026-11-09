@@ -116,3 +116,11 @@ forgeable by construction, the counting command is `--live`.
   positive rc 0, 165 checks; busy-port, counter-SIGTERM, driver-SIGKILL all `setup` rc 2 with 0
   chromium left; battery 74/74).
 - Wave: `.ufo/waves/round-94/w1/` and `.ufo/waves/round-94/claim-falsification.tsv`.
+
+## Correction — round 95 (append-only; R95Connector)
+
+"Larger than every id in the parent's tree and resolves to nothing" (lines 19-21) describes the r94
+parent, which held no file inputs. A parent with six file inputs (each with a UA shadow subtree, S235)
+reaches past B = 302 (P286-1: parent input ids 290-310), and B then resolves to a parent file input, a
+`#text` or the shadow `file-upload-button` (`corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`).
+The deciding fact is which node the parent renderer holds at id B, as this note's own wave finding says.

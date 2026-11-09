@@ -146,3 +146,12 @@ renderer PROCESS that receives the command (r93 S231/S232; r94 S233/S234). The p
 `Node is not a file input element` came from a collision with the parent renderer's own id 2 (r93),
 and with a padded child the same call misses (`No node found for given backend id`, r94
 `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`).
+
+## Correction — round 95 (append-only; R95Connector)
+
+Lines 127-131 ("Answering on the other session fails … `Node is not a file input element`") hold for the
+r92 fixture, whose parent page owns no file input. Round 95 shows the page-session
+`DOM.setFileInputFiles(B)` can return **no error** and fill one of the PARENT's own file inputs when the
+parent renderer holds a file input at id B (`corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`,
+leg P286-1). Line 105's limit ("answering in X on the page session is untested") is stale: rounds 93, 94
+and 95 measured it (error, collision/miss, misdelivery).

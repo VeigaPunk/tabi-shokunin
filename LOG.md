@@ -4304,3 +4304,34 @@ appended r93-summary correction, appended corrections in the r92 and r93 notes,
 `corpus/lessons/round-94.md` (gate, two mined mistakes, corrections, wave), SCORECARD round-94
 section and capability row, the wave evidence and the falsification ledger. **C1 VERIFIED on its frozen
 predicate** (pending non-author closure).
+
+## Round 95 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR95`. Base `7b3912bb` (the round-94 verifier spot-check commit; lane clean; no earlier r95 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability
+`chromium-oopif-backendnode-misdelivery-linux`: a cross-site iframe chooser's `backendNodeId` B sent on the
+PAGE session acts on exactly the node the parent renderer holds at id B; when that is one of the parent's
+own file inputs, `DOM.setFileInputFiles` returns no error and fills the PARENT's input (child empty).
+Sourced by S235 (Blink `file_input_type.cc`: UA shadow button `file-upload-button` + span per file input).
+
+Motivating evidence: r94's two branches (root collision, miss) left open what happens when the parent owns
+nodes near B; the L1's pre-freeze probes (`.ufo/waves/round-95/probes/`) showed a parent `#p` input at id
+302 filled by the page-session answer (6/6 at q 298, single input) and 4-id spacing with ±1 jitter.
+
+Freeze commit `1ecbca38` (frozenAt 22:59:07): plan, claims.json, driver `24947b00d8a1`, counter
+`b7b464daa7c3`, battery `1a670da5a9ff`, executed controls, probes, staged S235. Scored commit `360d7cc9`:
+`--live` rc 0, clean, 336 checks, nonce `tabi-r95-live-36ad06703d0b` (misdelivery P286-1, collision 11,
+miss 3).
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 3 critic, 1 mutation-tester, 1 reviewer, 1 sentinel,
+1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 5/12 = 42 %; 0 dead seats; L1 holds the
+planner seat. Verdicts: 10 neutral, 2 falsifies-wording (R95Critic1, R95Sentinel) → `plans/round-95.md`
+§Post-wave amendment A1 items 1-6 narrow the wording (counter and numbers unchanged). Six independent
+`--live` runs clean.
+
+Records: `corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`, evidence receipt, S235 +
+search-log entry, SKILL `## Round 95 gate registry`, README `## Round 95 coverage` + appended r93/r94
+summary correction, appended corrections in the r92/r93/r94 notes, `corpus/lessons/round-95.md` (gate,
+three mined mistakes, wave), mined gate `scripts/check-scored-receipts-round95.mjs`, SCORECARD round-95
+section and capability row, wave evidence and falsification ledger. **C1 VERIFIED on its frozen predicate
+as narrowed by amendment A1** (pending non-author closure).

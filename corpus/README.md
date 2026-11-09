@@ -1229,3 +1229,25 @@ The `## Round 93 coverage` paragraph states unconditionally that B on the page s
 `#document` node". That holds for the r93 fixture (a lone input, B = 2). Round 94 shows the outcome
 depends on the parent renderer's live ids: with a padded child the same call answers
 `No node found for given backend id` (see `## Round 94 coverage`).
+
+## Round 95 coverage
+
+Capability `chromium-oopif-backendnode-misdelivery-linux`: when the parent page owns file inputs whose
+ids straddle a cross-site (`localhost`) iframe chooser's `backendNodeId` B, B sent on the PAGE session
+acts on exactly the node the page's own pierced snapshot carries at id B. If that node is one of the
+parent's own `<input type=file>` elements, `DOM.setFileInputFiles(B)` returns no error and fills the
+PARENT's input while the child's chooser input stays empty (misdelivery); if it is another node (a
+`#text`, the input's UA shadow button `file-upload-button`) the call fails with `Node is not a file
+input element`; with no node at B it fails with `No node found for given backend id`. Parent file
+inputs are 4 ids apart (UA shadow tree, S235) and the parent's numbering jitters by ±1 between fresh
+browsers, so which padding hits is not fixed. `corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`;
+evidence `corpus/evidence/round95/chromium-oopif-backendnode-misdelivery/receipt.json`; gate
+`check-backendnode-misdelivery-round95`. Pending non-author closure.
+
+## Correction — round 93 and round 94 coverage summaries (round 95; append-only)
+
+`## Round 93 coverage` says the page-session answer "delivers nothing", and `## Round 94 coverage` says
+that with 300 painted elements B "exceeds every id in the parent's tree" and both calls fail. Both hold
+for parents that own no file input. Round 95 (`## Round 95 coverage`) shows that when the parent owns a
+file input at id B, the page-session `DOM.setFileInputFiles(B)` returns no error and fills the PARENT's
+input.

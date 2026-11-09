@@ -230,3 +230,12 @@ depends on whether the parent renderer has a live node numbered B (r94 R94Critic
 with a non-root `about:blank` `#document`, a busier parent collides with a `#text`). Neither error
 text is a stable signature of a foreign id; this note's law holds for its own fixture (a lone input,
 B = 2). See `corpus/knowledge/chromium-oopif-backendnode-collision-round-94.md`.
+
+## Correction — round 95 (append-only; R95Connector)
+
+The law sentence (lines 16-18: the page-session answer "fails with `Node is not a file input element`,
+delivering nothing") and table row 4 (line 45, "no file delivered") hold for the r93 fixture only. When
+the parent page owns a file input at id B, the same page-session call returns no error and delivers the
+file into the PARENT's input while the child's input stays empty
+(`corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`). The round-94 correction above
+covers error-text stability, not delivery.
