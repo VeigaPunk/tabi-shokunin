@@ -1160,3 +1160,40 @@ discriminate). The r81 six laws are carried forward. Gated by
 `corpus/knowledge/chromium-showpicker-runtime-round-82.md`. Frontier: `type=number`/`range`
 cross-origin legs, second-chooser answer attribution, the `accept` token grammar. Refusal routes
 unchanged: no external-site interaction, no credential content, loopback only.
+
+## Late coverage index — rounds 83–89 (landed by round 93)
+
+Round 93 found that `corpus/README.md` stopped at round 82 while the LOG entries of rounds 90 and
+92 name README sections that were never committed (`scripts/check-log-section-claims-round93.mjs`,
+base `192535d7` → 2 `section-absent`; lesson `corpus/lessons/round-93.md` §Mistakes). The coverage
+rows below are appended late; each points at the note and SCORECARD section that held the ground at
+the time — they add no measurement.
+
+- r83–r89: the `showPicker()` runtime generations, `corpus/knowledge/chromium-showpicker-runtime-round-83.md`
+  … `-round-89.md` (one note per round), SCORECARD `## Round 83` … `## Round 89` sections.
+
+## Round 90 coverage
+
+(Landed late by round 93; owed since round 90.) The settle-call binding on the `showPicker()` domread
+legs: `corpus/knowledge/chromium-showpicker-runtime-round-90.md`; gate `check-showpicker-round90`
+(SKILL `## Round 90 gate registry`); SCORECARD `## Round 90 (2026-11-08, Linux host)`. The round closed
+`rejected-honest-stop` — read the SCORECARD section and `corpus/lessons/round-90-verifier-spotcheck.md`
+before relying on its laws.
+
+## Round 91 coverage
+
+(Landed late by round 93; owed since round 91, whose LOG names it in prose.) The `postMessage` proxy
+reaching `showPicker()` shapes in a same-origin and a same-site cross-origin iframe:
+`corpus/knowledge/chromium-showpicker-proxy-runtime-round-91.md`; SCORECARD `## Round 91` and its
+appended round-92 correction (the "cross-origin" iframe was same-site, no own target). The round
+closed `rejected-honest-stop`.
+
+## Round 92 coverage
+
+(Landed late by round 93; owed since round 92.) Capability `chromium-crosssite-iframe-chooser-linux`:
+a cross-site (`localhost`) iframe is its own `iframe` target under the page session's flatten
+auto-attach and its file chooser arrives and is answered on that iframe session; a same-site
+(`127.0.0.1`, other port) iframe has no target and its chooser arrives on the page session.
+`corpus/knowledge/chromium-crosssite-iframe-chooser-round-92.md`; evidence
+`corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json`; gate
+`check-iframe-chooser-round92`. Admitted (`corpus/lessons/round-92-verifier-spotcheck.md`).

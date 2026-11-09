@@ -4434,3 +4434,11 @@ Planned (r93): battery cases for the R92Critic1 forgeries and R92Mut survivors (
 `browserVersion`; driver kills its chromium process group on exit and the counter reports a missing
 receipt after a driver usage refusal as `setup`; the limit-5 cross-session answer failure (probed by
 R92ExecProbe, 3/3) as a claimed law. Retired: none.
+
+## Correction — round 92 section's clarification range (round-93; append-only)
+
+The round-92 section above cites "§Wave clarifications W1-W5". `plans/round-92.md` also carries **W6**
+(R92Scout depth findings 1-3), which supersedes the plan's §Claim sentence that sourced the
+`localhost`/`127.0.0.1` split to S228's "scheme plus eTLD+1". Neither host has a registrable domain,
+so the split comes from the WHATWG scheme-and-host fallback (S229). Read the r92 section's limit
+pointer as "W1-W6" (r92 spot-check §8 item 3). The section above is not rewritten.
