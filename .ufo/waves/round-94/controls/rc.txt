@@ -1,0 +1,16 @@
+# r94 pre-freeze controls, attempt 3 (counter re-pinned after attempt 2 showed (a) a counter SIGTERM racing to findings rc 1 and (b) the orphan sweep missing chromium's rewritten argv; receipts from attempt 1 reused: driver bytes unchanged, 518f40ff)
+no-work-base git cat-file -e d7744d04:scripts/check-backendnode-collision-round94.mjs rc=128
+positive-driver rc=0
+wrongsite-driver rc=0
+pad0-driver rc=0
+no-work-r93-receipt rc=1 ids=["answer","child-files","child-url","describe-chooser","describe-page","driver-pin","leg-arm","leg-pad","leg-set","nonce","pad","page-pierce","page-root","schema"]
+positive-counter rc=0 checks=165 findings=0
+wrongsite-counter rc=1 ids=["answer","child-host","child-url","chooser","cross-answer","cross-host","describe-chooser","describe-page","iframe-targets","page-pierce","page-root"]
+pad0-counter rc=1 ids=["child-url","cross-answer","describe-page","leg-pad","pad","page-pierce","page-root"]
+battery rc=0 {"cases":74,"ok":74,"failed":[]}
+holder: LISTEN 0      128        127.0.0.1:19523      0.0.0.0:*
+setup-busyport rc=2 verdict=setup
+setup-counter-sigterm rc=2 verdict=setup detail=counter received SIGTERM; driver group killed, 0 chromium processes swept
+chromium-left-after-sigterm=0
+setup-driver-sigkill rc=2 verdict=setup signal=SIGKILL swept=14
+chromium-left-after-driverkill=0

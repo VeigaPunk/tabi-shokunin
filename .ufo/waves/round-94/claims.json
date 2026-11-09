@@ -1,0 +1,30 @@
+{
+  "lane": "tabi",
+  "round": 94,
+  "base": "d7744d043ca4b606124dfaa7f385acfa89b352ff",
+  "frozenAt": "2026-11-08T21:49:37-03:00",
+  "frozenIn": "plans/round-94.md \u00a7Claim, \u00a7Declared limits, \u00a7Controls, \u00a7Counting command (same commit as this file); frozenAt stamped before the freeze commit was created",
+  "instruments": {
+    "scripts/chrome-cdp-backendnode-collision-round94.mjs": "518f40ff9b34727254a3bb0cd30603c70ce8488a911fa3a26a55273220f9686f",
+    "scripts/check-backendnode-collision-round94.mjs": "d7fd2cbe0899ec59b639752d99f3cd22594dbe600300596cdcc6ce30abf2a95a",
+    "scripts/negatives-backendnode-collision-round94.mjs": "b750ee17b7784d23fbc6c13f5356d1485f05f5702023e48f928730b6cfcd7822"
+  },
+  "claims": {
+    "C1": {
+      "axis": "coverage",
+      "capability": "chromium-oopif-backendnode-collision-linux",
+      "predicate": "C1-BACKENDNODE-COLLISION-R94",
+      "sourced": [
+        "S233",
+        "S234"
+      ],
+      "statement": "plans/round-94.md \u00a7Claim C1 predicate C1-BACKENDNODE-COLLISION-R94, verbatim: on this host Chromium 155.0.8059.84 (--headless=new, Linux), the --live counter runs the pinned driver (pad 300) for legs C-1,M-1,S-1,C-2,M-2,S-2,C-3,M-3,S-3 (fresh browser per leg) and exits 0 iff in every leg: one chooser for the child frame with integer B>0 (iframe session in C/M, page session in S), describeNode(B) on that session = INPUT type=file id=s backendNodeId B, the answer there returns no error and child files = [[tabi-r94-answer.txt,22]], one trusted click on #s, page getDocument(depth 0) root = #document with documentURL = parent URL, browser Chrome/155.0.8059.84, 9 distinct browser ids; C (localhost, pad 0, one iframe target = child frame): page describeNode(B) = no error, #document, backendNodeId B, documentURL = parent URL; page root backendNodeId = B; page pierced tree 0 INPUT#s and max backendNodeId >= B; page setFileInputFiles(B) errors exactly 'Node is not a file input element', files [] after; M (localhost, pad 300, one iframe target): page describeNode(B) errors exactly 'No node found for given backend id'; page root backendNodeId != B; pierced tree 0 INPUT#s and max backendNodeId < B; page setFileInputFiles(B) errors exactly 'No node found for given backend id', files [] after; S (127.0.0.1, pad 300, zero iframe targets): page describeNode(B) = the child INPUT with backendNodeId B, pierced tree exactly 1 INPUT#s and max >= B, no cross answer; plus the receipt identity checks in plans/round-94.md",
+      "limits": "plans/round-94.md \u00a7Declared limits 1-6",
+      "countingCommand": "node scripts/check-backendnode-collision-round94.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 518f40ff9b34727254a3bb0cd30603c70ce8488a911fa3a26a55273220f9686f --live --scratch <ABS> --ports <http,child,cdp> --json",
+      "before": "counting command absent at base d7744d04 (rc 128); r93 receipt under the frozen counter -> rc 1",
+      "after": "--live exit 0, verdict clean, 0 findings over 9 legs (165 checks)",
+      "killRule": "fails if the scored --live run exits non-zero, a frozen control misses its expected verdict, or a wave artifact shows a leg-level statement false on a --live run of the pinned driver on this host (not a named setup/port/resource failure)"
+    }
+  },
+  "frozenAmendments": []
+}
