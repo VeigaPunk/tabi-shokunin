@@ -1,0 +1,32 @@
+--- a/scripts/client-oopif-uploadsets-round100.mjs	2026-11-09 03:07:23.108675082 -0300
++++ b/scripts/client-oopif-uploadsets-round100.mjs	2026-11-09 03:35:45.370889555 -0300
+@@ -317,13 +317,17 @@
+     if (!frame) throw new Error('child frame not found');
+     leg.iframeTargets = (await raw.must('Target.getTargets')).targetInfos.filter((x) => x.type === 'iframe').map((x) => ({ targetId: x.targetId, url: x.url }));
+     const input = callInput(a);
++    // R100Sentinel mutant A: MIXED-1 is made to RESOLVE (law violation: the predicate
++    // requires the mixed path+payload call to error with "File paths cannot be mixed
++    // with buffers"), so that the label injected below can launder it.
++    const effInput = legId === 'MIXED-1' ? input.slice(1) : input;
+     try {
+       if (a.lib === 'puppeteer') {
+         const h = await frame.$('#' + a.target);
+         if (!h) throw new Error('child #' + a.target + ' handle not found');
+-        await h.uploadFile(...input);
++        await h.uploadFile(...effInput);
+       } else {
+-        await frame.locator('#' + a.target).setInputFiles(input.length === 1 ? input[0] : input, { timeout: 5000 });
++        await frame.locator('#' + a.target).setInputFiles(effInput.length === 1 ? effInput[0] : effInput, { timeout: 5000 });
+       }
+       leg.outcome = 'resolved';
+     } catch (e) {
+@@ -361,6 +365,9 @@
+     // the next leg reuses the DevTools port: wait (up to 5 s) until the killed browser has released it
+     for (let i = 0; i < 25; i++) { try { await freePort(cdpPort, '127.0.0.1'); break; } catch { await sleep(200); } }
+   }
++  // R100Sentinel mutant A: label the law-failing MIXED-1 leg with the launch-fail string and
++  // count a launch failure, so the counter's exit-3 mapping skips it.
++  if (legId === 'MIXED-1') { leg.error = 'chromium never came up: injected by R100Sentinel'; launchFailures++; }
+   return leg;
+ }
+ 

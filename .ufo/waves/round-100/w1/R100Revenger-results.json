@@ -1,0 +1,79 @@
+{
+  "seat": "R100Revenger",
+  "milestone": "Protocol-level hypothesis probe",
+  "date": "2026-11-09",
+  "host": "chromium 155.0.8059.84 (/usr/bin/chromium), Linux x64",
+  "libs": { "puppeteer-core": "25.16.0", "playwright-core": "1.65.0", "install": "npm registry, npm install --no-audit --no-fund in scratch deps (no pacman; host-wide PAUSED), node from PATH" },
+  "method": "Own minimal script /fast/scratch/hyaku/tabi-r100/R100Revenger/probe.mjs mirroring frozen driver fixture (parent 127.0.0.1 + cross-site localhost iframe child, inputs #s/#m/#d, event listeners recording [id,type,isTrusted]); ports 34151/34152/34153; TMPDIR set before requires; one rep per arm. Playwright arms: DEBUG=pw:protocol, stderr to logs/<ARM>.log. Puppeteer arm: DEBUG=puppeteer:* produced a 0-byte log (puppeteer-core 25 uses Node util.debuglog / NODE_DEBUG, not DEBUG); reran with NODE_DEBUG='puppeteer:protocol:*'.",
+  "arms": {
+    "DUP3": {
+      "outcome": "resolved",
+      "files_m": [["dup.txt", 21, "text/plain", ""], ["dup.txt", 22, "text/plain", ""], ["other.txt", 11, "text/plain", ""]],
+      "events": [["m", "input", false], ["m", "change", false]],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 0,
+        "injected_setInputFiles_eval": 1,
+        "injected_eval_payload": "one Runtime.callFunctionOn carrying all three payloads: dup.txt text/plain buffer c2FtZS1uYW1lIGZpcnN0IGZpbGUK (21B), dup.txt c2FtZS1uYW1lIHNlY29uZCBmaWxlCg== (22B), other.txt b3RoZXIgZmlsZQo= (11B), userGesture true; sessionId A278B4F26FC8D8B64C1313DDC4166B09 (child frame session)",
+        "hypothesis": "CONFIRMED: injected-script payload delivery, no DOM.setFileInputFiles"
+      }
+    },
+    "EMPTY1": {
+      "outcome": "resolved",
+      "files_m": [["tabi-r100-empty.txt", 0, "text/plain", ""]],
+      "events": [["m", "input", false], ["m", "change", false]],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 0,
+        "injected_setInputFiles_eval": 1,
+        "injected_eval_payload": "one Runtime.callFunctionOn carrying one payload: tabi-r100-empty.txt text/plain buffer \"\" (0 bytes)",
+        "hypothesis": "CONFIRMED: injected-script payload delivery, no DOM.setFileInputFiles"
+      }
+    },
+    "MIXED": {
+      "outcome": "error",
+      "errName": "Error",
+      "errMessage": "File paths cannot be mixed with buffers",
+      "files": { "s": [], "m": [], "d": [] },
+      "events": [],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 0,
+        "injected_setInputFiles_eval": 0,
+        "DOM_setFileInputFiles_or_FC_or_setInputFilePaths": 0,
+        "Runtime.callFunctionOn_total": 2,
+        "hypothesis": "CONFIRMED: mixed check fails client-side before any file-setting protocol command; nothing sent, nothing set"
+      }
+    },
+    "LAUNCH2PL": {
+      "outcome": "resolved",
+      "files_m": [["tabi-r100-a.txt", 23, "text/plain", ""], ["tabi-r100-b.txt", 31, "text/plain", ""]],
+      "events": [["m", "input", true], ["m", "change", true]],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 1,
+        "DOM.setFileInputFiles_params": "objectId 6758081862234422456.2.5 (child #m), files [/fast/scratch/hyaku/tabi-r100/R100Revenger/probe/tabi-r100-a.txt, /fast/scratch/hyaku/tabi-r100/R100Revenger/probe/tabi-r100-b.txt], sessionId C54438DBC1E48775DA8B90B992E9C9D1 (iframe session)",
+        "hypothesis": "CONFIRMED: exactly one DOM.setFileInputFiles carrying two files on the iframe session"
+      }
+    },
+    "LAUNCH2PU": {
+      "outcome": "resolved",
+      "files_m": [["tabi-r100-a.txt", 23, "text/plain", ""], ["tabi-r100-b.txt", 31, "text/plain", ""]],
+      "events": [["m", "input", true], ["m", "change", true]],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 1,
+        "DOM.setFileInputFiles_params": "objectId 586691527042431553.2.4, backendNodeId 2 (#m), files [/fast/scratch/hyaku/tabi-r100/R100Revenger/probe/tabi-r100-a.txt, /fast/scratch/hyaku/tabi-r100/R100Revenger/probe/tabi-r100-b.txt], sessionId 2CB658E6AA7E2982D9614E4D63439CA5",
+        "hypothesis": "CONFIRMED: exactly one DOM.setFileInputFiles carrying two files (Puppeteer ElementHandle.uploadFile)",
+        "note": "log required NODE_DEBUG='puppeteer:protocol:*'; DEBUG=puppeteer:* / DEBUG=puppeteer:protocol:* both yield 0 bytes because puppeteer-core 25.16.0 Debug.js uses Node util.debuglog (NODE_DEBUG env), not the debug package"
+      }
+    },
+    "DIR": {
+      "outcome": "resolved",
+      "files_d": [["one.txt", 13, "text/plain", "probe-dir/one.txt"], ["two.txt", 13, "text/plain", "probe-dir/sub/two.txt"]],
+      "events": [["d", "input", true], ["d", "change", true]],
+      "protocol": {
+        "DOM.setFileInputFiles_SEND": 1,
+        "DOM.setFileInputFiles_params": "objectId 7206325347592486023.2.5 (#d), files [/fast/scratch/hyaku/tabi-r100/R100Revenger/probe/probe-dir] (single directory path), sessionId DE7B4FFDEC66A73FF0A5E366AC05A7F8",
+        "hypothesis": "CONFIRMED with refinement: the command is DOM.setFileInputFiles carrying the directory path itself and the recursive walk happens browser-side (one.txt + sub/two.txt with webkitRelativePath); no setInputFilePaths method exists in this trace"
+      }
+    }
+  },
+  "verdict": "neutral",
+  "predicate_contradictions": "none: no arm contradicts a C1 bullet (MIXED sends no file-setting command; payload arms deliver via injected script with untrusted events; path arms send exactly one DOM.setFileInputFiles with trusted events; DIR walks recursively with trusted events)"
+}

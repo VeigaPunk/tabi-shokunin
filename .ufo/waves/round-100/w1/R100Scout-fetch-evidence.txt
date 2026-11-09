@@ -1,0 +1,211 @@
+# R100Scout fetch evidence — round 100, C1 (client-oopif-uploadsets-linux)
+# All fetches 2026-11-09, HTTP GET, curl (system /usr/bin/curl). Byte counts are the response body sizes;
+# sha256 is over the fetched body. Staged copies live under this seat's scratch (removed on exit per contract).
+
+## WHATWG HTML (input.html) — File Upload state
+URL      : https://html.spec.whatwg.org/multipage/input.html
+HTTP     : 200
+bytes    : 687515
+sha256   : b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16
+quote    : §4.10.5.1.17 File Upload state (type=file), id=file-upload-state-(type=file): "Unless the multiple attribute is set, there must be no more than one file in the list of selected files."
+relation : supports the browser-level state constraint behind the #s single-file refusal; bounds the DIR arm (no `multiple` needed when webkitdirectory is set)
+
+## WHATWG HTML (input.html) — filenames/path components
+URL      : https://html.spec.whatwg.org/multipage/input.html
+HTTP     : 200
+bytes    : 687515
+sha256   : b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16
+quote    : §4.10.5.1.17: "Filenames must not contain path components, even in the case that a user has selected an entire directory hierarchy or multiple files with the same name from different directories."
+relation : supports duplicate-name tolerance (DUP3) and directory selection; the `webkitRelativePath` sentence itself is NOT in this document (see WICG entries-api)
+
+## WICG File and Directory Entries API (webkitRelativePath + webkitdirectory)
+URL      : https://wicg.github.io/entries-api/
+HTTP     : 200
+bytes    : 316318
+sha256   : e38c31e1b58249d496ed2dec7436345d0c164b705a43edc21d8e6caaca065081
+quote    : #dom-file-webkitrelativepath: "The webkitRelativePath getter steps are to return this's relative path, or the empty string if not specified."; #dom-htmlinputelement-webkitdirectory: "The webkitdirectory attribute is a boolean attribute that indicates whether the user is to be allowed to select a directory rather than a file or files."
+relation : the actual normative home of webkitRelativePath and webkitdirectory — supports the DIR arm's `webkitRelativePath` semantics; the WHATWG input.html page contains neither token
+
+## Playwright docs — locator.setInputFiles
+URL      : https://playwright.dev/docs/api/class-locator#locator-set-input-files
+HTTP     : 200
+bytes    : 572368
+sha256   : f9138a4894204bad5646013105cf60eb756c7e0000b693860ce5d778dff46d38
+quote    : id=locator-set-input-files: "For inputs with a [webkitdirectory] attribute, only a single directory path is supported."; arguments `files string | Array<string> | Object | Array<Object>` with `name`, `mimeType`, `buffer`
+relation : supports DUP3/EMPTY1 (array of payload objects with buffer) and DIR (single directory path); bounds the DIR arm to one directory
+
+## Puppeteer docs — ElementHandle.uploadFile
+URL      : https://pptr.dev/api/puppeteer.elementhandle.uploadfile
+HTTP     : 200
+bytes    : 36863
+sha256   : a423b9d3fc2072591a96c9e598d79e84c6c099b09c4cddce7efa32f186f9eaee
+quote    : Version: 25.16.0; "Sets the value of an input element to the given file paths."; signature `uploadFile(this: ElementHandle<HTMLInputElement>, ...paths: string[]): Promise<void>`
+relation : supports LAUNCH2PU (variadic several paths); bounds: no payload/buffer form and no directory form in the documented API
+
+## Playwright server dom.ts v1.65.0
+URL      : https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/playwright-core/src/server/dom.ts
+HTTP     : 200
+bytes    : 49422
+sha256   : 65cb43c91893e5cb82869d37686ad1d1500f4719711015d10eaac7c0b04cfb66
+quote    : L756-761: "Non-multiple file input can only accept single file" / "File input does not support directories, pass individual files instead" / "[webkitdirectory] input requires passing a path to a directory"
+relation : confirms the three client-side refusals the plan cites as S240 (line numbers exact)
+
+## Playwright server fileUploadUtils.ts v1.65.0
+URL      : https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/playwright-core/src/server/fileUploadUtils.ts
+HTTP     : 200
+bytes    : 3437
+sha256   : 96dd5ef0713d59c01d03f8f021790ddf536f4a78e0fcab615cb872064f2af950
+quote    : L42-43: "Exactly one of payloads, localPaths and streams must be provided"; L40 "localPaths are not allowed when the client is not local"; L80 mimeType fallback
+relation : confirms S238 (the plan says line 44; the throw is on line 43 and the guard on 42) and the server-side category discipline
+
+## Playwright client elementHandle.ts v1.65.0
+URL      : https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/playwright-core/src/client/elementHandle.ts
+HTTP     : 200
+bytes    : 15091
+sha256   : b5e6046e19cb08bebba69a816a8d4a451c594463020150aa96eba6fd90cf53bc
+quote    : L287: throw new Error('File paths cannot be mixed with buffers'); L278: 'File paths must be all files or a single directory'; L270: 'Multiple directories are not supported'; L320: 'Cannot set buffer larger than 50Mb…'
+relation : confirms S248 and S249 verbatim, and the MIXED refusal message the predicate asserts
+
+## Puppeteer cdp/ElementHandle.ts v25.16.0
+URL      : https://raw.githubusercontent.com/puppeteer/puppeteer/puppeteer-v25.16.0/packages/puppeteer-core/src/cdp/ElementHandle.ts
+HTTP     : 200
+bytes    : 6124
+sha256   : c86ed958566f5c94136bac9c90ba3c167b2221e652dc917f70e202ba2225c445
+quote    : L113-116: assert(files.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>'); L155-159 DOM.setFileInputFiles with backendNodeId
+relation : confirms S237 verbatim (line numbers exact) — two paths are legal only because #m has `multiple`
+
+## Playwright types.d.ts v1.65.0
+URL      : https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/playwright-core/types/types.d.ts
+HTTP     : 200
+bytes    : 1152533
+sha256   : 345bf3cb397fafe89a44a170c0eac639ed620a2e3fde3f09fbad8c6dd29022ce
+quote    : L26060-26063 ConnectOverCDPOptions.isLocal: "Tells Playwright that it runs on the same host as the CDP server. It will enable certain optimizations that rely upon the file system being the same between Playwright and the Browser."
+relation : supports the plan's driver-pin fact that `isLocal: true` changes the file-system path (localPaths allowed, no buffer re-read)
+
+## Playwright injected script v1.65.0
+URL      : https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/injected/src/injectedScript.ts
+HTTP     : 200
+bytes    : 85112
+sha256   : ff78c2368acf2c5b588bb60797d66a0f5fad80ef3d2717e2d395f7b474644fa9
+quote    : L1020-1029 setInputFiles: builds File objects, `input.files = dt.files`, then `input.dispatchEvent(new Event('input', {bubbles:true, composed:true}))` and `new Event('change', …)`
+relation : the mechanism for the DUP3/EMPTY1 untrusted events: synthetic Events dispatched from page script are isTrusted=false — supports the predicate's trusted/untrusted split
+
+## Chromium Blink file_input_type.cc
+URL      : https://raw.githubusercontent.com/chromium/chromium/main/third_party/blink/renderer/core/html/forms/file_input_type.cc
+HTTP     : 200
+bytes    : 23564
+sha256   : 98bb621e81556e5dff699fb5c1abf49e68697d2b6e7bc7aeab6dee38774a0990
+quote    : L533-540 SetFilesFromPaths: `if (input.FastHasAttribute(html_names::kWebkitdirectoryAttr)) { SetFilesFromDirectory(paths[0]); return; }`; L523-530 SetFilesFromDirectory sets FileChooserParams Mode::kUploadFolder
+relation : bounds the DIR arm: `DOM.setFileInputFiles` on a webkitdirectory input routes to directory enumeration in the browser, not to a per-file assignment
+
+## Chromium Blink file_input_type.cc — relative path
+URL      : https://raw.githubusercontent.com/chromium/chromium/main/third_party/blink/renderer/core/html/forms/file_input_type.cc
+HTTP     : 200
+bytes    : 23564
+sha256   : 98bb621e81556e5dff699fb5c1abf49e68697d2b6e7bc7aeab6dee38774a0990
+quote    : L305-350: "We want to store only the relative path starting with the basename of |base_dir|" … `relative_path = string_path.substr(root_length).Replace('\\','/')` then `File::CreateWithRelativePath(...)`
+relation : the browser-side source of the DIR arm's `webkitRelativePath` = 'probe-dir/one.txt' / 'probe-dir/sub/two.txt' — the basename-of-dir prefix is Chromium's, not the client's
+
+## Chromium net/base/directory_lister.cc
+URL      : https://raw.githubusercontent.com/chromium/chromium/main/net/base/directory_lister.cc
+HTTP     : 200
+bytes    : 6357
+sha256   : 13431dbb3cec76ef63b0cfc38eff7f9b36dfc04aaf884790ff1bbe57f59cd0e9
+quote    : L131-138: `if (NO_SORT_RECURSIVE != type_) { … recursive = false; } else { recursive = true; }` — NO_SORT_RECURSIVE makes the walk recursive
+relation : bounds the DIR arm's recursion claim to Chromium's NO_SORT_RECURSIVE enumeration (matches probe-a DIR walk)
+
+## Chromium issue 345393164
+URL      : https://issues.chromium.org/action/issues/345393164
+HTTP     : 200
+bytes    : 100409
+sha256   : 5c9a0d8358753c9371b87486f16f450954771f28ea617112b04a0e7bd0aa96c7
+quote    : title: "Headless: DOM.setFileInputFiles does not upload nested directories"; comment: "added support to DOM.setFileInputFiles to upload directories. This works while it doesn't consider nested directories in sub-folders like headed does"
+relation : an upstream Chromium defect that historically denied nested-directory upload via DOM.setFileInputFiles — the DIR arm's recursion is a Chromium-version property, not a Playwright guarantee
+
+## MDN — File.webkitRelativePath
+URL      : https://developer.mozilla.org/en-US/docs/Web/API/File/webkitRelativePath
+HTTP     : 200
+bytes    : 151687
+sha256   : 7e4f8ff32483b41d122f93040b357e99129d326da0ea4cafed132fea2cfba696
+quote    : "contains a string which specifies the file's path relative to the directory selected by the user in an <input> element with its webkitdirectory attribute set"; Specifications -> "File and Directory Entries API # dom-file-webkitrelativepath"
+relation : corroborates that webkitRelativePath's spec home is the entries API, and names the same directory-relative semantics the DIR arm measures
+
+## MDN — input element (webkitdirectory)
+URL      : https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input
+HTTP     : 200
+bytes    : 309441
+sha256   : 642b43a99bae143207cc46e9e2b10c3dbf694a9ce4c0ce039932beece3c2a648
+quote    : "The Boolean webkitdirectory attribute, if present, indicates that only directories should be available to be selected by the user in the file picker interface." and "webkitdirectory is defined in the File and Directory Entries API"
+relation : corroborates that `webkitdirectory` is defined in the entries API, not in the WHATWG HTML input page
+
+## GitHub issue — playwright #16846
+URL      : https://api.github.com/repos/microsoft/playwright/issues/16846
+HTTP     : 200
+bytes    : 5181
+sha256   : d7d8281e0a5460f66641f47a1e73e44c3565f0db68867aa9051c3d2bf870ae32
+quote    : "[BUG] webkitRelativePath is empty when using setInputFiles" (closed 2023-06-30) — when files are set by path, webkitRelativePath is empty
+relation : bounds the claim: the non-empty `webkitRelativePath` of the DIR arm is a directory-upload property only
+
+## GitHub issue — playwright #31706
+URL      : https://api.github.com/repos/microsoft/playwright/issues/31706
+HTTP     : 200
+bytes    : 5202
+sha256   : 7826c3c6dd00d5c96f0007aa0faaaf75e8b9c787a74a637f27873d550236e5f7
+quote    : "fix(setInputFiles): throw when uploading file in directory upload" (closed 2024-07-16): "Skips the passed file in Chromium … Throws in Firefox … Works in WebKit"
+relation : bounds the DIR arm: uploading a file into a directory input is engine-dependent, so Playwright throws instead
+
+## GitHub issue — playwright #43367
+URL      : https://api.github.com/repos/microsoft/playwright/issues/43367
+HTTP     : 200
+bytes    : 11095
+sha256   : 741cf14526b334222371a754e91c9266093ee30319d3c831b6ca1e0e2f47bded
+quote    : "[Bug]: Directory setInputFiles can miss its input event and time out after native selection completes" (closed/completed) — the input event for a directory setInputFiles may be missed
+relation : bounds the DIR arm's trusted-event expectation: Playwright installs its own input listener (dom.ts L775) precisely because the event can be missed
+
+## GitHub issue — puppeteer #5499
+URL      : https://api.github.com/repos/puppeteer/puppeteer/issues/5499
+HTTP     : 200
+bytes    : 7513
+sha256   : e49674a0a3624e466c9e696565d673eebe98ff3663e4759bdf88de26b2b1545c
+quote    : "uploadFile uploads empty file" (closed/completed, puppeteer 1.20.0) — a 0-byte upload renders as an empty file
+relation : supports the EMPTY1 arm's 0-byte payload being accepted; a historic 1.x bug, not a 25.16.0 behaviour
+
+## GitHub search — playwright setInputFiles duplicate name
+URL      : https://api.github.com/search/issues?q=repo%3Amicrosoft%2Fplaywright+setInputFiles+duplicate+file+name&per_page=20
+HTTP     : 200
+bytes    : 80301
+sha256   : 5a377efcfc7f4e273aad70c196d5a9f045984f2813a7386fb0ecd3163d8acf82
+quote    : total_count 12, all unrelated (dependabot bumps, docs alias dedupe) — no upstream issue about duplicate file names in setInputFiles
+relation : coverage note: DUP3's duplicate-name behaviour has no upstream issue; the plan's claim rests on the counter's own observation
+
+## GitHub search — puppeteer uploadFile empty file
+URL      : https://api.github.com/search/issues?q=repo%3Apuppeteer%2Fpuppeteer+uploadFile+empty+file&per_page=20
+HTTP     : 200
+bytes    : 25837
+sha256   : afce969ee8a2d089ca1f9f9d355aae928a0e8c2bbebeb929a3a8cebf7d2dba2d
+quote    : total_count 6: #4405, #8043 (no extension -> type empty), #857, #5499, #5776, #5543 — all pre-2.x or extension-related
+relation : coverage note: no 25.x issue contradicts the Puppeteer two-path leg
+
+## W3C File API (WD 2026-09-12)
+URL      : https://www.w3.org/TR/FileAPI/
+HTTP     : 200
+bytes    : 567075
+sha256   : 975b6f12f51320b7f90af2b97e38a80358b5964bc274caafb5d126b3f3881efc
+quote    : File interface section defines name/size/type/lastModified; the document contains NO occurrence of `webkitRelativePath`
+relation : confirms the File API spec does not define webkitRelativePath — the entries API does
+
+## WHATWG File System API (fs.spec.whatwg.org)
+URL      : https://fs.spec.whatwg.org/
+HTTP     : 200
+bytes    : 532385
+sha256   : 0bf200adc73a7546db5a79222206a897c018ed2063fe0ab549dea1ec90883e3a
+quote    : 0 occurrences of `webkitRelativePath` and of `webkitdirectory`; only one incidental 'webkit' token (CSS)
+relation : rules out the File System API as the spec home for the DIR arm's property
+
+## Non-200 / notable responses
+HTTP 403 rate-limited (GitHub search API, secondary rate limit): repo%3Apuppeteer%2Fpuppeteer+uploadFile+multiple+files+in%3Atitle, …+uploadFile+directory, …+webkitdirectory (403, 280 B, sha256 2282f9baf641a8417b97a1785119fd62f08e3560b50fdecfae2019fff3ae259d)
+HTTP 404: https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/playwright-core/src/server/connection.ts (14 B, sha256 d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed) — server-side isLocal->isClientCollocatedWithServer mapping not located in this fetch
+HTTP 404: https://raw.githubusercontent.com/chromium/chromium/main/third_party/blink/renderer/platform/file/file.cc and …/core/file/file.cc (14 B, sha256 d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed)
+HTTP 404: https://chromium-review.googlesource.com/c/chromium/src/+/4066986?format=JSON (11921 B, sha256 cb17e5f8e4f36773299216f8a88a93f068cc8bfd5a72bc91b6a8b89fe477d8b8) — CL body not retrieved; the CL title/description was read from the Chromium issue comment instead
+HTTP 405: https://issues.chromium.org/action/issues/345393164/updates (55 B) — issue status field not machine-readable from the API surface fetched
+HTTP 404 (DNS): https://files.spec.whatwg.org/ — host does not resolve; the File API was fetched from w3.org/TR/FileAPI/ instead

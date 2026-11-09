@@ -1,0 +1,11 @@
+--- a/scripts/check-client-oopif-uploadsets-round100.mjs	2026-11-09 03:06:38.478039576 -0300
++++ a/scripts/check-client-oopif-uploadsets-round100.mjs	2026-11-09 03:36:15.856900830 -0300
+@@ -251,7 +251,7 @@
+ check('leg-set', eq(legs.map((l) => (isObj(l) ? l.leg : null)), want), null, 'legs ' + JSON.stringify(legs.map((l) => (isObj(l) ? l.leg : null))) + ' expected exactly ' + JSON.stringify(want));
+ const errLegs = legs.filter((l) => isObj(l) && l.error !== null).map((l) => (isObj(l) ? l.leg : null));
+ check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0 && errLegs.length === 0, null, 'failures ' + JSON.stringify(receipt.failures) + ' legs with error ' + JSON.stringify(errLegs));
+-const launchFailed = partialLaunch ? legs.filter((l) => isObj(l) && typeof l.error === 'string' && l.error.startsWith(LAUNCH_FAIL)).map((l) => l.leg) : [];
++const launchFailed = partialLaunch ? legs.filter((l) => isObj(l) && typeof l.error === 'string' && l.error.startsWith(LAUNCH_FAIL) && l.outcome === null && l.browserId === null && l.files === null && l.events === null && l.reads === null && l.parentFiles === null).map((l) => l.leg) : [];
+ const lawLegs = legs.filter((l) => !(isObj(l) && launchFailed.includes(l.leg)));
+ if (partialLaunch && !lawLegs.length) refuse('chromium never came up (driver exit 3) on every leg', { revision, driverRun, launchFailed });
+ const ids = lawLegs.map((l) => (isObj(l) ? l.browserId : null));

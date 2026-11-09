@@ -1,0 +1,196 @@
+{
+ "note": "R100Sentinel exit-3 laundering matrix (limit 8). Frozen counter bytes vs the r99 Sentinel remediation (hardened). Each row: a scratch lane holding a MUTANT driver pinned at that mutant sha256.",
+ "mutant_pins": {
+  "mutA": "d455a57472e93ebea72914020d114728e232c1e4c17b39e42ffe1ff1a149f732",
+  "mutB": "c9e9b7cc3fd7b7bc36a269766462f962a0b64865f930f38e1bf72faf453a3b07",
+  "mutI": "39dc77daa07c44109b69222f53a59718b1f54a971595cda5ac118d530959cade",
+  "mutV": "38f7cee833bc527ce23f4ba88644dad6322b31c4e9c5afa81b11144cdf67d762",
+  "frozen": "97947b0b1a4522a48cf08c3681bc13368534608841094a755dd4cf938b306b90"
+ },
+ "runs": [
+  {
+   "run": "mutA-frozen",
+   "rc": 2,
+   "verdict": "setup",
+   "checkCount": 205,
+   "launchFailed": [
+    "MIXED-1"
+   ],
+   "driverExit": 3,
+   "detail": "chromium never came up (driver exit 3) on [\"MIXED-1\"]; no law finding on the other legs",
+   "findings": [
+    {
+     "id": "driver-exit",
+     "leg": null,
+     "detail": "driver exit status 3"
+    },
+    {
+     "id": "failures",
+     "leg": null,
+     "detail": "failures [{\"leg\":\"MIXED-1\",\"error\":\"chromium never came up: injected by R100Sentinel\"}] legs with error [\"MIXED-1\"]"
+    }
+   ]
+  },
+  {
+   "run": "mutB-frozen",
+   "rc": 1,
+   "verdict": "findings",
+   "checkCount": 205,
+   "launchFailed": [
+    "MIXED-1"
+   ],
+   "driverExit": 3,
+   "detail": "None",
+   "findings": [
+    {
+     "id": "driver-exit",
+     "leg": null,
+     "detail": "driver exit status 3"
+    },
+    {
+     "id": "failures",
+     "leg": null,
+     "detail": "failures [{\"leg\":\"MIXED-1\",\"error\":\"chromium never came up: injected by R100Sentinel\"}] legs with error [\"MIXED-1\"]"
+    },
+    {
+     "id": "child-files",
+     "leg": "DUP3-1",
+     "detail": "child files {\"s\":[],\"m\":[[\"dup.txt\",21,\"text/plain\",\"\"],[\"dup.txt\",22,\"text/plain\",\"\"]],\"d\":[]} expected {\"s\":[],\"m\":[[\"dup.txt\",21,\"text/plain\",\"\"],[\"dup.txt\","
+    },
+    {
+     "id": "child-reads",
+     "leg": "DUP3-1",
+     "detail": "child reads [[[\"ok\",21,\"bb6d8edc9fc82a9898fcdd09a08faab8110eaa2aa9877092044fc69e4b650f9f\"],[\"ok\",21,\"bb6d8edc9fc82a9898fcdd09a08faab8110eaa2aa9877092044fc69e4b6"
+    }
+   ]
+  },
+  {
+   "run": "mutI-frozen",
+   "rc": 2,
+   "verdict": "setup",
+   "checkCount": 205,
+   "launchFailed": [
+    "DUP3-1"
+   ],
+   "driverExit": 3,
+   "detail": "chromium never came up (driver exit 3) on [\"DUP3-1\"]; no law finding on the other legs",
+   "findings": [
+    {
+     "id": "driver-exit",
+     "leg": null,
+     "detail": "driver exit status 3"
+    },
+    {
+     "id": "failures",
+     "leg": null,
+     "detail": "failures [{\"leg\":\"DUP3-1\",\"error\":\"chromium never came up: devtools endpoint never answered\"}] legs with error [\"DUP3-1\"]"
+    }
+   ]
+  },
+  {
+   "run": "mutV-frozen",
+   "rc": 1,
+   "verdict": "findings",
+   "checkCount": 216,
+   "launchFailed": [],
+   "driverExit": 0,
+   "detail": "None",
+   "findings": [
+    {
+     "id": "outcome",
+     "leg": "MIXED-1",
+     "detail": "outcome resolved errName null errMessage null"
+    },
+    {
+     "id": "child-files",
+     "leg": "MIXED-1",
+     "detail": "child files {\"s\":[],\"m\":[[\"tabi-r100-p1.txt\",28,\"text/plain\",\"\"]],\"d\":[]} expected {\"s\":[],\"m\":[],\"d\":[]}"
+    },
+    {
+     "id": "child-events",
+     "leg": "MIXED-1",
+     "detail": "child events [[\"m\",\"input\",false],[\"m\",\"change\",false]] expected []"
+    },
+    {
+     "id": "child-reads",
+     "leg": "MIXED-1",
+     "detail": "child reads [[[\"ok\",28,\"b11d7548f0d88f5e7adf586523e6ab70b59e81631d66214132a142b35ae778e7\"],[\"ok\",28,\"b11d7548f0d88f5e7adf586523e6ab70b59e81631d66214132a142b35ae"
+    }
+   ]
+  },
+  {
+   "run": "mutA-hardened",
+   "rc": 1,
+   "verdict": "findings",
+   "checkCount": 216,
+   "launchFailed": [],
+   "driverExit": 3,
+   "detail": "None",
+   "findings": [
+    {
+     "id": "driver-exit",
+     "leg": null,
+     "detail": "driver exit status 3"
+    },
+    {
+     "id": "failures",
+     "leg": null,
+     "detail": "failures [{\"leg\":\"MIXED-1\",\"error\":\"chromium never came up: injected by R100Sentinel\"}] legs with error [\"MIXED-1\"]"
+    },
+    {
+     "id": "outcome",
+     "leg": "MIXED-1",
+     "detail": "outcome resolved errName null errMessage null"
+    },
+    {
+     "id": "child-files",
+     "leg": "MIXED-1",
+     "detail": "child files {\"s\":[],\"m\":[[\"tabi-r100-p1.txt\",28,\"text/plain\",\"\"]],\"d\":[]} expected {\"s\":[],\"m\":[],\"d\":[]}"
+    },
+    {
+     "id": "child-events",
+     "leg": "MIXED-1",
+     "detail": "child events [[\"m\",\"input\",false],[\"m\",\"change\",false]] expected []"
+    },
+    {
+     "id": "child-reads",
+     "leg": "MIXED-1",
+     "detail": "child reads [[[\"ok\",28,\"b11d7548f0d88f5e7adf586523e6ab70b59e81631d66214132a142b35ae778e7\"],[\"ok\",28,\"b11d7548f0d88f5e7adf586523e6ab70b59e81631d66214132a142b35ae"
+    }
+   ]
+  },
+  {
+   "run": "mutI-hardened",
+   "rc": 2,
+   "verdict": "setup",
+   "checkCount": 205,
+   "launchFailed": [
+    "DUP3-1"
+   ],
+   "driverExit": 3,
+   "detail": "chromium never came up (driver exit 3) on [\"DUP3-1\"]; no law finding on the other legs",
+   "findings": [
+    {
+     "id": "driver-exit",
+     "leg": null,
+     "detail": "driver exit status 3"
+    },
+    {
+     "id": "failures",
+     "leg": null,
+     "detail": "failures [{\"leg\":\"DUP3-1\",\"error\":\"chromium never came up: devtools endpoint never answered\"}] legs with error [\"DUP3-1\"]"
+    }
+   ]
+  },
+  {
+   "run": "frozen-hardened",
+   "rc": 0,
+   "verdict": "clean",
+   "checkCount": 216,
+   "launchFailed": [],
+   "driverExit": 0,
+   "detail": "None",
+   "findings": []
+  }
+ ]
+}

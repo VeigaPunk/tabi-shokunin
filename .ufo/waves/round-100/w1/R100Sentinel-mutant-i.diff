@@ -1,0 +1,12 @@
+--- a/scripts/client-oopif-uploadsets-round100.mjs	2026-11-09 03:07:23.108675082 -0300
++++ c/scripts/client-oopif-uploadsets-round100.mjs	2026-11-09 03:36:15.851900828 -0300
+@@ -295,6 +295,9 @@
+       proc = spawn(CHROMIUM, ['--headless=new', '--remote-debugging-port=' + cdpPort, '--user-data-dir=' + prof, ...BASE_ARGS, 'about:blank'], { stdio: 'ignore', detached: true });
+       liveGroups.add(proc.pid);
+     }
++    // R100Sentinel mutant I: a GENUINE launch failure on one leg (no observations recorded),
++    // the shape the pinned driver produces when chromium never comes up.
++    if (legId === 'DUP3-1') { launchFailures++; throw new Error(LAUNCH_FAIL + ': devtools endpoint never answered'); }
+     const ver = await devtoolsVersion();
+     if (!ver) { launchFailures++; throw new Error(LAUNCH_FAIL + ': devtools endpoint never answered'); }
+     leg.browserVersion = ver.Browser;

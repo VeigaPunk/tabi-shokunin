@@ -1,0 +1,70 @@
+# R100Sentinel confinement artifact — round 100 C1, seat R100Sentinel
+# generated 2026-11-09 (scratch /fast/scratch/hyaku/tabi-r100/R100Sentinel)
+#
+# METHOD — the FROZEN counting command, traced:
+#   strace -f -qq -e trace=mkdir,mkdirat,openat -o st.txt \
+#     node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-client-oopif-uploadsets-round100.mjs \
+#       --lane /home/vgpnk/Projects/shokunin/tabi-shokunin \
+#       --expect-driver-sha256 97947b0b1a4522a48cf08c3681bc13368534608841094a755dd4cf938b306b90 --live \
+#       --deps /fast/scratch/hyaku/tabi-r100/R100Sentinel/deps \
+#       --scratch /fast/scratch/hyaku/tabi-r100/R100Sentinel/a --ports 34171,34172,34173 --json
+#   rc 0, verdict clean, checkCount 216, 18 legs, 0 findings (run-a.json).
+#   Trace: 159960 lines; 150889 mkdir/mkdirat/openat syscalls; 148536 path references.
+#
+# SECTION 1 — paths created or opened for WRITE under /tmp or /var/tmp
+#   filter: mkdir/mkdirat with a "/tmp/" or "/var/tmp/" path, or openat on such a path with
+#           O_WRONLY|O_RDWR|O_CREAT.
+#   COUNT: 0        (no lines)
+#   The counter + driver + chromium tree wrote NOTHING under /tmp or /var/tmp.
+#   Even the READ-only count of "/tmp" or "/var/tmp" path references is 0.
+#   The r98 D2 fix (TMPDIR set before the client modules load) HOLDS for the r100 driver.
+
+# SECTION 2 — counts by prefix over the whole traced tree (r100 driver)
+#     112983  /proc
+#      13497  /usr
+#       9780  <scratch>
+#       8023  /sys
+#       1941  ~ (other)
+#       1257  /etc
+#        316  /dev
+#        270  ~/.config/chromium/Crash Reports
+#        216  /var (other)
+#        108  /run
+#         72  ~/.pki/nssdb
+#         35  other:/proc
+#         19  ~/.config/chromium (other)
+#         18  other:/selinux
+#          1  other:/fast
+#   /tmp,/var/tmp write-intent lines: 0   any-mention lines: 0
+
+# SECTION 3 — SENSITIVITY CONTROL: the same host, the same strace command, the r98 driver
+# (the pre-D2 driver: it sets TMPDIR AFTER loading the clients, so playwright-core derives its
+# artifacts dir from /tmp).  This is the witness that the filter in SECTION 1 CAN fire.
+#   strace -f -qq -e trace=mkdir,mkdirat,openat -o st-r98.txt \
+#     node .../scripts/check-client-oopif-uploadmodes-round98.mjs --lane <lane> \
+#       --expect-driver-sha256 f8e95a982ac06dc42d6d6f0754123277183d85bc7672d341fed1d2191e092aa2 --live \
+#       --deps <same deps> --scratch .../b --ports 34171,34172,34173 --json
+#   rc 0, verdict clean, checkCount 256.
+#   The r98 tree DOES write under /tmp — the exact lines (12 of them):
+
+#   2828369 mkdir("/tmp/playwright-artifacts-5lT3C2", 0700 <unfinished ...>
+#   2828370 mkdir("/tmp/playwright-artifacts-yHkogm", 0700) = 0
+#   2828369 mkdir("/tmp/playwright-artifacts-R59pSs", 0700) = 0
+#   2828372 mkdir("/tmp/playwright-artifacts-aoXtSS", 0700 <unfinished ...>
+#   2828369 mkdir("/tmp/playwright-artifacts-1ihd4n", 0700 <unfinished ...>
+#   2828371 mkdir("/tmp/playwright-artifacts-aEGL5V", 0700) = 0
+#   2828371 mkdir("/tmp/playwright-artifacts-AtZxrY", 0700 <unfinished ...>
+#   2828370 mkdir("/tmp/playwright-artifacts-x06JFB", 0700) = 0
+#   2828372 mkdir("/tmp/playwright-artifacts-L98twf", 0700 <unfinished ...>
+#   2828369 mkdir("/tmp/playwright-artifacts-uS82Dp", 0700) = 0
+#   2828369 mkdir("/tmp/playwright-artifacts-1QOzcw", 0700) = 0
+#   2828371 mkdir("/tmp/playwright-artifacts-cKjmBC", 0700) = 0
+
+#   COUNT for the r98 driver: 12   (r100: 0)
+#   => the filter is live; the 0 in SECTION 1 is a measurement, not a blind spot.
+#
+# SECTION 4 — control run integrity
+#   r100 run-a.json : verdict clean, checkCount 216, 18 legs, driverRun.status 0, findings []
+#                     outcomes: trustedMulti 6, dupKeep 3, emptyOk 3, mixedRefused 3, dirWalk 3
+#   r98  run-r98.json: verdict clean, checkCount 256
+
