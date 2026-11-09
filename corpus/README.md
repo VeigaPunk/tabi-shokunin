@@ -1251,3 +1251,19 @@ that with 300 painted elements B "exceeds every id in the parent's tree" and bot
 for parents that own no file input. Round 95 (`## Round 95 coverage`) shows that when the parent owns a
 file input at id B, the page-session `DOM.setFileInputFiles(B)` returns no error and fills the PARENT's
 input.
+
+## Round 96 coverage
+
+Capability `client-oopif-filechooser-linux` (the lane's first client-library chooser surface; r92-r95
+measured raw CDP only): on Chromium 155.0.8059.84 `--headless=new`, with puppeteer-core 25.16.0 and
+playwright-core 1.65.0 attached over CDP, a file chooser opened by an `<input type=file>` inside a
+cross-site (`localhost`) iframe is never seen by Puppeteer's `page.waitForFileChooser({timeout: 3000})`
+(`TimeoutError`, nothing filled) — even when a second raw CDP connection intercepting on that iframe's
+own session receives the `Page.fileChooserOpened` — while the same call resolves for a same-site child,
+and Playwright's `page.waitForEvent('filechooser')` resolves and `setFiles` fills the child for both.
+Mechanism (source account, S236): Puppeteer binds its chooser listener and
+`Page.setInterceptFileChooserDialog` to the page's primary target session only; Playwright listens per
+frame session (S230). `corpus/knowledge/client-oopif-filechooser-round-96.md`; evidence
+`corpus/evidence/round96/client-oopif-filechooser/receipt.json`; gate `check-client-oopif-chooser-round96`.
+Frontier: Puppeteer `ElementHandle.uploadFile` on an OOPIF input (needs no chooser), `launch` vs
+`connect`, other client versions. Pending non-author closure.
