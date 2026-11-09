@@ -4650,3 +4650,38 @@ empty-legs `fresh-browser`, the `verdict` string); R98Exec3's leads as counted l
 launch with an absent path, untyped non-text payloads → `application/octet-stream`, two payloads on a
 non-`multiple` input → Playwright error, FileReader/`arrayBuffer()` on the phantom, Puppeteer `headless:
 'shell'`); transitive-package identity (r97 D3); r95 D1-D3 and R95Mut survivors (carried). Retired: none.
+
+## Round 99 (2026-11-09, Linux host) — C1 capability `client-oopif-uploadsets-linux` (new)
+
+Base `9eaa5cbe` (the round-98 verifier spot-check commit). ONE claim. Freeze commit `27685238` (plan,
+`claims.json` frozenAt 02:11:46, driver/counter/battery/live-killer bytes, executed pre-freeze controls incl.
+the r98 D2 strace control and the r98 D3 live killers, probe, staged sources, census-start); scored commit
+`ff978cb4` (`--live` run, nonce `tabi-r99-live-6d2a1508cbc1`; measured revision `27685238`, the master tip
+when the counter ran). Axes at start: all six at 9. C1 works coverage (a lowest tie at 9) and is a capability
+acquisition: the lane's first measurement of the production clients' (Playwright `setInputFiles`, Puppeteer
+`uploadFile`) multi-file sets, `multiple`-input refusal, untyped/binary payloads and dual reads on an OOPIF
+input (raw-chooser two-file landings and `arrayBuffer()` reads date from r77/r78; plan §Amendment A1).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `client-oopif-uploadsets-linux` (sourced: S237, S238, S240 re-opened; S244, S245, S246, S247 new) | `node scripts/check-client-oopif-uploadsets-round99.mjs --lane <ABS lane> --expect-driver-sha256 98efdc1293cc729b04a3774dfc45caf75bf20acf0d657f962a93b3eaba6b89f8 --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CLIENT-OOPIF-UPLOADSETS-R99`, exit 0 iff 0 findings) | before (base `9eaa5cbe`): the command does not exist (`git cat-file -e` rc 128); the r98 receipt under the frozen counter → rc 1 (schema, files, payloads, leg-set, …). Controls at freeze: positive rc 0 at 278 checks, battery 109/109, live killers 6/6, wrong-library and tampered-tree `--live` rc 1 `libs`, eight setup refusals rc 2, driver-pin rc 1, strace r98 driver 4 `/tmp` artifacts dirs vs r99 driver 0. After: `--live` rc 0, `clean`, 282 checks, 0 findings (`.ufo/waves/round-99/scored/c1-live.json`) | verified (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `client-oopif-uploadsets-linux` | On Chromium 155.0.8059.84 with the pinned `--deps` installs, show for file inputs inside a cross-site iframe that puppeteer-core 25.16.0 and playwright-core 1.65.0 refuse two files on an input without `multiple` with a plain `Error` and set nothing, that two files on a `multiple` input land in order (trusted from paths with Playwright `isLocal` and Puppeteer `connect`, untrusted from payloads), that an untyped payload's type follows its name (`.png` → `image/png`, unregistered → `application/octet-stream`), that binary bytes survive `arrayBuffer()` and `FileReader`, and that the absent path on client-launched browsers behaves per client (Puppeteer phantom unreadable by both readers; Playwright ENOENT `stat`) | `corpus/evidence/round99/client-oopif-uploadsets/receipt.json`; `.ufo/waves/round-99/scored/c1-live.json`; `corpus/knowledge/client-oopif-uploadsets-round-99.md` | 99 |
+
+Knowledge 111 → 112. Registry 243 → 247 (S244 Puppeteer `util/assert.ts`, S245 W3C File API, S246 mime 4.1.0
+`types/standard.ts`, S247 mime 4.1.0 `src/Mime.ts`). `SKILL.md` `## Round 99 gate registry`. Limits:
+`plans/round-99.md` §Declared limits 1-8. Calibration record (not claimed): r98 spot-check D1 answered by an
+appended README correction; D2 fixed in the driver and shown by the strace control; D3 fixed in the counter
+and shown by live killers K-partial/K-launchonly; D4 R98Mut survivor classes in this round's battery.
+
+Planned (r100): R99Exec3's leads as counted legs (three files with duplicate names, empty payload/path,
+mixed path+payload refusal, launch with two paths, `isLocal` two paths on `#s`, `webkitdirectory`
+recursion and `webkitRelativePath`, `slice()`/`text()` on binary); transitive-package identity (r97 D3);
+r95 D1-D3 and R95Mut survivors (carried). Retired: none.

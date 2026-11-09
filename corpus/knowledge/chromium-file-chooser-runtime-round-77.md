@@ -124,3 +124,12 @@ The `pick-missing` row says "`change` with `[tabi-missing.txt, 0, text/plain]`".
 records a trusted `input` and a trusted `change` for that pick; read the row as "`input`/`change`". Round 98's
 PUR legs (Puppeteer `uploadFile` with an absent path into a cross-site iframe) show the same pair and the same
 `NotFoundError` on read (`client-oopif-uploadmodes-round-98.md`).
+
+## Correction — round 99 (append-only; R99Connector H2)
+
+The Practice bullet "A single input silently keeps only the first path" is true for what this note measured —
+the raw protocol answer (`Page.handleFileChooser` / `DOM.setFileInputFiles` with two paths on an input without
+`multiple`: `pick-first-only` kept `tabi-b.bin`). It does not hold for the production client APIs: round 99
+measured Playwright 1.65.0 `setInputFiles` and Puppeteer 25.16.0 `uploadFile` with two files on an input
+without `multiple` (cross-site iframe, attached clients) and both **refuse** with an `Error` and set nothing
+(`client-oopif-uploadsets-round-99.md`, legs PLBN and PUCN). Read the bullet as "over raw CDP".

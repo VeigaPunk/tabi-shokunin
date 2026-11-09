@@ -1,0 +1,19 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/client-oopif-uploadsets-round99.mjs	2026-11-09 02:05:03.018600906 -0300
++++ mutant-b2.mjs	2026-11-09 02:22:13.945807433 -0300
+@@ -311,7 +311,7 @@
+         if (!h) throw new Error('child #' + a.target + ' handle not found');
+         await h.uploadFile(...input);
+       } else {
+-        await frame.locator('#' + a.target).setInputFiles(input.length === 1 ? input[0] : input, { timeout: 5000 });
++        await frame.locator('#' + a.target).setInputFiles(a.input === 'payloads' && a.target === 's' ? input[0] : (input.length === 1 ? input[0] : input), { timeout: 5000 });
+       }
+       leg.outcome = 'resolved';
+     } catch (e) {
+@@ -349,6 +349,7 @@
+     // the next leg reuses the DevTools port: wait (up to 5 s) until the killed browser has released it
+     for (let i = 0; i < 25; i++) { try { await freePort(cdpPort, '127.0.0.1'); break; } catch { await sleep(200); } }
+   }
++  if (legId === 'PLBX-1') { leg.error = 'chromium never came up: injected by R99Sentinel'; launchFailures++; }
+   return leg;
+ }
+ 

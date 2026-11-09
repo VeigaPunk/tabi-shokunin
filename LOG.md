@@ -4428,3 +4428,40 @@ appended corrections to the r97 note (isLocal trust rule scoped to paths; ENOENT
 note (`pick-missing` trusted `input`), `corpus/lessons/round-98.md` (gate, three mined mistakes, wave,
 leads), SCORECARD round-98 section and capability row, wave evidence and falsification ledger. **C1
 VERIFIED on its frozen predicate** (pending non-author closure).
+
+## Round 99 — 2026-11-09 (attempt 1, Linux host)
+
+L1 `TabiR99`. Base `9eaa5cbe` (the round-98 verifier spot-check commit; lane clean; no earlier r99 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability `client-oopif-uploadsets-linux`: on file
+inputs inside a cross-site iframe, puppeteer-core 25.16.0 and playwright-core 1.65.0 refuse two files on an
+input without `multiple` with a plain `Error` and set nothing (PLBN, PUCN); two files on a `multiple` input
+land in order, trusted from paths (PLLP Playwright `isLocal`, PUCM Puppeteer `connect`) and untrusted from
+payloads (PLBM); an untyped payload's `File.type` follows its name (`.png` → `image/png`, `.tabi99` →
+`application/octet-stream`; PLBX, PLBM); binary bytes survive `arrayBuffer()` and `FileReader` (sha256
+equal); Puppeteer `launch` + absent path leaves the trusted 0-byte phantom both readers reject `NotFoundError`
+(PUAM); Playwright `chromium.launch` + absent path throws `ENOENT … stat` (PLAM). Sourced by S244-S247 (new)
+and S237/S238/S240 (re-opened unchanged).
+
+Motivating evidence: r98 declared limits 3-4, R98Exec3's leads (a)-(e) and the r98 spot-check §6 D1-D4; the
+L1's pre-freeze probe (`.ufo/waves/round-99/probes/probe-a.json`, clean 102 checks at `--reps 1`).
+
+Freeze commit `27685238` (frozenAt 02:11:46): plan, claims.json, driver `98efdc1293cc`, counter
+`1a0f25293771`, battery `854f4fef8418` (109/109), live-killer harness `03aae02849b2` (6/6), executed controls
+(no-work base rc 128, r98 receipt rc 1, wrong-library and tampered-tree `--live` rc 1 `libs`, driver-pin rc 1,
+eight setup refusals rc 2 incl. every-leg launch failure, strace r98 driver 4 vs r99 driver 0 `/tmp`
+artifacts dirs, 0 chromium left), probe, staged sources, census-start. Scored commit `ff978cb4`: `--live` rc
+0, clean, 282 checks, nonce `tabi-r99-live-6d2a1508cbc1`. Records commit `75a8a6f7`.
+
+r98 spot-check §6: D1 appended README correction (r97 `isLocal` sentence path-scoped); D2 TMPDIR before the
+client loads, shown by the strace control; D3 exit-3 checks the receipt (limit 8), shown by K-partial (frozen
+rc 1, r98 mapping rc 2) and K-launchonly (rc 2); D4 R98Mut survivor classes in this round's battery
+(`plbx-parent-url-only`, `port-1023`, `port-65536`, `port-fractional`, `legs-empty`, explicit `verdict`).
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 2 critic, 1 mutation-tester, 1 revenger, 1 reviewer,
+1 sentinel, 1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 4/12 = 33 %; 0 dead seats; L1
+holds the planner seat. Verdicts: 11 neutral, 1 falsifies-wording (R99Critic1 W1 "Surface moved" universal
+negative; W2 limit 8 first clause) → plan §Amendment A1 narrows both (predicate, counter, kill rule, target
+unchanged); claims.json `frozenAmendments` A1. Post-wave records: r77 note correction (R99Connector H2), r99
+note relation/scope correction (H1/H5), lesson mistakes 4-5 + wave + leads, SCORECARD round-99 section and
+capability row, falsification ledger, census-end. **C1 VERIFIED on its frozen predicate, wording narrowed
+by A1** (pending non-author closure).

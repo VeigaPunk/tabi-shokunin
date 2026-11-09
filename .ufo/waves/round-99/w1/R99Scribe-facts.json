@@ -1,0 +1,377 @@
+{
+  "source": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-99/scored/live-receipt.json",
+  "checks": [
+    {
+      "fact": "scored receipt sha256 == committed receipt sha256",
+      "ok": true,
+      "legs": [],
+      "detail": "scored/live-receipt.json and corpus/evidence/round99/.../receipt.json are byte-identical"
+    },
+    {
+      "fact": "24 legs, 8 arms x 3 reps, order PUAM,PLAM,PLBX,PLBM,PLBN,PLLP,PUCM,PUCN per rep",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs order"
+    },
+    {
+      "fact": "reps == 3, failures empty, no leg carries an error",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.reps / failures / leg.error"
+    },
+    {
+      "fact": "24 distinct UUID-shaped browser ids, one browser per leg",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].browserId"
+    },
+    {
+      "fact": "every leg: DevTools Browser == Chrome/155.0.8059.84",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].browserVersion"
+    },
+    {
+      "fact": "every leg: exactly one iframe target (the child URL), frames == [parent, child]",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].iframeTargets / frames"
+    },
+    {
+      "fact": "every leg: the parent page's own #pp holds []",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].parentFiles"
+    },
+    {
+      "fact": "no leg recorded a click event",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].events"
+    },
+    {
+      "fact": "every event was recorded on the leg's own target input",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.legs[].events[0] vs .target"
+    },
+    {
+      "fact": "PUAM (Puppeteer launch, absent path, #s): resolves, no error",
+      "ok": true,
+      "legs": [
+        "PUAM-1",
+        "PUAM-2",
+        "PUAM-3"
+      ],
+      "detail": "leg.outcome/errName/errMessage"
+    },
+    {
+      "fact": "PUAM: #s holds exactly [[tabi-r99-missing.txt, 0, text/plain]] and #m holds []",
+      "ok": true,
+      "legs": [
+        "PUAM-1",
+        "PUAM-2",
+        "PUAM-3"
+      ],
+      "detail": "leg.files"
+    },
+    {
+      "fact": "PUAM: events are exactly [['s','input',true],['s','change',true]]",
+      "ok": true,
+      "legs": [
+        "PUAM-1",
+        "PUAM-2",
+        "PUAM-3"
+      ],
+      "detail": "leg.events"
+    },
+    {
+      "fact": "PUAM: both arrayBuffer() and FileReader reads reject NotFoundError with Blink's message",
+      "ok": true,
+      "legs": [
+        "PUAM-1",
+        "PUAM-2",
+        "PUAM-3"
+      ],
+      "detail": "leg.reads"
+    },
+    {
+      "fact": "PLAM (Playwright chromium.launch, absent path, #s): error name Error, message ENOENT stat '<missingPath>'",
+      "ok": true,
+      "legs": [
+        "PLAM-1",
+        "PLAM-2",
+        "PLAM-3"
+      ],
+      "detail": "leg.errName/errMessage"
+    },
+    {
+      "fact": "PLAM: both inputs hold [], no event, no read",
+      "ok": true,
+      "legs": [
+        "PLAM-1",
+        "PLAM-2",
+        "PLAM-3"
+      ],
+      "detail": "leg.files/events/reads"
+    },
+    {
+      "fact": "PLBX (connectOverCDP, one untyped 256-byte payload named tabi-r99-bytes.png, #s): resolves",
+      "ok": true,
+      "legs": [
+        "PLBX-1",
+        "PLBX-2",
+        "PLBX-3"
+      ],
+      "detail": "leg.outcome"
+    },
+    {
+      "fact": "PLBX: #s holds exactly [[tabi-r99-bytes.png, 256, image/png]], #m []",
+      "ok": true,
+      "legs": [
+        "PLBX-1",
+        "PLBX-2",
+        "PLBX-3"
+      ],
+      "detail": "leg.files"
+    },
+    {
+      "fact": "PLBX: events are exactly [['s','input',false],['s','change',false]] (untrusted)",
+      "ok": true,
+      "legs": [
+        "PLBX-1",
+        "PLBX-2",
+        "PLBX-3"
+      ],
+      "detail": "leg.events"
+    },
+    {
+      "fact": "PLBX: both reads give ['ok', 256, sha256(bytes 0x00..0xff)]",
+      "ok": true,
+      "legs": [
+        "PLBX-1",
+        "PLBX-2",
+        "PLBX-3"
+      ],
+      "detail": "leg.reads (sha256 40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880)"
+    },
+    {
+      "fact": "PLBX: the receipt's `bin` descriptor carries mimeType exactly null and that sha256",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.bin"
+    },
+    {
+      "fact": "PLBM (connectOverCDP, typed text/plain P1 + untyped .tabi99 P2, #m): resolves",
+      "ok": true,
+      "legs": [
+        "PLBM-1",
+        "PLBM-2",
+        "PLBM-3"
+      ],
+      "detail": "leg.outcome"
+    },
+    {
+      "fact": "PLBM: #m holds exactly [[tabi-r99-p1.txt, 27, text/plain], [tabi-r99-p2.tabi99, 36, application/octet-stream]] in that order, #s []",
+      "ok": true,
+      "legs": [
+        "PLBM-1",
+        "PLBM-2",
+        "PLBM-3"
+      ],
+      "detail": "leg.files"
+    },
+    {
+      "fact": "PLBM: events are exactly [['m','input',false],['m','change',false]] (untrusted)",
+      "ok": true,
+      "legs": [
+        "PLBM-1",
+        "PLBM-2",
+        "PLBM-3"
+      ],
+      "detail": "leg.events"
+    },
+    {
+      "fact": "PLBM: both reads of both files give each file's own size and sha256",
+      "ok": true,
+      "legs": [
+        "PLBM-1",
+        "PLBM-2",
+        "PLBM-3"
+      ],
+      "detail": "leg.reads"
+    },
+    {
+      "fact": "PLBM: receipt descriptors payload1 mimeType text/plain, payload2 mimeType exactly null",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.payload1/payload2"
+    },
+    {
+      "fact": "PLBN (the PLBM payloads on #s, no multiple): error name Error, message exactly 'locator.setInputFiles: Error: Non-multiple file input can only accept single file'",
+      "ok": true,
+      "legs": [
+        "PLBN-1",
+        "PLBN-2",
+        "PLBN-3"
+      ],
+      "detail": "leg.errMessage"
+    },
+    {
+      "fact": "PLBN: both inputs hold [], no event, no read",
+      "ok": true,
+      "legs": [
+        "PLBN-1",
+        "PLBN-2",
+        "PLBN-3"
+      ],
+      "detail": "leg.files/events/reads"
+    },
+    {
+      "fact": "PLLP (two paths a.txt 22 B + b.txt 30 B on #m): resolves",
+      "ok": true,
+      "legs": [
+        "PLLP-1",
+        "PLLP-2",
+        "PLLP-3"
+      ],
+      "detail": "leg.outcome"
+    },
+    {
+      "fact": "PLLP: #m holds exactly [[tabi-r99-a.txt, 22, text/plain], [tabi-r99-b.txt, 30, text/plain]] in that order, #s []",
+      "ok": true,
+      "legs": [
+        "PLLP-1",
+        "PLLP-2",
+        "PLLP-3"
+      ],
+      "detail": "leg.files"
+    },
+    {
+      "fact": "PLLP: events are exactly [['m','input',true],['m','change',true]] (trusted)",
+      "ok": true,
+      "legs": [
+        "PLLP-1",
+        "PLLP-2",
+        "PLLP-3"
+      ],
+      "detail": "leg.events"
+    },
+    {
+      "fact": "PLLP: both reads of both files give each file's own size and sha256",
+      "ok": true,
+      "legs": [
+        "PLLP-1",
+        "PLLP-2",
+        "PLLP-3"
+      ],
+      "detail": "leg.reads"
+    },
+    {
+      "fact": "PUCM (two paths a.txt 22 B + b.txt 30 B on #m): resolves",
+      "ok": true,
+      "legs": [
+        "PUCM-1",
+        "PUCM-2",
+        "PUCM-3"
+      ],
+      "detail": "leg.outcome"
+    },
+    {
+      "fact": "PUCM: #m holds exactly [[tabi-r99-a.txt, 22, text/plain], [tabi-r99-b.txt, 30, text/plain]] in that order, #s []",
+      "ok": true,
+      "legs": [
+        "PUCM-1",
+        "PUCM-2",
+        "PUCM-3"
+      ],
+      "detail": "leg.files"
+    },
+    {
+      "fact": "PUCM: events are exactly [['m','input',true],['m','change',true]] (trusted)",
+      "ok": true,
+      "legs": [
+        "PUCM-1",
+        "PUCM-2",
+        "PUCM-3"
+      ],
+      "detail": "leg.events"
+    },
+    {
+      "fact": "PUCM: both reads of both files give each file's own size and sha256",
+      "ok": true,
+      "legs": [
+        "PUCM-1",
+        "PUCM-2",
+        "PUCM-3"
+      ],
+      "detail": "leg.reads"
+    },
+    {
+      "fact": "PLLP is connectOverCDP with isLocal true; PUCM is Puppeteer connect",
+      "ok": true,
+      "legs": [
+        "PLLP-1",
+        "PLLP-2",
+        "PLLP-3",
+        "PUCM-1",
+        "PUCM-2",
+        "PUCM-3"
+      ],
+      "detail": "leg.lib/mode/isLocal"
+    },
+    {
+      "fact": "PUCN (the two paths on #s, no multiple): error name Error, message exactly 'Multiple file uploads only work with <input type=file multiple>'",
+      "ok": true,
+      "legs": [
+        "PUCN-1",
+        "PUCN-2",
+        "PUCN-3"
+      ],
+      "detail": "leg.errMessage"
+    },
+    {
+      "fact": "PUCN: both inputs hold [], no event, no read",
+      "ok": true,
+      "legs": [
+        "PUCN-1",
+        "PUCN-2",
+        "PUCN-3"
+      ],
+      "detail": "leg.files/events/reads"
+    },
+    {
+      "fact": "fileA/fileB descriptors: tabi-r99-a.txt 22 B, tabi-r99-b.txt 30 B with the sha256s the reads returned",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.fileA/fileB"
+    },
+    {
+      "fact": "missingPath is absolute with basename tabi-r99-missing.txt and missingExists is exactly false",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.missingPath/missingExists"
+    },
+    {
+      "fact": "tmpdirAtLoad is absolute with basename t",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.tmpdirAtLoad"
+    },
+    {
+      "fact": "three distinct ports in 1024..65535",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.ports"
+    },
+    {
+      "fact": "libraries pinned: puppeteer-core 25.16.0, playwright-core 1.65.0",
+      "ok": true,
+      "legs": [],
+      "detail": "receipt.libs"
+    }
+  ],
+  "passed": 43,
+  "total": 43,
+  "failed": []
+}

@@ -80,3 +80,49 @@ Assimilation: none (the lane's package adoption is not this round's claim). cons
    Captured-by: none (no gate reads citations in instrument comments). Fix: rows are numbered only after
    `grep -n '<url>' corpus/SOURCES.md` for every fetched URL; not yet shown able to fail by a gate, so it is
    recorded as a practice, not a fix.
+4. **class: universal negative backed by a narrower search (frozen-text overclaim).** Evidence: the frozen
+   "Surface moved" sentence (`plans/round-99.md`, "No lane instrument has ever put two files into one input …
+   or read an upload with `arrayBuffer()`/`FileReader`") rested on a grep scoped to
+   `scripts/client-oopif-*round9[5-8].mjs`; `scripts/chrome-cdp-filechooser-round77.mjs:182` and
+   `…round78.mjs:185` read uploads with `arrayBuffer()` and r77 `pick-multiple` landed two files in a
+   `multiple` input. Captured-by: the wave — R99Critic1 W1 and R99Connector H1, both independently; no lane
+   gate reads history sentences. Fix: plan §Amendment A1 item 1 narrows the sentence (addendum §8 choice i);
+   rule for the next freeze — a "no lane instrument has ever" sentence runs its grep over `scripts/` whole,
+   not a glob. **Shown able to fail:** `git grep -lE 'arrayBuffer\(\)|readAsArrayBuffer' 9eaa5cbe --
+   scripts/` lists `chrome-cdp-filechooser-round77.mjs` and `…round78.mjs` (2 hits) where the frozen glob
+   lists none.
+5. **class: a refusal clause wider than its branch (limit 8).** R99Critic1 W2: the every-leg launch-failed
+   refusal discards receipt-level findings that limit 8's first clause says are reported. Captured-by: the
+   wave (R99Critic1). Fix: §Amendment A1 item 2 narrows the clause; unreachable with the pinned driver (it
+   labels only real launch failures) and absent from the scored run (0 launch failures).
+
+## Leads (not rows, not claims this round; R99Exec3 ad-hoc probe, 3/3 each, `.ufo/waves/round-99/w1/R99Exec3.md`)
+
+- Three payloads with two equal names on `#m` land all three in order, no dedupe or rename (untrusted).
+- A 0-byte payload lands `[name, 0, text/plain]`; a 0-byte path lands the same with trusted events
+  (`isLocal`); both read as the empty-string sha256.
+- One path + one payload in one Playwright call: `Error` "File paths cannot be mixed with buffers", nothing
+  set.
+- Playwright `chromium.launch` and Puppeteer `launch` with two paths on `#m`: trusted, intact (the launch
+  analogues of PLLP/PUCM).
+- `isLocal` with two paths on `#s`: the same Non-multiple message as PLBN.
+- `webkitdirectory` + Playwright `setInputFiles(<dir path>)` on `isLocal`: recursive, `webkitRelativePath`
+  keeps the directory prefix, trusted events; `{localDirectory: …}` is read as a payload object and refused.
+- On the binary payload, `slice(1,3).arrayBuffer()` gives the 2-byte digest; `text()` gives 256 UTF-16 units
+  with U+FFFD for bytes ≥ 0x80 (not checked byte by byte).
+
+Each is a candidate counted leg for round 100 (r99 limit 4).
+
+## Wave w1 (12 seats; every seat filed; artifacts in `.ufo/waves/round-99/w1/`; `w1-results.json`)
+
+Roles: executor ×3, critic ×2, mutation-tester, revenger, reviewer, sentinel, scout, scribe, connector;
+attack share (reviewer + critic + mutation-tester) 4/12 = 33 %. 0 dead seats. Verdicts: 11 `neutral`, 1
+`falsifies-wording` (R99Critic1 W1/W2, narrowed by plan §Amendment A1; R99Connector H1 the same item).
+Reproductions of the frozen `--live` command: R99Exec1 ×2 clean 282; R99Exec2 `--reps 10` clean 898 and
+default clean, live killers 6/6; R99Sentinel strace run clean with 0 writes under `/tmp`/`/var/tmp`.
+R99Mut 98 mutants / 68 killed / 30 survived (11 receipt-mode battery gaps, 19 live-only; none exhibited by
+the scored receipt) — routed to r100. R99Sentinel's hardened-counter and copy-then-execute diffs are
+recommendations against limit 6/8 classes, not integrated (frozen bytes stay frozen); routed to r100.
+R99Scout's opened sources (WHATWG `files` setter, Puppeteer/Playwright issues) are held as leads, not rows.
+Corrections integrated: r77 note first-path bullet scoped to raw CDP (R99Connector H2); r99 note relation and
+scope appended (H1/H5).

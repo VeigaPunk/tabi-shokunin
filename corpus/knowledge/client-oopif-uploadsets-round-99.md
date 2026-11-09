@@ -90,3 +90,17 @@ Extends `client-oopif-uploadmodes-round-98.md` (one file per call, typed payload
 on `connect`/`isLocal` only) and `client-oopif-uploadfile-round-97.md`; contradicts neither. The r98 note's
 "one file per call" and "payloads typed `text/plain`" were limits, not laws; this note measures past them.
 The r97 README coverage sentence on `isLocal` is path-scoped by the appended round-99 README correction.
+
+## Correction — relation and scope (round 99, post-wave; append-only; R99Connector H1/H5, R99Critic1 W1)
+
+- **Not the lane's first two-file landing or first `arrayBuffer()` read.** Round 77's raw-chooser instrument
+  already put two files into a `multiple` input and read them with `arrayBuffer()`
+  (`chromium-file-chooser-runtime-round-77.md` `pick-multiple`; `scripts/chrome-cdp-filechooser-round77.mjs`
+  line 182), and round 81's directory answer delivered two files into one input. What is new here is the
+  production-client surface: the two clients' refusal on an input without `multiple`, payload trust on a
+  multi-file set, the untyped name → type rule, and the dual-read digest, on a cross-site iframe.
+- **The first-file bullet is client-side.** Over raw CDP a single input keeps the first path (r77, corrected
+  there in round 99); through `setInputFiles`/`uploadFile` the call is refused and nothing is set.
+- **The refusal law is measured on the attached arms only** (PLBN default `connectOverCDP`, PUCN Puppeteer
+  `connect`); client-launched browsers were measured with absent paths only (PUAM, PLAM). R99Exec3 observed
+  the `isLocal` two-paths-on-`#s` refusal with the same message as an uncounted lead.

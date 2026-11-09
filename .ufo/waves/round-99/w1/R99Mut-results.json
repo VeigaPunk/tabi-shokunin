@@ -1,0 +1,1588 @@
+{
+ "total": 98,
+ "killed": 68,
+ "survived": 30,
+ "survivors": [
+  "pin-drop-file",
+  "missing-loose-eq",
+  "fresh-no-nonempty",
+  "receipt-file-check-drop",
+  "receipt-unreadable-drop",
+  "live-driver-exit-drop",
+  "live-ports-bound-drop",
+  "live-missing-bound-endswith",
+  "live-tmpdir-bound-drop",
+  "live-exit3-flag",
+  "law-exempt-child-files",
+  "launchfail-includes",
+  "launchfail-none-guard",
+  "partial-law-clear",
+  "live-status130",
+  "live-status2",
+  "live-signal-and",
+  "live-pin-precheck-invert",
+  "live-missing-wrong",
+  "lawlegs-is-legs",
+  "outcomes-drop",
+  "arm-plam-cls",
+  "iframe-targetid-drop",
+  "outcome-drop-errmessage",
+  "outcome-drop-errname",
+  "isobj-array",
+  "launchfail-const",
+  "driver-timeout",
+  "mode-xor-drop",
+  "eq-loose"
+ ],
+ "details": [
+  {
+   "name": "schema-invert",
+   "line": 216,
+   "change": "receipt.schema === SCHEMA -> receipt.schema !== SCHEMA",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "do-nothing-r98-receipt"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "44c29947614cc7e0ec621fe3e57076a41fc7e2b37466b1b80f9f139adfd16f6c"
+  },
+  {
+   "name": "schema-drop",
+   "line": 216,
+   "change": "receipt.schema === SCHEMA -> true",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "do-nothing-r98-receipt"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "13713ccef9e13d42540cf02e0143c81d07b237d3953a87a76c8ff993b132d719"
+  },
+  {
+   "name": "nonce-prefix",
+   "line": 217,
+   "change": "receipt.nonce === expectNonce -> typeof receipt.nonce === 'string' && receipt.nonce.startsWit",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "nonce-other"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "57974c815d452473302d9782c80dbf9bda580c9b0285e174cba471705261b4eb"
+  },
+  {
+   "name": "nonce-drop",
+   "line": 217,
+   "change": "receipt.nonce === expectNonce -> true",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "nonce-other"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "e9505df161a8548117a15193b0e7f27c879cc1480c8bd81ad14ddd7434247f73"
+  },
+  {
+   "name": "pin-drop-file",
+   "line": 218,
+   "change": "receipt.driverSha256 === pin && driverSha === pin -> receipt.driverSha256 === pin",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "81db5aa6d7d8f0095dc82fa4edd69adc368f1d55e942f6077a51d443d996cd15"
+  },
+  {
+   "name": "pin-drop-receipt",
+   "line": 218,
+   "change": "receipt.driverSha256 === pin && driverSha === pin -> driverSha === pin",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "driver-pin-other"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "a2c9c2c4cd24e381d9a21cecec5acc808c76ad0a4485cab2151e984078b216cf"
+  },
+  {
+   "name": "chromium-loosen",
+   "line": 219,
+   "change": "receipt.chromium.includes(CHROMIUM_TAG) -> typeof receipt.chromium === 'string'",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "chromium-string"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "6a4b84cf57207775199bb7be6e50d009e07fbeaee8ea55f9f70c6f94120a3aea"
+  },
+  {
+   "name": "reps-loosen",
+   "line": 220,
+   "change": "receipt.reps === reps -> receipt.reps >= 1",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "reps-other"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "ca2c8c5f1c77e6377ece7a5e567897bd405205bc1948d6edeb8b1937e6f0a172"
+  },
+  {
+   "name": "libs-drop-pw",
+   "line": 221,
+   "change": "eq(receipt.libs, LIBS) -> eq(receipt.libs?.['puppeteer-core'], LIBS['puppeteer-core'])",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "lib-pw-integrity",
+    "lib-pw-treesha"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "b331fa956bde3fd2aa1be94d58ff5382244e39f1f2486bbc35f28553b2ee813a"
+  },
+  {
+   "name": "files-b-drop",
+   "line": 222,
+   "change": "eq(receipt.fileA, FILE_A) && eq(receipt.fileB, FILE_B) -> eq(receipt.fileA, FILE_A)",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "fileb-sha"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "9d64d17519f73c2a6473188365596f47595aeec29ca5f05db444d98d65c1df6a"
+  },
+  {
+   "name": "payloads-bin-drop",
+   "line": 223,
+   "change": "eq(receipt.payload1, P1) && eq(receipt.payload2, P2) && eq(r -> eq(receipt.payload1, P1) && eq(receipt.payload2, P2)",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "bin-typed",
+    "bin-missing"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "6ae7d54ef3650967df18d22014dd9fe2d2864d2c5c87df722e9375d84cef3feb"
+  },
+  {
+   "name": "missing-loose-eq",
+   "line": 225,
+   "change": "receipt.missingExists === false -> receipt.missingExists == false",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "1e05ff79fd294dac69ade1fcf30a0405374b222341a8032229311ab60c86ab26"
+  },
+  {
+   "name": "missing-basename-drop",
+   "line": 225,
+   "change": "path.basename(missingPath) === MISSING -> missingPath.length > 10",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "missing-other-name"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "cda11a2c06518cadf400e58798fed696abddf6c80e1ad34b425dae21d935985a"
+  },
+  {
+   "name": "tmpdir-basename-drop",
+   "line": 226,
+   "change": "path.basename(receipt.tmpdirAtLoad) === 't' -> receipt.tmpdirAtLoad.length > 1",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "tmpdir-system"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "1a689bc412baa98e32a03fa3253010a7db36710c30822f508b00792d82e87f3e"
+  },
+  {
+   "name": "ports-low",
+   "line": 228,
+   "change": "p >= 1024 -> p >= 0",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "port-1023"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "a112e80e65681041f45f244bf287647babcdefdee96e8d25ac0db332bb1f21cb"
+  },
+  {
+   "name": "ports-high",
+   "line": 228,
+   "change": "p <= 65535 -> p <= 99999",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "port-65536"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "79f30f658bc5c850e811cd1f925c4620da7283324e8985a5f4fc57e9887bd0e9"
+  },
+  {
+   "name": "ports-integer-drop",
+   "line": 228,
+   "change": "Number.isInteger(p) && p >= 1024 -> p >= 1024",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "port-fractional"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "2b2f34e57abcc9b21f897975a392e07e3097e39d6ac8bcb8767c103213ee2bae"
+  },
+  {
+   "name": "ports-distinct-drop",
+   "line": 228,
+   "change": "&& new Set([ports.http, ports.child, ports.cdp]).size === 3, -> , null",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "port-duplicate"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "870be523fd321a0eacf9e3860cad314f572e735c7eda730063ece14edb59e965"
+  },
+  {
+   "name": "legset-order-swap",
+   "line": 231,
+   "change": "for (let r = 1; r <= reps; r++) for (const a of ARMS) want.p -> for (const a of ARMS) for (let r = 1; r <= reps; r++) want.p",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "435e2cd796022214e547701c9f191f8ddd0bc09ffcae0511be1c125605bc15ab"
+  },
+  {
+   "name": "failures-len-drop",
+   "line": 234,
+   "change": "Array.isArray(receipt.failures) && receipt.failures.length = -> Array.isArray(receipt.failures) && errLegs.length === 0",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "failures-listed-legs-clean"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "731078ab4421518061fd1dfd7e6f6d7fbb521394de3842825ea6b1e1d6e2d2b9"
+  },
+  {
+   "name": "failures-errlegs-drop",
+   "line": 234,
+   "change": "Array.isArray(receipt.failures) && receipt.failures.length = -> Array.isArray(receipt.failures) && receipt.failures.length =",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "leg-error-failures-empty"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "8600483fad2bd0f6aeb115accfb0b8a7c5e7b2f995f85ee0d1b46d562c538a7d"
+  },
+  {
+   "name": "fresh-distinct-drop",
+   "line": 239,
+   "change": "&& new Set(ids).size === ids.length, null -> , null",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "browser-reused"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "770253cdad79bf83fa2a1d3881b26f18995ff417b501ea12f8eb8595848b454d"
+  },
+  {
+   "name": "fresh-no-nonempty",
+   "line": 239,
+   "change": "ids.length > 0 && ids.every -> ids.every",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "73ae527322f205c20957c6390db2d71ca42f72394250acdc786d2591a1805bee"
+  },
+  {
+   "name": "browserid-regex-loosen",
+   "line": 239,
+   "change": "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1 -> /^[0-9a-f-]{10,}$/",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "browser-id-not-uuid"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "1235cc2427336d97023d12b5fd68a6568060ece963f3dbcc1e52c7ee733df0cd"
+  },
+  {
+   "name": "receipt-file-check-drop",
+   "line": 194,
+   "change": "if (st && !st.isFile()) refuse( -> if (false && st && !st.isFile()) refuse(",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "a768e67d1e8b0047adbaac114a6c60f88598a264d381930badb015aa5d9e29ea"
+  },
+  {
+   "name": "receipt-unreadable-drop",
+   "line": 198,
+   "change": "if (partialLaunch) refuse('chromium never came up (driver ex -> if (false) refuse('chromium never came up (driver exit 3) an",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "89dec2fdcffdcac93d52e0da4b03efc84858b8c7e7423be77a05e4c717c5c747"
+  },
+  {
+   "name": "live-driver-exit-drop",
+   "line": 211,
+   "change": "check('driver-exit', driverRun.status === 0, null, -> check('driver-exit', true, null,",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "3f4b1d7538d018a6267fa8a1284564dc1a4ed6018471b52677a23634e176ed7c"
+  },
+  {
+   "name": "live-ports-bound-drop",
+   "line": 212,
+   "change": "check('ports-bound', isObj(receipt.ports) && eq([receipt.por -> check('ports-bound', true, null,",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "2c33e183638ab8b57ff0af07fd49518efaf90c6d2d374d8dbd908fcfe7307974"
+  },
+  {
+   "name": "live-missing-bound-endswith",
+   "line": 213,
+   "change": "check('missing-bound', receipt.missingPath === liveMissing,  -> check('missing-bound', typeof receipt.missingPath === 'strin",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "ccf5b86848a4f93c2627daff680d1dd641c7a601786b44f36e95530df64d3996"
+  },
+  {
+   "name": "live-tmpdir-bound-drop",
+   "line": 214,
+   "change": "check('tmpdir-bound', receipt.tmpdirAtLoad === liveTmp, null -> check('tmpdir-bound', true, null,",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "667a5487aa94506379f8ce0b6b3afce5caf8da9aad6cc6ef72bc2fec432cf2d1"
+  },
+  {
+   "name": "live-exit3-flag",
+   "line": 187,
+   "change": "if (status === 3) partialLaunch = true; -> if (status === 4) partialLaunch = true;",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "3a71c19b8bb24ae99784d147be333193d9ebd5e773e8851c66a9637311190292"
+  },
+  {
+   "name": "law-exempt-child-files",
+   "line": 92,
+   "change": "const LAW_EXEMPT = new Set(['driver-exit', 'failures']); -> const LAW_EXEMPT = new Set(['driver-exit', 'failures', 'chil",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "b38c7d9a03814c13d53d6c67ca4662fc29c67bcbb037dde76d7600460494003b"
+  },
+  {
+   "name": "launchfail-includes",
+   "line": 235,
+   "change": "l.error.startsWith(LAUNCH_FAIL) -> l.error.includes(LAUNCH_FAIL)",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "78d6aeb1cfaf2270a2c20b1600da6b95dafda42d637dc1bd9976496d2aa7b7dd"
+  },
+  {
+   "name": "launchfail-none-guard",
+   "line": 237,
+   "change": "if (partialLaunch && !lawLegs.length) -> if (partialLaunch && lawLegs.length === 999)",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "8e9a45a056fc374ad006c43137cf63a5fdc8a8a60ebd5b47d7aa9345c84094f9"
+  },
+  {
+   "name": "partial-law-clear",
+   "line": 272,
+   "change": "const law = findings.filter((f) => !LAW_EXEMPT.has(f.id)); -> const law = [];",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "1eeeb3207aa9103af038eb90860212b3a613a74b859764d348d10e0bbaab08a7"
+  },
+  {
+   "name": "live-status130",
+   "line": 184,
+   "change": "if (status === 130) refuse( -> if (status === 131) refuse(",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "7051e7a0e0e8eb432dae97c6cb45b5c153f8cac66248ab5ff9355be3a5ae499f"
+  },
+  {
+   "name": "live-status2",
+   "line": 185,
+   "change": "if (status === 2) refuse( -> if (status === 22) refuse(",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "0e08b67d36f2bffd85d19bd8570b60bbd2d5538c6f43dcf1ce2d9c75a7f5b303"
+  },
+  {
+   "name": "live-signal-and",
+   "line": 186,
+   "change": "if (signal !== null || timedOut) -> if (signal !== null && timedOut)",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "d2db383a678a6b78c1855eaf919904659446a9197eebe3ffde16e1868ae230e6"
+  },
+  {
+   "name": "live-pin-precheck-invert",
+   "line": 132,
+   "change": "if (driverSha !== pin) { -> if (driverSha === pin) {",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "500838d34f76f139540e63084e5126956163e0af92e3ad35837b851d49c5fd59"
+  },
+  {
+   "name": "live-missing-wrong",
+   "line": 151,
+   "change": "liveMissing = path.join(driverScratch, MISSING); -> liveMissing = path.join(driverScratch, 'other.txt');",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "7f42d264fb745b83065021668a8f75d6cba7f5e47e5d9fdf9bea66b616f5cb3c"
+  },
+  {
+   "name": "lawlegs-is-legs",
+   "line": 236,
+   "change": "const lawLegs = legs.filter((l) => !(isObj(l) && launchFaile -> const lawLegs = legs;",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "e6ba41fd28abc76c5d39fb42896a5a298c157c3cdd0179bb0f4cc7a3bfc66dcf"
+  },
+  {
+   "name": "outcomes-drop",
+   "line": 268,
+   "change": "outcomes[a.cls].push(id); -> void id;",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "71db046a178b137c5f85b1351572a81195815d06dfef7eff70b48b6be4183e24"
+  },
+  {
+   "name": "arm-puam-trust",
+   "line": 83,
+   "change": "files: { s: [[MISSING, 0, 'text/plain']], m: [] }, events: E -> files: { s: [[MISSING, 0, 'text/plain']], m: [] }, events: E",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "38c63c9151a3944ed8e2817c8ddc37d1bf79f6e4b50a80183b81534d9af46cb0"
+  },
+  {
+   "name": "arm-plam-cls",
+   "line": 84,
+   "change": "cls: 'enoent' -> cls: 'untrustedPayload'",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "656bc6208c870f4d955f6754ff8adb728fe5c70914347004d2dc777ade62e74b"
+  },
+  {
+   "name": "arm-plbx-trust",
+   "line": 85,
+   "change": "events: EV('s', false), reads: [both(BIN)], cls: 'untrustedP -> events: EV('s', true), reads: [both(BIN)], cls: 'untrustedPa",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "a43e4505fd14441940c865ae107773185aa008e62d2aa23482383cff611abb51"
+  },
+  {
+   "name": "arm-plbm-target",
+   "line": 86,
+   "change": "PLBM: { lib: 'playwright', mode: 'connect', isLocal: false,  -> PLBM: { lib: 'playwright', mode: 'connect', isLocal: false, ",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "9aecd1767afb095bfcd584de9817d42192f6a83f3666964f881e9dbce3d47071"
+  },
+  {
+   "name": "arm-plbn-msg",
+   "line": 87,
+   "change": "Non-multiple file input can only accept single file -> Non-multiple file input can only accept one file",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "19b50693de933c2e5f77a5b173a28a0b10306f5f615ef55cf560c6e51e19fc71"
+  },
+  {
+   "name": "arm-pucn-msg",
+   "line": 90,
+   "change": "Multiple file uploads only work with <input type=file multip -> Multiple file uploads only work with <input type=file multip",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "9b4945eb5353ee03ac94f3bfc8a0347d1750dc7ba498cb6ed683a0e13389b74b"
+  },
+  {
+   "name": "arm-pllp-islocal",
+   "line": 88,
+   "change": "PLLP: { lib: 'playwright', mode: 'connect', isLocal: true, -> PLLP: { lib: 'playwright', mode: 'connect', isLocal: false,",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "9a7d71983d43b22d429397096ffe1d29be30f8d48ac2f2d0f856ce0679bf1298"
+  },
+  {
+   "name": "arm-pucm-lib",
+   "line": 89,
+   "change": "PUCM: { lib: 'puppeteer', -> PUCM: { lib: 'playwright',",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "ee7d2666895c7d3dfc148928df193fbb27dfaff763e5eba482577bb69206bd90"
+  },
+  {
+   "name": "arm-puam-outcome",
+   "line": 83,
+   "change": "PUAM: { lib: 'puppeteer', mode: 'launch', isLocal: null, inp -> PUAM: { lib: 'puppeteer', mode: 'launch', isLocal: null, inp",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "c417f0b2eabba3b85cb29e9b61219e85c6b0b623ca4054c78a958687078a5021"
+  },
+  {
+   "name": "arm-plbx-type",
+   "line": 85,
+   "change": "[[BIN.name, BIN.size, 'image/png']] -> [[BIN.name, BIN.size, 'application/octet-stream']]",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "2342ca731ceb89bbde1e90877a77d716f2ade7db06bf8627098790a59a68c4bc"
+  },
+  {
+   "name": "arm-plbm-p2type",
+   "line": 86,
+   "change": "P2.size, 'application/octet-stream' -> P2.size, 'text/plain'",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "77272c7ec94f135dc552e630c5bf90560421e0cd2ef02524768ee6b41f9c5383"
+  },
+  {
+   "name": "ab-order-swap",
+   "line": 81,
+   "change": "const AB = [[FILE_A.name, FILE_A.size, 'text/plain'], [FILE_ -> const AB = [[FILE_B.name, FILE_B.size, 'text/plain'], [FILE_",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "1cc5257a74e5c5f071681fe67b9358a0ebad3f42128b3a72bb8546f0987c31c4"
+  },
+  {
+   "name": "filea-size",
+   "line": 66,
+   "change": "FILE_A = { name: 'tabi-r99-a.txt', size: 22, -> FILE_A = { name: 'tabi-r99-a.txt', size: 23,",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "filea-size"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "f89767f402cb21eefc4c21fe57d389f1ac515c38f1a34c1cbe7a0427e6da3f98"
+  },
+  {
+   "name": "fileb-sha",
+   "line": 67,
+   "change": "S('tabi round 99 file b, second.\\n') -> S('tabi round 99 file b.\\n')",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "5dc267fd2daf3e841a5ddcef602a88a70b11c70dbbc5f030af3e1e6dda9aecaf"
+  },
+  {
+   "name": "p1-mime",
+   "line": 68,
+   "change": "P1 = { name: 'tabi-r99-p1.txt', size: 27, mimeType: 'text/pl -> P1 = { name: 'tabi-r99-p1.txt', size: 27, mimeType: 'applica",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "payload1-mime"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "d84a275ede16eeeb437c64c9dd2e0603e85eeda1f9763b07e2d225d026ed3c62"
+  },
+  {
+   "name": "p2-mime",
+   "line": 69,
+   "change": "P2 = { name: 'tabi-r99-p2.tabi99', size: 36, mimeType: null -> P2 = { name: 'tabi-r99-p2.tabi99', size: 36, mimeType: 'text",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "payload2-typed"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "477fb31c0f2c7a66aa4ee8c029f7133bae07f0c2f09eb75eb4922e8e37e3e951"
+  },
+  {
+   "name": "bin-mime",
+   "line": 70,
+   "change": "BIN = { name: 'tabi-r99-bytes.png', size: 256, mimeType: nul -> BIN = { name: 'tabi-r99-bytes.png', size: 256, mimeType: 'im",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "bin-typed"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "8676df535d4f5fd586d634b7dea437b3df19c0085e396f4e7ffd786eace8a97e"
+  },
+  {
+   "name": "bin-size",
+   "line": 70,
+   "change": "BIN = { name: 'tabi-r99-bytes.png', size: 256, -> BIN = { name: 'tabi-r99-bytes.png', size: 255,",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "f6d71bcc2abe4ec2c6a94397f846fd06077c782ba17b17d920faee45f57dc0db"
+  },
+  {
+   "name": "nf-msg",
+   "line": 72,
+   "change": "A requested file or directory could not be found at the time -> A requested file or directory could not be found.",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "83b8245da2de07326a5c38c2cdd4de5ff2c5f119f074c214627d30209108d884"
+  },
+  {
+   "name": "nf-name",
+   "line": 72,
+   "change": "['err', 'NotFoundError', -> ['err', 'NotReadableError',",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "e1b7fe903a267c9c8caf826af514f7d9467c7681a9b4534cac079a8217537388"
+  },
+  {
+   "name": "libs-pp-version",
+   "line": 74,
+   "change": "version: '25.16.0' -> version: '25.15.0'",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "lib-pp-version"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "b70f51f28daacf262ea5f43a4d803a37b339139943674d716f7d790f70253386"
+  },
+  {
+   "name": "libs-pw-filesha",
+   "line": 75,
+   "change": "fileSha256: '4ef8330594818d8f464de939e32bca62b758099e0d0e94a -> fileSha256: '0ef8330594818d8f464de939e32bca62b758099e0d0e94a",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "1f62555dbbfbf778d7e91bf8f132cc1260816920bbf44348983d4167a6d344a6"
+  },
+  {
+   "name": "libs-pw-treefiles",
+   "line": 75,
+   "change": "treeFiles: 116 -> treeFiles: 117",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "71a52cba3454718d92b509538a1a748fd71b2b01e500fbccb0df3ffc027240bf"
+  },
+  {
+   "name": "libs-pw-treesha",
+   "line": 75,
+   "change": "treeSha256: '245846938f2b5f5c706b6670d0751ccef42bdc68ef7d38b -> treeSha256: '045846938f2b5f5c706b6670d0751ccef42bdc68ef7d38b",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "06fa770f66f23ea7fbc262e51719ecd6da21b4f5f5a00fc63774a244738bf76c"
+  },
+  {
+   "name": "ev-change-flip",
+   "line": 79,
+   "change": "const EV = (id, trusted) => [[id, 'input', trusted], [id, 'c -> const EV = (id, trusted) => [[id, 'input', trusted], [id, 'c",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "c4dc63c4fac3d7ad6effe650a4c53604ae464c08c4910201cdd99a6aa3df2358"
+  },
+  {
+   "name": "ok-drop-sha",
+   "line": 77,
+   "change": "const ok = (f) => ['ok', f.size, f.sha256]; -> const ok = (f) => ['ok', f.size, 'x'];",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "99ac3ab43cd81f432c2d1b2c21045177a0e533d7506925a5926b6cec9accb225"
+  },
+  {
+   "name": "both-single",
+   "line": 78,
+   "change": "const both = (f) => [ok(f), ok(f)]; -> const both = (f) => [ok(f)];",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "c310a99b0ce7d8938cbab5ad9c48d75ec5b74f9fccf37728ca66b606143781fe"
+  },
+  {
+   "name": "browser-ternary-swap",
+   "line": 253,
+   "change": "(a.lib === 'puppeteer' ? BROWSER : CHROMIUM_TAG) -> (a.lib === 'puppeteer' ? CHROMIUM_TAG : BROWSER)",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "5f07ffb5e0405f4e510b33c427b006d97001ecc1aa61febc5f2baf67a739f0b1"
+  },
+  {
+   "name": "leglabel-drop-rep",
+   "line": 246,
+   "change": "!!m && ARM[m[1]] && l.arm === m[1] && l.rep === Number(m[2]) -> !!m && ARM[m[1]] && l.arm === m[1]",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "leg-rep-mismatch"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "e590561ea3cc3d22873953448b7da4a9d76e3aa6b326ca94b8482e406a66712d"
+  },
+  {
+   "name": "legurls-parent-drop",
+   "line": 252,
+   "change": "l.childUrl === childUrl && l.parentUrl === parentUrl -> l.childUrl === childUrl",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "plbx-parent-url-only"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "40fac9ec340108de1acd1435b5c33ff2a2b73f8f336d8927a6d9994411512f7d"
+  },
+  {
+   "name": "legurls-child-drop",
+   "line": 252,
+   "change": "l.childUrl === childUrl && l.parentUrl === parentUrl -> l.parentUrl === parentUrl",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "puam-child-same-site"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "b4613fc79b1086991b530ab21c17cc9e65e51b2f85143f11779b48d7860f3b8d"
+  },
+  {
+   "name": "frames-order-swap",
+   "line": 254,
+   "change": "eq(l.frames, [parentUrl, childUrl]) -> eq(l.frames, [childUrl, parentUrl])",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "5d86ed140b733940fcb4c109ec3a7825ed7f8b3a1a4fa839bdfa7b28bbd4f646"
+  },
+  {
+   "name": "iframe-targetid-drop",
+   "line": 256,
+   "change": "&& typeof its[0].targetId === 'string' && its[0].targetId.le -> , id",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "3307bc4e9bf204cd8c7b842ef870e5ab66e6f3702116923f71dcb9622dbf4146"
+  },
+  {
+   "name": "iframe-url-drop",
+   "line": 256,
+   "change": "its[0].url === childUrl -> typeof its[0].url === 'string'",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "plbm-iframe-target-other-url"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "8a309b992ce30c06ac624d2090eb6f70dd9d0957e1deb87994f568675de45803"
+  },
+  {
+   "name": "iframe-length-loosen",
+   "line": 256,
+   "change": "its.length === 1 -> its.length >= 1",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "plam-two-iframe-targets"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "c92a9041b1019e08eb2ec0f74925e2b20b0aa4f2333051d81a591a425cba4703"
+  },
+  {
+   "name": "parent-files-loosen",
+   "line": 257,
+   "change": "eq(l.parentFiles, []) -> Array.isArray(l.parentFiles)",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "puam-parent-filled",
+    "pucm-parent-filled"
+   ],
+   "ok": 107,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "09f87efa5964a405a48bc438895af40d9f00915bc58f7293b6766915b0feed09"
+  },
+  {
+   "name": "outcome-drop-errmessage",
+   "line": 259,
+   "change": "l.errName === null && l.errMessage === null -> l.errName === null",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "8e09a7a682a3b2c2d41913277f6cd7870b5f4c0909dcf5d7689ebd4c0a844d71"
+  },
+  {
+   "name": "outcome-drop-errname",
+   "line": 259,
+   "change": "l.errName === null && l.errMessage === null -> l.errMessage === null",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "55893cc01341b375b07ad1f0cb80cf2732af048a0cbb97d58e5f31196670e0d3"
+  },
+  {
+   "name": "enoent-startswith",
+   "line": 261,
+   "change": "l.errMessage === \"ENOENT: no such file or directory, stat '\" -> typeof l.errMessage === 'string' && l.errMessage.startsWith(",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "plam-other-path"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "cbb2d0408514e93302760f3b96f1903d05ee5a30d5f9b2e8181b78b0b5a7c4bd"
+  },
+  {
+   "name": "enoent-errname-drop",
+   "line": 261,
+   "change": "l.outcome === 'error' && l.errName === 'Error' && !!missingP -> l.outcome === 'error' && !!missingPath &&",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "plam-other-errname"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "f493e47e3dc0e0a7de308c2ac631e8186d983e852990eb64e4adc9c45e74aba3"
+  },
+  {
+   "name": "verdict-polarity",
+   "line": 275,
+   "change": "verdict: findings.length ? 'findings' : 'clean' -> verdict: findings.length ? 'clean' : 'findings'",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "do-nothing-r98-receipt",
+    "plbx-trusted-claimed",
+    "plbm-trusted-claimed",
+    "pllp-untrusted",
+    "pucm-change-untrusted",
+    "puam-untrusted",
+    "pucm-events-on-s",
+    "pllp-input-dropped",
+    "plbm-events-doubled",
+    "pllp-events-reordered",
+    "plbx-click-added",
+    "plbn-events-fired",
+    "pucn-events-fired",
+    "plam-events-null",
+    "plbn-first-file-landed",
+    "pucn-first-file-landed",
+    "pucm-one-file",
+    "pllp-order-swapped",
+    "pllp-files-on-s",
+    "plbx-type-octet",
+    "plbx-type-empty",
+    "plbm-p2-typed-text",
+    "plbm-p2-type-empty",
+    "plbx-size",
+    "puam-phantom-sized",
+    "puam-phantom-absent",
+    "plam-phantom-filled",
+    "files-m-key-dropped",
+    "puam-parent-filled",
+    "pucm-parent-filled",
+    "plbx-ab-sha-changed",
+    "plbx-fr-diverges",
+    "plbm-reads-swapped",
+    "pllp-read-dropped",
+    "pucm-read-error",
+    "puam-fr-readable",
+    "puam-ab-other-error",
+    "puam-other-message",
+    "plbn-read-present",
+    "plam-reads-null",
+    "plbn-resolved",
+    "pucn-resolved",
+    "plbn-other-message",
+    "pucn-other-message",
+    "pucn-errname",
+    "plbn-messages-swapped",
+    "plam-resolved",
+    "plam-other-path",
+    "plam-other-errname",
+    "puam-rejected",
+    "missing-exists",
+    "missing-exists-null",
+    "missing-other-name",
+    "missing-relative",
+    "puam-mode-connect",
+    "plbx-mode-launch",
+    "pllp-not-local",
+    "plbm-local",
+    "plam-islocal-set",
+    "plbm-input-paths",
+    "plbx-input-payloads",
+    "pucn-target-m",
+    "plbm-target-s",
+    "pucm-lib-swapped",
+    "puam-child-same-site",
+    "plbx-parent-url-only",
+    "pucm-no-iframe-target",
+    "plam-two-iframe-targets",
+    "plbm-iframe-target-other-url",
+    "pllp-iframe-targets-null",
+    "frames-extra",
+    "frames-child-swapped",
+    "lib-pp-version",
+    "lib-pw-integrity",
+    "lib-pp-filesha",
+    "lib-pw-treesha",
+    "lib-pp-treefiles",
+    "lib-missing",
+    "browser-version-leg",
+    "client-version-leg",
+    "chromium-string",
+    "nonce-other",
+    "driver-pin-other",
+    "filea-size",
+    "fileb-sha",
+    "payload1-mime",
+    "payload2-typed",
+    "bin-typed",
+    "bin-missing",
+    "tmpdir-relative",
+    "tmpdir-system",
+    "reps-other",
+    "port-1023",
+    "port-65536",
+    "port-fractional",
+    "port-duplicate",
+    "leg-duplicate-contradictory",
+    "leg-fabricated-label",
+    "leg-dropped",
+    "legs-empty",
+    "leg-reordered",
+    "leg-rep-mismatch",
+    "browser-reused",
+    "browser-id-not-uuid",
+    "failures-listed-legs-clean",
+    "leg-error-failures-empty",
+    "producer-pass-ignored",
+    "resolved-with-stale-error"
+   ],
+   "ok": 0,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "57c1d04d5b3dabed8820eae140b1af8178854a7496617124e4119e76ebf30e21"
+  },
+  {
+   "name": "exit-polarity",
+   "line": 277,
+   "change": "process.exit(findings.length ? 1 : 0); -> process.exit(findings.length ? 0 : 1);",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive",
+    "do-nothing-r98-receipt",
+    "plbx-trusted-claimed",
+    "plbm-trusted-claimed",
+    "pllp-untrusted",
+    "pucm-change-untrusted",
+    "puam-untrusted",
+    "pucm-events-on-s",
+    "pllp-input-dropped",
+    "plbm-events-doubled",
+    "pllp-events-reordered",
+    "plbx-click-added",
+    "plbn-events-fired",
+    "pucn-events-fired",
+    "plam-events-null",
+    "plbn-first-file-landed",
+    "pucn-first-file-landed",
+    "pucm-one-file",
+    "pllp-order-swapped",
+    "pllp-files-on-s",
+    "plbx-type-octet",
+    "plbx-type-empty",
+    "plbm-p2-typed-text",
+    "plbm-p2-type-empty",
+    "plbx-size",
+    "puam-phantom-sized",
+    "puam-phantom-absent",
+    "plam-phantom-filled",
+    "files-m-key-dropped",
+    "puam-parent-filled",
+    "pucm-parent-filled",
+    "plbx-ab-sha-changed",
+    "plbx-fr-diverges",
+    "plbm-reads-swapped",
+    "pllp-read-dropped",
+    "pucm-read-error",
+    "puam-fr-readable",
+    "puam-ab-other-error",
+    "puam-other-message",
+    "plbn-read-present",
+    "plam-reads-null",
+    "plbn-resolved",
+    "pucn-resolved",
+    "plbn-other-message",
+    "pucn-other-message",
+    "pucn-errname",
+    "plbn-messages-swapped",
+    "plam-resolved",
+    "plam-other-path",
+    "plam-other-errname",
+    "puam-rejected",
+    "missing-exists",
+    "missing-exists-null",
+    "missing-other-name",
+    "missing-relative",
+    "puam-mode-connect",
+    "plbx-mode-launch",
+    "pllp-not-local",
+    "plbm-local",
+    "plam-islocal-set",
+    "plbm-input-paths",
+    "plbx-input-payloads",
+    "pucn-target-m",
+    "plbm-target-s",
+    "pucm-lib-swapped",
+    "puam-child-same-site",
+    "plbx-parent-url-only",
+    "pucm-no-iframe-target",
+    "plam-two-iframe-targets",
+    "plbm-iframe-target-other-url",
+    "pllp-iframe-targets-null",
+    "frames-extra",
+    "frames-child-swapped",
+    "lib-pp-version",
+    "lib-pw-integrity",
+    "lib-pp-filesha",
+    "lib-pw-treesha",
+    "lib-pp-treefiles",
+    "lib-missing",
+    "browser-version-leg",
+    "client-version-leg",
+    "chromium-string",
+    "nonce-other",
+    "driver-pin-other",
+    "filea-size",
+    "fileb-sha",
+    "payload1-mime",
+    "payload2-typed",
+    "bin-typed",
+    "bin-missing",
+    "tmpdir-relative",
+    "tmpdir-system",
+    "reps-other",
+    "port-1023",
+    "port-65536",
+    "port-fractional",
+    "port-duplicate",
+    "leg-duplicate-contradictory",
+    "leg-fabricated-label",
+    "leg-dropped",
+    "legs-empty",
+    "leg-reordered",
+    "leg-rep-mismatch",
+    "browser-reused",
+    "browser-id-not-uuid",
+    "failures-listed-legs-clean",
+    "leg-error-failures-empty",
+    "producer-pass-ignored",
+    "resolved-with-stale-error"
+   ],
+   "ok": 0,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "72545298c1fee28886b7a6143e679ca26efe73b9e9396ad29eb4652c9eb9ee59"
+  },
+  {
+   "name": "isobj-array",
+   "line": 208,
+   "change": "const isObj = (o) => !!o && typeof o === 'object' && !Array. -> const isObj = (o) => !!o && typeof o === 'object';",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "d1b8315a514104612661b58c80f7d9cb256119f3eeea7afc9ead5aef4ed54921"
+  },
+  {
+   "name": "arm-plam-mode",
+   "line": 84,
+   "change": "PLAM: { lib: 'playwright', mode: 'launch', -> PLAM: { lib: 'playwright', mode: 'connect',",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "c306c7f27deacba3583f500ac4e92f747864b0d49da4aa387ee08b1af34f3780"
+  },
+  {
+   "name": "schema-const",
+   "line": 60,
+   "change": "const SCHEMA = 'tabi-client-oopif-uploadsets-r99'; -> const SCHEMA = 'x';",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "3ec0318b413e99321869f9eebe3b977e06facbd419f31d28b4efb811c617f42d"
+  },
+  {
+   "name": "chromium-tag-const",
+   "line": 61,
+   "change": "const CHROMIUM_TAG = '155.0.8059.84'; -> const CHROMIUM_TAG = '155.0.8059.85';",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "cc81eeaf4ff4b88583e146c04f5b4020a5235e2442e607985826d9955ad65c13"
+  },
+  {
+   "name": "browser-const",
+   "line": 62,
+   "change": "const BROWSER = 'Chrome/155.0.8059.84'; -> const BROWSER = 'Chrome/155.0.8059.85';",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "6703205a598d7141787765a9fd348f8b6082e3a272bdca5f089d7216048da06c"
+  },
+  {
+   "name": "launchfail-const",
+   "line": 64,
+   "change": "const LAUNCH_FAIL = 'chromium never came up'; -> const LAUNCH_FAIL = 'chromium never arrived';",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "9e743fb965dfeef2222559340bae07ab8dbe34720838d0503c949f41b24f698f"
+  },
+  {
+   "name": "driver-timeout",
+   "line": 93,
+   "change": "const DRIVER_TIMEOUT_MS = 900000; -> const DRIVER_TIMEOUT_MS = 1;",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "c4c92868656ebea41d11990b8144338c076f3b769a7cd3f0c414dde01f641225"
+  },
+  {
+   "name": "mode-xor-drop",
+   "line": 109,
+   "change": "if (live === !!receiptPath) refuse('exactly one of --live or -> if (false) refuse('exactly one of --live or --receipt');",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": true,
+   "sha256": "8ddf6a21a5472f68a51c92a6814bd16ada4228bfc6f15962424bd3af57aef5d5"
+  },
+  {
+   "name": "eq-loose",
+   "line": 207,
+   "change": "const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b) -> const eq = (a, b) => JSON.stringify(a) == JSON.stringify(b);",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "failed": [],
+   "ok": 109,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "0e570b2d2375af1a691ab608d8cea821ee467deeb4c376bca2844f97989adb4e"
+  },
+  {
+   "name": "arm-pucm-events",
+   "line": 89,
+   "change": "events: EV('m', true), reads: [both(FILE_A), both(FILE_B)],  -> events: EV('s', true), reads: [both(FILE_A), both(FILE_B)], ",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "d8df28ebdf4f1593000059db20f07704afeb6b9b91d800b482a9cb4bd80384c8"
+  },
+  {
+   "name": "arm-pllp-events",
+   "line": 88,
+   "change": "PLLP: { lib: 'playwright', mode: 'connect', isLocal: true, i -> PLLP: { lib: 'playwright', mode: 'connect', isLocal: true, i",
+   "rc": 1,
+   "verdict": "killed",
+   "failed": [
+    "positive"
+   ],
+   "ok": 108,
+   "cases": 109,
+   "liveOnly": false,
+   "sha256": "73565aae3992bad7cae9426eab915b5f78ef287e324e4cce7d9d2dddf0b45926"
+  },
+  {
+   "name": "child-files-s-only",
+   "line": 265,
+   "change": "unique-check weakening (see notes)",
+   "verdict": "killed",
+   "rc": 1,
+   "failed": [
+    "pucm-one-file",
+    "pllp-order-swapped",
+    "plbm-p2-typed-text",
+    "plbm-p2-type-empty",
+    "files-m-key-dropped"
+   ],
+   "cases": 109,
+   "liveOnly": false
+  },
+  {
+   "name": "child-events-len-only",
+   "line": 266,
+   "change": "unique-check weakening (see notes)",
+   "verdict": "killed",
+   "rc": 1,
+   "failed": [
+    "plbx-trusted-claimed",
+    "plbm-trusted-claimed",
+    "pllp-untrusted",
+    "pucm-change-untrusted",
+    "puam-untrusted",
+    "pucm-events-on-s",
+    "pllp-events-reordered",
+    "producer-pass-ignored"
+   ],
+   "cases": 109,
+   "liveOnly": false
+  },
+  {
+   "name": "child-reads-first-only",
+   "line": 267,
+   "change": "unique-check weakening (see notes)",
+   "verdict": "killed",
+   "rc": 1,
+   "failed": [
+    "pllp-read-dropped",
+    "pucm-read-error",
+    "plam-reads-null"
+   ],
+   "cases": 109,
+   "liveOnly": false
+  }
+ ],
+ "counterSha256": "1a0f25293771f1c4d9307b5ccd65cdf4c80696bd2e5756447ca2ea1a0689a720",
+ "pristineCounterSha256": "1a0f25293771f1c4d9307b5ccd65cdf4c80696bd2e5756447ca2ea1a0689a720",
+ "driverPin": "98efdc1293cc729b04a3774dfc45caf75bf20acf0d657f962a93b3eaba6b89f8",
+ "batteryCases": 109,
+ "baseline": "109/109 rc 0"
+}

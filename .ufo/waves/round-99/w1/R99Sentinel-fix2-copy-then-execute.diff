@@ -1,0 +1,25 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-client-oopif-uploadsets-round99.mjs	2026-11-09 02:05:20.634615922 -0300
++++ lane-fix2/scripts/check-client-oopif-uploadsets-round99.mjs	2026-11-09 02:45:13.110801773 -0300
+@@ -114,7 +114,8 @@
+ }
+ const driverPath = path.join(lane, DRIVER_REL);
+ let driverSha = null;
+-try { driverSha = sha256(fs.readFileSync(driverPath)); } catch { refuse('driver missing: ' + driverPath); }
++let driverBytes = null;
++try { driverBytes = fs.readFileSync(driverPath); driverSha = sha256(driverBytes); } catch { refuse('driver missing: ' + driverPath); }
+ 
+ let driverRun = null;
+ let livePorts = null;
+@@ -150,7 +151,11 @@
+   const driverScratch = path.join(scratch, 'driver');
+   liveMissing = path.join(driverScratch, MISSING);
+   liveTmp = path.join(driverScratch, 't');
+-  const child = spawn(process.execPath, [driverPath, '--lane', lane, '--deps', deps, '--scratch', driverScratch, '--out', receiptPath, '--http-port', ports[0], '--child-port', ports[1], '--cdp-port', ports[2], '--reps', String(reps)], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: { ...process.env, TABI_R99_NONCE: expectNonce } });
++  // FIX: execute a private copy of the EXACT bytes that were hashed (one read), so the
++  // executed bytes are provably the pinned bytes.
++  const pinnedCopy = path.join(receiptDir, 'pinned-driver.mjs');
++  try { fs.writeFileSync(pinnedCopy, driverBytes); } catch (e) { refuse('cannot stage pinned driver copy: ' + e.message); }
++  const child = spawn(process.execPath, [pinnedCopy, '--lane', lane, '--deps', deps, '--scratch', driverScratch, '--out', receiptPath, '--http-port', ports[0], '--child-port', ports[1], '--cdp-port', ports[2], '--reps', String(reps)], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: { ...process.env, TABI_R99_NONCE: expectNonce } });
+   let stdout = '', stderr = '';
+   child.stdout.on('data', (d) => { stdout += d; });
+   child.stderr.on('data', (d) => { stderr += d; });

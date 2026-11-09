@@ -1,0 +1,44 @@
+# R99Sentinel confinement artifact — round 99 C1, seat R99Sentinel
+# generated 2026-11-09T02:53:01-03:00
+#
+# METHOD
+#   strace -f -qq -e trace=mkdir,mkdirat,openat -o st.txt \
+#     node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-client-oopif-uploadsets-round99.mjs \
+#       --lane /home/vgpnk/Projects/shokunin/tabi-shokunin \
+#       --expect-driver-sha256 98efdc1293cc729b04a3774dfc45caf75bf20acf0d657f962a93b3eaba6b89f8 --live \
+#       --deps /fast/scratch/hyaku/tabi-r99/R99Sentinel/deps \
+#       --scratch /fast/scratch/hyaku/tabi-r99/R99Sentinel/a --ports 34671,34672,34673 --json
+#   Result: verdict clean, checkCount 282, 24 legs, rc 0.
+#   Trace: 126038 lines, 2143 mkdir/mkdirat, 29740 path references (broad trace).
+#
+# SECTION 1 — paths created or opened for write under /tmp or /var/tmp
+#   filter: openat(...,"/tmp|var/tmp", O_WRONLY|O_RDWR|O_CREAT) OR mkdir("/tmp|var/tmp")
+#   COUNT: 0        (no lines)
+#   The counter+driver+chromium tree wrote NOTHING under /tmp or /var/tmp.
+#   Note on substring noise: a naive grep for 'tmp' over st.txt returns 232 lines, ALL
+#   false positives ('injected.ts.tmpl', '000001.dbtmp', ...). Exact-prefix count is 0.
+#
+# SECTION 2 — counts by prefix: every mkdir/openat target in the traced tree
+#   1855  /fast/scratch/hyaku/tabi-r99/R99Sentinel/...   counter scratch + driver scratch
+#    288  /home/vgpnk/.config/chromium/Crash Reports/...   chromium crashpad; every mkdir = EEXIST
+#     3  /home/vgpnk/.pki/nssdb/{cert9.db,key4.db}      chromium NSS db, O_RDWR (mtime unchanged)
+#         /home/vgpnk/.config/chromium/Crash Reports/settings.dat   crashpad settings, O_RDWR
+#     0  /tmp , /var/tmp
+#   15 unique playwright-artifacts-* under <driver scratch>/t/ (5 per rep x 3 reps):
+#   the r98 D2 fix (TMPDIR set before the client modules load) holds.
+#
+# SECTION 3 — instrument sensitivity: NEGATIVE CONTROL (r98 driver, same host, same strace)
+#   The r98 driver sets TMPDIR AFTER loading the clients, so playwright-core computed its
+#   artifacts dir from /tmp:
+#   3887418 mkdir("/tmp/playwright-artifacts-KWibRe", 0700) = 0
+#   3887419 mkdir("/tmp/playwright-artifacts-Fkw54f", 0700 <unfinished ...>
+#   3887419 mkdir("/tmp/playwright-artifacts-Qgpn68", 0700) = 0
+#   3887418 mkdir("/tmp/playwright-artifacts-Kltyya", 0700) = 0
+#   => 4 lines. Identical strace command on this host: 4 hits for r98, 0 for r99.
+#      The filter is live; the 0 above is a measurement, not a blind spot.
+#
+# SECTION 4 — broader write-syscall trace (20 write syscalls: openat/open/creat/mkdir*,
+#   *unlink*/*rename*/symlink*/link*/truncate/mknod*/chmod/fchmod*/utime*), reps 1:
+#   /tmp or /var/tmp references: 0  (of 29740 path references in the trace)
+#   socket/bind trace (reps 1): chromium SingletonSocket bound under <scratch>/driver/t/,
+#   0 under /tmp.

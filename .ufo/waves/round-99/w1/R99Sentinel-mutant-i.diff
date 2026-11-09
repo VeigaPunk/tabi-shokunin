@@ -1,0 +1,10 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/client-oopif-uploadsets-round99.mjs	2026-11-09 02:05:03.018600906 -0300
++++ mutant-i.mjs	2026-11-09 02:33:17.658667241 -0300
+@@ -283,6 +283,7 @@
+       proc = spawn(CHROMIUM, ['--headless=new', '--remote-debugging-port=' + cdpPort, '--user-data-dir=' + prof, ...BASE_ARGS, 'about:blank'], { stdio: 'ignore', detached: true });
+       liveGroups.add(proc.pid);
+     }
++    if (legId === 'PUAM-1') { launchFailures++; throw new Error(LAUNCH_FAIL + ': devtools endpoint never answered'); }
+     const ver = await devtoolsVersion();
+     if (!ver) { launchFailures++; throw new Error(LAUNCH_FAIL + ': devtools endpoint never answered'); }
+     leg.browserVersion = ver.Browser;

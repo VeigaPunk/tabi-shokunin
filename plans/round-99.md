@@ -211,3 +211,30 @@ Exit 0 and `verdict: clean` → C1 after-state met.
    `port-fractional`, `legs-empty` and the battery's explicit `verdict` comparison, against this round's
    counter; the r98 counter and battery bytes stay frozen. Carried: r97 D3 transitive-package identity, r95
    D1-D3 and the R95Mut/r96 survivors (SCORECARD Planned).
+
+## Amendment A1 (post-wave, 2026-11-09; narrowing only — predicate, counter, kill rule and target unchanged)
+
+Addendum §8 choice (i): two wave artifacts show sentences of the frozen text that claim more than is true or
+than the instrument enforces. Both are narrowed here to what holds; the frozen text above stays as written.
+
+1. **Surface moved** (R99Critic1 W1 `.ufo/waves/round-99/w1/R99Critic1.md` §W1; R99Connector H1
+   `.ufo/waves/round-99/w1/R99Connector.md` §H1). The sentence "No lane instrument has ever put two files into
+   one input, called `setInputFiles` with an untyped payload, or read an upload with
+   `arrayBuffer()`/`FileReader`" is false as worded: `scripts/chrome-cdp-filechooser-round77.mjs` (line 182)
+   and `…round78.mjs` (line 185) read chooser-set uploads with `arrayBuffer()`, round 77 `pick-multiple` put
+   two files into a `multiple` input through the raw chooser answer, and round 81 delivered a directory's two
+   files into one input. Its supporting grep was scoped to `scripts/client-oopif-*round9[5-8].mjs`. Narrowed
+   to: "Within the client-oopif r95-r98 drivers, no call puts two files into one input, no payload is
+   untyped, and no upload is read with `arrayBuffer()`/`FileReader`; the lane's r77/r78 raw-chooser
+   instruments did put two files into a `multiple` input and read them with `arrayBuffer()`." The coverage
+   move is the production-client surface (Playwright/Puppeteer refusal, payload trust on a multi-file set,
+   the untyped name → type rule, the dual-read digest), not the first two-file landing or first read.
+2. **Limit 8, first clause** (R99Critic1 W2). "reports `findings` (rc 1) when any other check fails" holds
+   only when at least one leg is not launch-failed: the every-leg refusal runs before the verdict, so a
+   receipt-level finding on an all-launch-failed run is discarded. Narrowed to: "When at least one leg is
+   not launch-failed, a failure of any check other than `driver-exit`/`failures` gives `findings` (rc 1);
+   when every leg is launch-failed the counter gives `setup` (rc 2) whatever the receipt-level checks say."
+   The pinned driver labels only real launch failures (limit 8, last sentence), and the scored run had none.
+
+Neither narrowing touches a predicate bullet, the counting command or a control: the scored run
+(`.ufo/waves/round-99/scored/c1-live.json`, clean, 282 checks) is judged on the same frozen predicate.
