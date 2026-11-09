@@ -1,0 +1,33 @@
+{
+  "lane": "tabi",
+  "round": 96,
+  "base": "b16b3aa1a90ea0ec734d9834dc49b0615b6ab950",
+  "frozenAt": "2026-11-08T23:47:33-03:00",
+  "frozenIn": "plans/round-96.md §Claim, §Declared limits, §Controls, §Counting command (same commit as this file); frozenAt stamped before the freeze commit was created",
+  "instruments": {
+    "scripts/client-oopif-chooser-round96.mjs": "4020e57ef865e5eed506796238bb981bb4dbcb226e8fe80eb52728585ce63b91",
+    "scripts/check-client-oopif-chooser-round96.mjs": "778d429fe090521ae751ae15f6cd9835d6dd253ad07485452033412fdf723f5d",
+    "scripts/negatives-client-oopif-chooser-round96.mjs": "950c3ca2e557bca38cdd27a471fd5758e1174bf5440244d2b6f4f09333e0802e"
+  },
+  "libraries": {
+    "puppeteer-core": "25.16.0 sha512-VA5Pf54N8shfopNkZZXCdiiwfnnY8ZJYAMqFQRhlH5mGUhfwf53Ar770GPtdpTDLUqvQeYpIBtC9/G2Jij2IJw== lib/puppeteer/cdp/Page.js 31a522df2d59bba82e92a8e057238c9a1fc009a708e5b269b87ed29c3e07e7a0",
+    "playwright-core": "1.65.0 sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA== lib/coreBundle.js 4ef8330594818d8f464de939e32bca62b758099e0d0e94a56095406da963f7f1"
+  },
+  "claims": {
+    "C1": {
+      "axis": "coverage",
+      "capability": "client-oopif-filechooser-linux",
+      "predicate": "C1-CLIENT-OOPIF-CHOOSER-R96",
+      "sourced": [
+        "S236"
+      ],
+      "statement": "plans/round-96.md §Claim C1 predicate C1-CLIENT-OOPIF-CHOOSER-R96, verbatim (the bullet list from 'every leg' to 'non-witness legs' and the receipt-level paragraph): on this host Chromium 155.0.8059.84 (--headless=new, Linux), the --live counter runs the pinned driver with puppeteer-core 25.16.0 and playwright-core 1.65.0 (pinned on version, lockfile integrity and chooser-file sha256) for 3 reps of legs PPX,PPW,PPS,PWX,PWS (15 fresh browsers; parent #pp + one iframe; child #s; cross-site child host localhost) and exits 0 iff Puppeteer page.waitForFileChooser({timeout:3000}) ends TimeoutError 'Waiting for `FileChooser` failed: 3000ms exceeded' with the child #s empty on every cross-site leg (PPX, PPW), the PPW raw-CDP witness intercepting on the child's iframe target saw exactly one Page.fileChooserOpened (selectSingle, backendNodeId>0, frameId = that target), Puppeteer on same-site (PPS) and Playwright page.waitForEvent('filechooser') on cross- and same-site (PWX, PWS) resolve (isMultiple false; Playwright element id s) and their answer fills the child #s with exactly [[tabi-r96-answer.txt,22]], every leg lists frames [parent, child], one iframe target (child URL) on cross legs and none on same legs, one trusted click on #s, parent #pp empty, Chrome/155.0.8059.84; receipt identity checks as listed; --live adds driver-exit and ports-bound",
+      "limits": "plans/round-96.md §Declared limits 1-6",
+      "countingCommand": "node scripts/check-client-oopif-chooser-round96.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 4020e57ef865e5eed506796238bb981bb4dbcb226e8fe80eb52728585ce63b91 --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json",
+      "before": "counting command absent at base b16b3aa1 (rc 128); r95 receipt under the frozen counter -> rc 1",
+      "after": "--live exit 0, verdict clean, 0 findings over 15 legs",
+      "killRule": "fails if the scored --live run exits non-zero, a frozen control misses its expected verdict, or a wave artifact shows a leg-level statement false on a --live run of the pinned driver with the pinned libraries on this host (not a named setup/port/resource failure)"
+    }
+  },
+  "frozenAmendments": []
+}
