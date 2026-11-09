@@ -1,0 +1,29 @@
+{
+  "lane": "tabi",
+  "round": 95,
+  "base": "7b3912bbba828aaa17cb65179b4513ec2c2a2a24",
+  "frozenAt": "2026-11-08T22:59:07-03:00",
+  "frozenIn": "plans/round-95.md \u00a7Claim, \u00a7Declared limits, \u00a7Controls, \u00a7Counting command (same commit as this file); frozenAt stamped before the freeze commit was created",
+  "instruments": {
+    "scripts/chrome-cdp-backendnode-misdelivery-round95.mjs": "24947b00d8a158ad3fea8f5fb035757b6b98aebf48e85d18d506433619e2ee82",
+    "scripts/check-backendnode-misdelivery-round95.mjs": "b7b464daa7c3c60f771b836cae8d8045fece1b2cca28aba4af70d154738d2775",
+    "scripts/negatives-backendnode-misdelivery-round95.mjs": "1a670da5a9ffe200e6c757b0966d2df2e1bcca826da1f703c43d402f5075abf0"
+  },
+  "claims": {
+    "C1": {
+      "axis": "coverage",
+      "capability": "chromium-oopif-backendnode-misdelivery-linux",
+      "predicate": "C1-BACKENDNODE-MISDELIVERY-R95",
+      "sourced": [
+        "S235"
+      ],
+      "statement": "plans/round-95.md \u00a7Claim C1 predicate C1-BACKENDNODE-MISDELIVERY-R95, verbatim (the bullet list from 'every leg' to 'leg set' and the receipt-identity paragraph): on this host Chromium 155.0.8059.84 (--headless=new, Linux), the --live counter runs the pinned driver for 3 reps of legs P286,P287,P288,P289,Z,S (18 fresh browsers; parent q spans + file inputs #p0..#p5 + one iframe; child 300 spans + #s) and exits 0 iff every leg's page-session describeNode(B) equals the pierced snapshot's node T at B (or errors 'No node found for given backend id' when none), every P/Z leg's page-session setFileInputFiles(B) fills exactly the parent input T (no error) when T is a parent file input, else errors 'Node is not a file input element' (T another node) or 'No node found for given backend id' (no T) with all parent inputs and the child #s empty, Z legs have no T and max id < B, S legs resolve B to the child INPUT#s, the chooser-session answer fills the child #s, and at least one P leg misdelivers and at least one P leg collides with a non-file-input parent node.",
+      "limits": "plans/round-95.md \u00a7Declared limits 1-6",
+      "countingCommand": "node scripts/check-backendnode-misdelivery-round95.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 24947b00d8a158ad3fea8f5fb035757b6b98aebf48e85d18d506433619e2ee82 --live --scratch <ABS> --ports <http,child,cdp> --json",
+      "before": "counting command absent at base 7b3912bb (rc 128); r94 receipt under the frozen counter -> rc 1",
+      "after": "--live exit 0, verdict clean, 0 findings over 18 legs",
+      "killRule": "fails if the scored --live run exits non-zero, a frozen control misses its expected verdict, or a wave artifact shows a leg-level statement false on a --live run of the pinned driver on this host (not a named setup/port/resource failure)"
+    }
+  },
+  "frozenAmendments": []
+}
