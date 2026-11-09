@@ -4612,3 +4612,41 @@ same class as r96 M20/M51/M52/M54/M65/M67); R97Exec3's leads as counted legs (Pl
 payload objects untrusted, `isLocal` + absent path, the phantom entry's read rejection); transitive-package
 identity (R97Sentinel: a comment-only edit in `ws` scores clean, a behaviour patch is caught by the legs);
 r95 D1-D3 and R95Mut survivors (carried). Retired: none.
+
+## Round 98 (2026-11-09, Linux host) — C1 capability `client-oopif-uploadmodes-linux` (new)
+
+Base `020ce05f` (the round-97 verifier spot-check commit). ONE claim. Freeze commit `b92b161d` (plan,
+`claims.json` frozenAt 01:20:48, driver/counter/battery/live-killer bytes, executed pre-freeze controls,
+probe, staged S240-S242 sources, census-start); scored commit `172bc0a1` (`--live` run, nonce
+`tabi-r98-live-044424c8b981`; measured revision `b92b161d`, the master tip when the counter ran). Axes at
+start: all six at 9. C1 works coverage (a lowest tie at 9) and is a capability acquisition: the lane's first
+measurement of client-launched browsers, Playwright payload objects and the uploaded files' bytes on an
+OOPIF input.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `client-oopif-uploadmodes-linux` (sourced: S240, S241, S242) | `node scripts/check-client-oopif-uploadmodes-round98.mjs --lane <ABS lane> --expect-driver-sha256 f8e95a982ac06dc42d6d6f0754123277183d85bc7672d341fed1d2191e092aa2 --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CLIENT-OOPIF-UPLOADMODES-R98`, exit 0 iff 0 findings) | before (base `020ce05f`): the command does not exist (`git cat-file -e` rc 128); the r97 receipt under the frozen counter → rc 1 (schema, payload, leg-set, …). Controls at freeze: positive rc 0 at 253 checks, battery 87/87, live killers 3/3, wrong-library and tampered-tree `--live` rc 1 `libs`, eight setup refusals rc 2, driver-pin rc 1. After: `--live` rc 0, clean, 256 checks, 0 findings (`.ufo/waves/round-98/scored/c1-live.json`) | verified (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `client-oopif-uploadmodes-linux` | On Chromium 155.0.8059.84 with the pinned `--deps` installs, show for a file input inside a cross-site iframe that Playwright 1.65.0's event trust follows the input kind — a path is trusted on a launched browser and with `connectOverCDP` `isLocal`, a payload object is untrusted on launched, default and `isLocal` browsers — that Puppeteer 25.16.0 `launch` uploads with trusted events, that the files land with name/size/type and readable bytes, that Playwright `isLocal` with an absent path throws ENOENT `stat`, and that Puppeteer's absent-path phantom rejects `Blob.text()` with `NotFoundError` | `corpus/evidence/round98/client-oopif-uploadmodes/receipt.json`; `.ufo/waves/round-98/scored/c1-live.json`; `corpus/knowledge/client-oopif-uploadmodes-round-98.md` | 98 |
+
+Knowledge 110 → 111. Registry 239 → 243 (S240 Playwright `dom.ts`, S241 Blink `file_error.cc`, S242 Puppeteer
+`ChromeLauncher.ts`, S243 Playwright `browser.ts` — S243 post-wave, note mechanism only). `SKILL.md`
+`## Round 98 gate registry`. Limits: `plans/round-98.md` §Declared limits 1-7. Calibration record: r97
+spot-check D1 answered by an appended README correction; D2's classes carried into this round's battery
+(M40/M42/M66) and a live-killer harness (M75-M77 class, 3/3); appended corrections to the r97 note (isLocal
+trust rule scoped to paths) and the r77 note (`pick-missing` row omits the trusted `input`), both from
+R98Connector.
+
+Planned (r99): the counter's exit-3 → `setup` mapping masks law findings when one launch fails mid-run
+(R98Reviewer); battery cases for the R98Mut survivors (parentUrl, port bounds 1023/65536/fractional,
+empty-legs `fresh-browser`, the `verdict` string); R98Exec3's leads as counted legs (Puppeteer/Playwright
+launch with an absent path, untyped non-text payloads → `application/octet-stream`, two payloads on a
+non-`multiple` input → Playwright error, FileReader/`arrayBuffer()` on the phantom, Puppeteer `headless:
+'shell'`); transitive-package identity (r97 D3); r95 D1-D3 and R95Mut survivors (carried). Retired: none.

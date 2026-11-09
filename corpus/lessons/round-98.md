@@ -77,3 +77,38 @@ this lane.
    is quoted here from the L1's terminal). Captured-by: the validator (it refused before any `.ready`). Fix:
    the hypothesis probe rides a `revenger` seat. Not counted as a shown fix: the validator already was the
    check.
+3. **Class: an environment redirect applied after the library that reads it was loaded.** Evidence: the
+   driver sets `process.env.TMPDIR=<scratch>/t` at line 164, after `require('playwright-core')` at line 140;
+   Playwright fixes its artifacts dir to `os.tmpdir()` at module load, so each `connectOverCDP` leg created a
+   transient `/tmp/playwright-artifacts-*` dir (12 per clean run, removed by Playwright on exit; one leaks on
+   SIGKILL) — `.ufo/waves/round-98/w1/R98Sentinel.md` (b). The profiles do live under the scratch dir (24/24,
+   R98Sentinel), so declared limit 7 holds as worded. Captured-by: addendum §7 item 4 (no `/tmp` writes
+   regardless of `TMPDIR`) — the rule exists, but no lane check enforced it before the wave; R98Sentinel's
+   50 Hz watcher caught it. Fix (routed to r99, driver bytes frozen this round): set `TMPDIR` before any
+   client import, and add a `/tmp`-watch control to the freeze set. Not counted as shown-to-fail this round.
+
+## Wave w1 (12 seats; every seat filed; artifacts in `.ufo/waves/round-98/w1/`; `w1-results.json`)
+
+Dispatched by the inline handoff (`w1.ready` 01:21:53; dispatcher spawned 01:22:34; WAVE-DONE, all 12
+settled). Roles: executor ×3, critic ×2, mutation-tester ×1, revenger ×1, reviewer ×1, sentinel ×1, scout
+×1, scribe ×1, connector ×1; attack share (reviewer+critic+mutation-tester) 4/12 = 33 %. Dead seats: 0.
+Verdicts: 12 neutral. Independent `--live` runs, all clean: R98Exec1 ×2 (256), R98Exec2 default (256) and
+`--reps 10` (816, 80 legs), R98Reviewer `--reps 1` (96), R98Scribe (256), R98Sentinel (256). Live killers 3/3
+on R98Exec2's own run. R98Mut: 86 mutants, 10 survivors (5 battery gaps with verified killers: parentUrl,
+port bounds 1023/65536/fractional, empty-legs `fresh-browser`; 3 live-only covered by the harness; 1
+equivalent; the `verdict` string). R98Revenger: protocol logs show path arms send `DOM.setFileInputFiles` on
+the iframe's session and payload arms call the injected `setInputFiles` — the input-kind account survived.
+R98Sentinel: a connect run labelled `launch` passes only with `isLocal` (limit 2 confirmed); profiles all
+under the scratch dir; transient `/tmp` writes (mistake 3). R98Connector → appended corrections to the r97
+and r77 notes; R98Critic2 → S243; R98Scribe F2 → r97 note correction item 3.
+R98Reviewer's sweep nit (Playwright launch profiles not matched by the sweep) is refuted by R98Sentinel's
+sampling (every `--user-data-dir` under the scratch dir, matched by the `--user-data-dir=<scratch>/` prefix).
+
+## Leads (not rows this round)
+
+R98Exec3: Puppeteer `launch` + absent path = the PUR phantom; Playwright `launch` + absent path = the same
+ENOENT `stat`; an untyped non-text payload lands as `application/octet-stream` with exact bytes; two payloads
+on a non-`multiple` input → "Non-multiple file input can only accept single file"; the phantom rejects
+`FileReader.readAsArrayBuffer`/`arrayBuffer()` with the same `NotFoundError`; Puppeteer `headless: 'shell'`
+uploads with trusted events. R98Scout (seat-opened, not re-opened by the L1): W3C File API, DOM spec
+`isTrusted`, CDP `DOM.setFileInputFiles`, Playwright/Puppeteer docs. R98Reviewer: exit-3 masking.

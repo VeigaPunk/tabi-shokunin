@@ -1,0 +1,1009 @@
+{
+  "orig_sha256": "e55581ea758f74bc1fcb1c32bb39cd581cccf7b18f1dff941e4776c75b3d3c5a",
+  "pin": "f8e95a982ac06dc42d6d6f0754123277183d85bc7672d341fed1d2191e092aa2",
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-98/controls/receipt-positive.json",
+  "nonce": "tabi-r98-ctl-positive",
+  "total": 86,
+  "killed": 76,
+  "survived": 10,
+  "setup": 0,
+  "results": [
+    {
+      "mutant": "swap-T-trusted",
+      "verdict": "killed",
+      "edit": "- const T = (t) => [t, true];\n+ const T = (t) => [t, false];",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "swap-U-untrusted",
+      "verdict": "killed",
+      "edit": "- const U = (t) => [t, false];\n+ const U = (t) => [t, true];",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "swap-TU-both-1",
+      "verdict": "killed",
+      "edit": "- const T = (t) => [t, true];\nconst U = (t) => [t, false];\n+ const T = (t) => [t, false];\nconst U = (t) => [t, true];",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUA-events-untrusted",
+      "verdict": "killed",
+      "edit": "- PUA: { lib: 'puppeteer', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [T('input'), T('change')], read: ['ok', ANSWER.text] }\n+ PUA: { lib: 'puppeteer', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [U('input'), U('change')], read: ['ok', ANSWER.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLA-events-untrusted",
+      "verdict": "killed",
+      "edit": "- PLA: { lib: 'playwright', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [T('input'), T('change')], read: ['ok', ANSWER.text] }\n+ PLA: { lib: 'playwright', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [U('input'), U('change')], read: ['ok', ANSWER.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLAB-events-trusted",
+      "verdict": "killed",
+      "edit": "- PLAB: { lib: 'playwright', mode: 'launch', isLocal: null, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [U('input'), U('change')], read: ['ok', PAYLOAD.text] }\n+ PLAB: { lib: 'playwright', mode: 'launch', isLocal: null, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [T('input'), T('change')], read: ['ok', PAYLOAD.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLB-events-trusted",
+      "verdict": "killed",
+      "edit": "- PLB: { lib: 'playwright', mode: 'connect', isLocal: false, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [U('input'), U('change')], read: ['ok', PAYLOAD.text] }\n+ PLB: { lib: 'playwright', mode: 'connect', isLocal: false, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [T('input'), T('change')], read: ['ok', PAYLOAD.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLLB-events-trusted",
+      "verdict": "killed",
+      "edit": "- PLLB: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [U('input'), U('change')], read: ['ok', PAYLOAD.text] }\n+ PLLB: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'payload', outcome: 'resolved', files: F_PAYLOAD, events: [T('input'), T('change')], read: ['ok', PAYLOAD.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLL-events-untrusted",
+      "verdict": "killed",
+      "edit": "- PLL: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [T('input'), T('change')], read: ['ok', ANSWER.text] }\n+ PLL: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [U('input'), U('change')], read: ['ok', ANSWER.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUR-events-untrusted",
+      "verdict": "killed",
+      "edit": "- PUR: { lib: 'puppeteer', mode: 'connect', isLocal: null, input: 'missing', outcome: 'resolved', files: [[MISSING, 0, 'text/plain']], events: [T('input'), T('change')], read: NOT_FOUND }\n+ PUR: { lib: 'puppeteer', mode: 'connect', isLocal: null, input: 'missing', outcome: 'resolved', files: [[MISSING, 0, 'text/plain']], events: [U('input'), U('change')], read: NOT_FOUND }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUA-events-input-only",
+      "verdict": "killed",
+      "edit": "- PUA: { lib: 'puppeteer', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [T('input'), T('change')], read: ['ok', ANSWER.text] }\n+ PUA: { lib: 'puppeteer', mode: 'launch', isLocal: null, input: 'path', outcome: 'resolved', files: F_ANSWER, events: [T('input')], read: ['ok', ANSWER.text] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLLM-events-input",
+      "verdict": "killed",
+      "edit": "- PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: [], events: [], read: null }\n+ PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: [], events: [T('input'), T('change')], read: null }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUR-events-empty",
+      "verdict": "killed",
+      "edit": "- PUR: { lib: 'puppeteer', mode: 'connect', isLocal: null, input: 'missing', outcome: 'resolved', files: [[MISSING, 0, 'text/plain']], events: [T('input'), T('change')], read: NOT_FOUND }\n+ PUR: { lib: 'puppeteer', mode: 'connect', isLocal: null, input: 'missing', outcome: 'resolved', files: [[MISSING, 0, 'text/plain']], events: [], read: NOT_FOUND }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ANSWER-size-23",
+      "verdict": "killed",
+      "edit": "- const ANSWER = { name: 'tabi-r98-answer.txt', size: 22,\n+ const ANSWER = { name: 'tabi-r98-answer.txt', size: 23,",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive",
+        "answer-size"
+      ]
+    },
+    {
+      "mutant": "PAYLOAD-size-30",
+      "verdict": "killed",
+      "edit": "- const PAYLOAD = { name: 'tabi-r98-payload.txt', size: 29,\n+ const PAYLOAD = { name: 'tabi-r98-payload.txt', size: 30,",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ANSWER-type-octet",
+      "verdict": "killed",
+      "edit": "- const F_ANSWER = [[ANSWER.name, ANSWER.size, 'text/plain']];\n+ const F_ANSWER = [[ANSWER.name, ANSWER.size, 'application/octet-stream']];",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PAYLOAD-type-octet",
+      "verdict": "killed",
+      "edit": "- const F_PAYLOAD = [[PAYLOAD.name, PAYLOAD.size, PAYLOAD.mimeType]];\n+ const F_PAYLOAD = [[PAYLOAD.name, PAYLOAD.size, 'application/octet-stream']];",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ANSWER-text-perturb",
+      "verdict": "killed",
+      "edit": "- text: 'tabi round 98 answer.\\n' };\n+ text: 'tabi round 98 answerX\\n' };",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PAYLOAD-text-perturb",
+      "verdict": "killed",
+      "edit": "- text: 'tabi round 98 payload bytes.\\n' };\n+ text: 'tabi round 98 payload bytesX\\n' };",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ANSWER-name-perturb",
+      "verdict": "killed",
+      "edit": "- const ANSWER = { name: 'tabi-r98-answer.txt',\n+ const ANSWER = { name: 'tabi-r98-answer2.txt',",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PAYLOAD-name-perturb",
+      "verdict": "killed",
+      "edit": "- const PAYLOAD = { name: 'tabi-r98-payload.txt',\n+ const PAYLOAD = { name: 'tabi-r98-payload2.txt',",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUR-size-1",
+      "verdict": "killed",
+      "edit": "- files: [[MISSING, 0, 'text/plain']]\n+ files: [[MISSING, 1, 'text/plain']]",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PUR-name-perturb",
+      "verdict": "killed",
+      "edit": "- const MISSING = 'tabi-r98-missing.txt';\n+ const MISSING = 'tabi-r98-missingX.txt';",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLLM-files-payload",
+      "verdict": "killed",
+      "edit": "- PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: [], events: [], read: null }\n+ PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: F_PAYLOAD, events: [], read: null }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "PLLM-read-ok-empty",
+      "verdict": "killed",
+      "edit": "- PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: [], events: [], read: null }\n+ PLLM: { lib: 'playwright', mode: 'connect', isLocal: true, input: 'missing', outcome: 'enoent', files: [], events: [], read: ['ok', ''] }",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "NOTFOUND-msg-drop",
+      "verdict": "killed",
+      "edit": "- 'A requested file or directory could not be found at the time an operation was processed.'\n+ 'not found'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "NOTFOUND-name-swapped",
+      "verdict": "killed",
+      "edit": "- ['err', 'NotFoundError',\n+ ['err', 'NotReadableError',",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ENOENT-prefix-drop",
+      "verdict": "killed",
+      "edit": "- l.errMessage === \"ENOENT: no such file or directory, stat '\" + missingPath + \"'\"\n+ l.errMessage === \"no such file or directory, stat '\" + missingPath + \"'\"",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "ENOENT-errname-drop",
+      "verdict": "killed",
+      "edit": "- l.outcome === 'error' && l.errName === 'Error'\n+ l.outcome === 'error' && true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pllm-other-errname"
+      ]
+    },
+    {
+      "mutant": "ENOENT-no-missingpath-guard",
+      "verdict": "survived",
+      "edit": "- !!missingPath && l.errMessage ===\n+ l.errMessage ===",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "ENOENT-drop-message",
+      "verdict": "killed",
+      "edit": "- && l.errMessage === \"ENOENT: no such file or directory, stat '\" + missingPath + \"'\"\n+ ",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pllm-other-message",
+        "pllm-other-path"
+      ]
+    },
+    {
+      "mutant": "drop-child-events",
+      "verdict": "killed",
+      "edit": "- check('child-events', eq(l.childEvents, a.events)\n+ check('child-events', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "plab-trusted-claimed",
+        "plb-trusted-claimed",
+        "pllb-trusted-claimed",
+        "pla-untrusted",
+        "pua-change-untrusted",
+        "pll-untrusted",
+        "pua-input-dropped",
+        "pla-events-doubled",
+        "plb-events-reordered",
+        "pllb-click-added",
+        "pur-events-null",
+        "pur-untrusted",
+        "pllm-events",
+        "producer-pass-ignored"
+      ]
+    },
+    {
+      "mutant": "drop-child-files",
+      "verdict": "killed",
+      "edit": "- check('child-files', eq(l.childFiles, a.files)\n+ check('child-files', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pua-child-empty",
+        "plb-child-answer-instead",
+        "pla-child-wrong-size",
+        "plab-wrong-type",
+        "pll-type-dropped",
+        "pllb-two-files",
+        "pur-nonzero-size",
+        "pur-empty",
+        "pllm-phantom-filled"
+      ]
+    },
+    {
+      "mutant": "drop-child-read",
+      "verdict": "killed",
+      "edit": "- check('child-read', eq(l.childRead, a.read)\n+ check('child-read', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pla-read-changed",
+        "plb-read-answer",
+        "pll-read-error",
+        "pua-read-null",
+        "pur-readable",
+        "pur-read-other-error",
+        "pur-read-other-message",
+        "pllm-read"
+      ]
+    },
+    {
+      "mutant": "drop-parent-files",
+      "verdict": "killed",
+      "edit": "- check('parent-files', eq(l.parentFiles, [])\n+ check('parent-files', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pua-parent-filled",
+        "plab-parent-filled"
+      ]
+    },
+    {
+      "mutant": "drop-frames",
+      "verdict": "killed",
+      "edit": "- check('frames', eq(l.frames, [parentUrl, childUrl])\n+ check('frames', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "frames-extra",
+        "frames-child-swapped"
+      ]
+    },
+    {
+      "mutant": "drop-outcome",
+      "verdict": "killed",
+      "edit": "- check('outcome', l.outcome === 'resolved' && l.errName === null && l.errMessage === null\n+ check('outcome', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pur-rejected",
+        "resolved-with-stale-error"
+      ]
+    },
+    {
+      "mutant": "drop-outcome-enoent-branch",
+      "verdict": "killed",
+      "edit": "- check('outcome', l.outcome === 'error' && l.errName === 'Error'\n+ check('outcome', l.outcome === 'error'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pllm-other-errname"
+      ]
+    },
+    {
+      "mutant": "drop-leg-arm",
+      "verdict": "killed",
+      "edit": "- check('leg-arm', l.lib === a.lib && l.mode === a.mode && l.isLocal === a.isLocal && l.input === a.input\n+ check('leg-arm', true && false && false && false && false && false && false && false && false && false || (l.lib === a.lib && l.mode === a.mode && l.isLocal === a.isLocal && l.input === a.input",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive",
+        "do-nothing-r97-receipt",
+        "plab-trusted-claimed",
+        "plb-trusted-claimed",
+        "pllb-trusted-claimed",
+        "pla-untrusted",
+        "pua-change-untrusted",
+        "pll-untrusted",
+        "pua-input-dropped",
+        "pla-events-doubled",
+        "plb-events-reordered",
+        "pllb-click-added",
+        "pur-events-null",
+        "pur-untrusted",
+        "pua-child-empty",
+        "plb-child-answer-instead",
+        "pla-child-wrong-size",
+        "plab-wrong-type",
+        "pll-type-dropped",
+        "pllb-two-files",
+        "pua-parent-filled",
+        "plab-parent-filled",
+        "pla-read-changed",
+        "plb-read-answer",
+        "pll-read-error",
+        "pua-read-null",
+        "pur-rejected",
+        "pur-nonzero-size",
+        "pur-empty",
+        "pur-readable",
+        "pur-read-other-error",
+        "pur-read-other-message",
+        "pllm-resolved",
+        "pllm-phantom-filled",
+        "pllm-other-message",
+        "pllm-other-path",
+        "pllm-other-errname",
+        "pllm-events",
+        "pllm-read",
+        "missing-exists",
+        "missing-exists-null",
+        "missing-other-name",
+        "missing-relative",
+        "pua-mode-connect",
+        "plb-mode-launch",
+        "pllb-not-local",
+        "plb-local",
+        "pla-islocal-set",
+        "plab-input-path",
+        "pll-input-payload",
+        "pur-lib-swapped",
+        "pua-child-same-site",
+        "pua-no-iframe-target",
+        "pla-two-iframe-targets",
+        "plab-iframe-target-other-url",
+        "pllb-iframe-targets-null",
+        "frames-extra",
+        "frames-child-swapped",
+        "lib-pp-version",
+        "lib-pw-integrity",
+        "lib-pp-filesha",
+        "lib-pp-treesha",
+        "lib-pw-treefiles",
+        "lib-missing",
+        "browser-version-leg",
+        "client-version-leg",
+        "chromium-string",
+        "nonce-other",
+        "driver-pin-other",
+        "answer-size",
+        "answer-text",
+        "payload-mime",
+        "payload-missing",
+        "reps-other",
+        "leg-duplicate-contradictory",
+        "leg-fabricated-label",
+        "leg-dropped",
+        "leg-reordered",
+        "leg-rep-mismatch",
+        "browser-reused",
+        "browser-id-not-uuid",
+        "port-below-1024",
+        "port-duplicate",
+        "failures-listed-legs-clean",
+        "leg-error-failures-empty",
+        "producer-pass-ignored",
+        "resolved-with-stale-error"
+      ]
+    },
+    {
+      "mutant": "drop-browser",
+      "verdict": "killed",
+      "edit": "- check('browser', l.browserVersion === BROWSER\n+ check('browser', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "browser-version-leg"
+      ]
+    },
+    {
+      "mutant": "drop-iframe-targets",
+      "verdict": "killed",
+      "edit": "- check('iframe-targets', !!its && its.length === 1\n+ check('iframe-targets', !!its && true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pla-two-iframe-targets"
+      ]
+    },
+    {
+      "mutant": "drop-leg-label",
+      "verdict": "killed",
+      "edit": "- check('leg-label', !!m && ARM[m[1]] && l.arm === m[1] && l.rep === Number(m[2])\n+ check('leg-label', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "leg-fabricated-label",
+        "leg-rep-mismatch"
+      ]
+    },
+    {
+      "mutant": "ignore-lib-mode",
+      "verdict": "killed",
+      "edit": "- l.lib === a.lib && l.mode === a.mode\n+ true && true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pua-mode-connect",
+        "plb-mode-launch",
+        "pur-lib-swapped"
+      ]
+    },
+    {
+      "mutant": "ignore-isLocal",
+      "verdict": "killed",
+      "edit": "- l.isLocal === a.isLocal\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pllb-not-local",
+        "plb-local",
+        "pla-islocal-set"
+      ]
+    },
+    {
+      "mutant": "ignore-input",
+      "verdict": "killed",
+      "edit": "- l.input === a.input\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "plab-input-path",
+        "pll-input-payload"
+      ]
+    },
+    {
+      "mutant": "ignore-childUrl",
+      "verdict": "killed",
+      "edit": "- l.childUrl === childUrl\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pua-child-same-site"
+      ]
+    },
+    {
+      "mutant": "ignore-parentUrl",
+      "verdict": "survived",
+      "edit": "- l.parentUrl === parentUrl\n+ true",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "drop-schema",
+      "verdict": "killed",
+      "edit": "- check('schema', receipt.schema === SCHEMA\n+ check('schema', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "do-nothing-r97-receipt"
+      ]
+    },
+    {
+      "mutant": "drop-nonce",
+      "verdict": "killed",
+      "edit": "- check('nonce', receipt.nonce === expectNonce\n+ check('nonce', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "nonce-other"
+      ]
+    },
+    {
+      "mutant": "drop-driver-pin",
+      "verdict": "killed",
+      "edit": "- check('driver-pin', receipt.driverSha256 === pin && driverSha === pin\n+ check('driver-pin', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "driver-pin-other"
+      ]
+    },
+    {
+      "mutant": "drop-chromium",
+      "verdict": "killed",
+      "edit": "- check('chromium', typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG)\n+ check('chromium', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "chromium-string"
+      ]
+    },
+    {
+      "mutant": "drop-reps",
+      "verdict": "killed",
+      "edit": "- check('reps', receipt.reps === reps\n+ check('reps', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "reps-other"
+      ]
+    },
+    {
+      "mutant": "drop-libs",
+      "verdict": "killed",
+      "edit": "- check('libs', eq(receipt.libs, LIBS)\n+ check('libs', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "lib-pp-version",
+        "lib-pw-integrity",
+        "lib-pp-filesha",
+        "lib-pp-treesha",
+        "lib-pw-treefiles",
+        "lib-missing"
+      ]
+    },
+    {
+      "mutant": "drop-answer",
+      "verdict": "killed",
+      "edit": "- check('answer', eq(receipt.answer, ANSWER)\n+ check('answer', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "answer-size",
+        "answer-text"
+      ]
+    },
+    {
+      "mutant": "drop-payload",
+      "verdict": "killed",
+      "edit": "- check('payload', eq(receipt.payload, PAYLOAD)\n+ check('payload', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "payload-mime",
+        "payload-missing"
+      ]
+    },
+    {
+      "mutant": "drop-missing",
+      "verdict": "killed",
+      "edit": "- check('missing', !!missingPath && path.isAbsolute(missingPath) && path.basename(missingPath) === MISSING && receipt.missingExists === false\n+ check('missing', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "missing-exists",
+        "missing-exists-null",
+        "missing-other-name",
+        "missing-relative"
+      ]
+    },
+    {
+      "mutant": "drop-missing-exists-only",
+      "verdict": "killed",
+      "edit": "- && receipt.missingExists === false\n+ ",
+      "battery_rc": 1,
+      "failed_cases": [
+        "missing-exists",
+        "missing-exists-null"
+      ]
+    },
+    {
+      "mutant": "drop-missing-absname",
+      "verdict": "killed",
+      "edit": "- path.isAbsolute(missingPath) && path.basename(missingPath) === MISSING\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "missing-other-name",
+        "missing-relative"
+      ]
+    },
+    {
+      "mutant": "drop-ports",
+      "verdict": "killed",
+      "edit": "- check('ports', [ports.http, ports.child, ports.cdp].every\n+ check('ports', true || [ports.http, ports.child, ports.cdp].every",
+      "battery_rc": 1,
+      "failed_cases": [
+        "port-below-1024",
+        "port-duplicate"
+      ]
+    },
+    {
+      "mutant": "drop-leg-set",
+      "verdict": "killed",
+      "edit": "- check('leg-set', eq(legs.map\n+ check('leg-set', true || eq(legs.map",
+      "battery_rc": 1,
+      "failed_cases": [
+        "leg-duplicate-contradictory",
+        "leg-dropped",
+        "leg-reordered"
+      ]
+    },
+    {
+      "mutant": "drop-failures",
+      "verdict": "killed",
+      "edit": "- check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0 && errLegs.length === 0\n+ check('failures', true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "failures-listed-legs-clean",
+        "leg-error-failures-empty"
+      ]
+    },
+    {
+      "mutant": "drop-failures-legerr-leg",
+      "verdict": "killed",
+      "edit": "- check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0 && errLegs.length === 0\n+ check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0",
+      "battery_rc": 1,
+      "failed_cases": [
+        "leg-error-failures-empty"
+      ]
+    },
+    {
+      "mutant": "drop-failures-list",
+      "verdict": "killed",
+      "edit": "- check('failures', Array.isArray(receipt.failures) && receipt.failures.length === 0 && errLegs.length === 0\n+ check('failures', true && errLegs.length === 0 || (Array.isArray(receipt.failures) && receipt.failures.length === 0 && errLegs.length === 0)",
+      "battery_rc": 1,
+      "failed_cases": [
+        "failures-listed-legs-clean"
+      ]
+    },
+    {
+      "mutant": "drop-fresh-browser",
+      "verdict": "killed",
+      "edit": "- check('fresh-browser', ids.length > 0\n+ check('fresh-browser', true || ids.length > 0",
+      "battery_rc": 1,
+      "failed_cases": [
+        "browser-reused",
+        "browser-id-not-uuid"
+      ]
+    },
+    {
+      "mutant": "ports-lb-1023",
+      "verdict": "survived",
+      "edit": "- p >= 1024 && p <= 65535\n+ p >= 1023 && p <= 65535",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "ports-ub-65536",
+      "verdict": "survived",
+      "edit": "- p >= 1024 && p <= 65535\n+ p >= 1024 && p <= 65536",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "ports-distinct-drop",
+      "verdict": "killed",
+      "edit": "- && new Set([ports.http, ports.child, ports.cdp]).size === 3\n+ ",
+      "battery_rc": 1,
+      "failed_cases": [
+        "port-duplicate"
+      ]
+    },
+    {
+      "mutant": "ports-int-drop",
+      "verdict": "survived",
+      "edit": "- Number.isInteger(p) &&\n+ true &&",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "pp-version-drop",
+      "verdict": "killed",
+      "edit": "- version: '25.16.0'\n+ version: '25.15.0'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive",
+        "lib-pp-version"
+      ]
+    },
+    {
+      "mutant": "pw-version-drop",
+      "verdict": "killed",
+      "edit": "- version: '1.65.0'\n+ version: '1.64.0'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "pp-treefiles-928",
+      "verdict": "killed",
+      "edit": "- treeFiles: 927\n+ treeFiles: 928",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "pw-treefiles-117",
+      "verdict": "killed",
+      "edit": "- treeFiles: 116\n+ treeFiles: 117",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive",
+        "lib-pw-treefiles"
+      ]
+    },
+    {
+      "mutant": "resolved-errcheck-invert",
+      "verdict": "killed",
+      "edit": "- l.outcome === 'resolved' && l.errName === null && l.errMessage === null\n+ l.outcome === 'resolved'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "resolved-with-stale-error"
+      ]
+    },
+    {
+      "mutant": "enoent-outcome-invert",
+      "verdict": "killed",
+      "edit": "- l.outcome === 'error' && l.errName === 'Error'\n+ l.outcome === 'resolved' && l.errName === 'Error'",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "iframe-len-2",
+      "verdict": "killed",
+      "edit": "- its.length === 1\n+ its.length === 2",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "iframe-url-drop",
+      "verdict": "killed",
+      "edit": "- its[0].url === childUrl\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "plab-iframe-target-other-url"
+      ]
+    },
+    {
+      "mutant": "iframe-null-ok",
+      "verdict": "killed",
+      "edit": "- !!its && its.length === 1\n+ true || (its.length === 1)",
+      "battery_rc": 1,
+      "failed_cases": [
+        "pua-no-iframe-target",
+        "pla-two-iframe-targets",
+        "plab-iframe-target-other-url",
+        "pllb-iframe-targets-null"
+      ]
+    },
+    {
+      "mutant": "clientbrowser-lib-swap",
+      "verdict": "killed",
+      "edit": "- a.lib === 'puppeteer' ? BROWSER : CHROMIUM_TAG\n+ a.lib === 'puppeteer' ? CHROMIUM_TAG : BROWSER",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive"
+      ]
+    },
+    {
+      "mutant": "fresh-browser-distinct-drop",
+      "verdict": "killed",
+      "edit": "- && new Set(ids).size === ids.length\n+ ",
+      "battery_rc": 1,
+      "failed_cases": [
+        "browser-reused"
+      ]
+    },
+    {
+      "mutant": "fresh-browser-uuid-drop",
+      "verdict": "killed",
+      "edit": "- /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(b)\n+ true",
+      "battery_rc": 1,
+      "failed_cases": [
+        "browser-id-not-uuid"
+      ]
+    },
+    {
+      "mutant": "fresh-browser-length-drop",
+      "verdict": "survived",
+      "edit": "- ids.length > 0\n+ true",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "live-driver-exit-drop",
+      "verdict": "survived",
+      "edit": "- check('driver-exit', driverRun.status === 0\n+ check('driver-exit', true",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "live-ports-bound-drop",
+      "verdict": "survived",
+      "edit": "- check('ports-bound', isObj(receipt.ports)\n+ check('ports-bound', true",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "live-missing-bound-drop",
+      "verdict": "survived",
+      "edit": "- check('missing-bound', receipt.missingPath === liveMissing\n+ check('missing-bound', true",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "verdict-invert",
+      "verdict": "survived",
+      "edit": "- verdict: findings.length ? 'findings' : 'clean'\n+ verdict: findings.length ? 'clean' : 'findings'",
+      "battery_rc": 0,
+      "cases": 87,
+      "ok": 87
+    },
+    {
+      "mutant": "exit-invert",
+      "verdict": "killed",
+      "edit": "- process.exit(findings.length ? 1 : 0);\n+ process.exit(findings.length ? 0 : 1);",
+      "battery_rc": 1,
+      "failed_cases": [
+        "positive",
+        "do-nothing-r97-receipt",
+        "plab-trusted-claimed",
+        "plb-trusted-claimed",
+        "pllb-trusted-claimed",
+        "pla-untrusted",
+        "pua-change-untrusted",
+        "pll-untrusted",
+        "pua-input-dropped",
+        "pla-events-doubled",
+        "plb-events-reordered",
+        "pllb-click-added",
+        "pur-events-null",
+        "pur-untrusted",
+        "pua-child-empty",
+        "plb-child-answer-instead",
+        "pla-child-wrong-size",
+        "plab-wrong-type",
+        "pll-type-dropped",
+        "pllb-two-files",
+        "pua-parent-filled",
+        "plab-parent-filled",
+        "pla-read-changed",
+        "plb-read-answer",
+        "pll-read-error",
+        "pua-read-null",
+        "pur-rejected",
+        "pur-nonzero-size",
+        "pur-empty",
+        "pur-readable",
+        "pur-read-other-error",
+        "pur-read-other-message",
+        "pllm-resolved",
+        "pllm-phantom-filled",
+        "pllm-other-message",
+        "pllm-other-path",
+        "pllm-other-errname",
+        "pllm-events",
+        "pllm-read",
+        "missing-exists",
+        "missing-exists-null",
+        "missing-other-name",
+        "missing-relative",
+        "pua-mode-connect",
+        "plb-mode-launch",
+        "pllb-not-local",
+        "plb-local",
+        "pla-islocal-set",
+        "plab-input-path",
+        "pll-input-payload",
+        "pur-lib-swapped",
+        "pua-child-same-site",
+        "pua-no-iframe-target",
+        "pla-two-iframe-targets",
+        "plab-iframe-target-other-url",
+        "pllb-iframe-targets-null",
+        "frames-extra",
+        "frames-child-swapped",
+        "lib-pp-version",
+        "lib-pw-integrity",
+        "lib-pp-filesha",
+        "lib-pp-treesha",
+        "lib-pw-treefiles",
+        "lib-missing",
+        "browser-version-leg",
+        "client-version-leg",
+        "chromium-string",
+        "nonce-other",
+        "driver-pin-other",
+        "answer-size",
+        "answer-text",
+        "payload-mime",
+        "payload-missing",
+        "reps-other",
+        "leg-duplicate-contradictory",
+        "leg-fabricated-label",
+        "leg-dropped",
+        "leg-reordered",
+        "leg-rep-mismatch",
+        "browser-reused",
+        "browser-id-not-uuid",
+        "port-below-1024",
+        "port-duplicate",
+        "failures-listed-legs-clean",
+        "leg-error-failures-empty",
+        "producer-pass-ignored",
+        "resolved-with-stale-error"
+      ]
+    }
+  ]
+}

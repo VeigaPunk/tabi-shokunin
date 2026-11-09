@@ -1,5 +1,5 @@
 ---
-source: S240 (Playwright `packages/playwright-core/src/server/dom.ts` at tag v1.65.0 — `_setInputFiles` sends local paths to `this._page.delegate.setInputFilePaths(…)` (lines 768, 779) and everything else to `injected.setInputFiles(node, files)` with `filePayloads` (lines 786-787)); S238 (Playwright `fileUploadUtils.ts` v1.65.0 line 62 — paths become payloads only when the browser is not collocated with the server); S241 (Blink `file_error.cc` at tag 155.0.8059.84 lines 55-57 — `kNotFoundErrorMessage`); S242 (Puppeteer `ChromeLauncher.ts` at tag puppeteer-v25.16.0 — lines 90-93 keep a caller's `--remote-debugging-*` argument, lines 278-280 `--headless=new` for `headless: true`)
+source: S240 (Playwright `packages/playwright-core/src/server/dom.ts` at tag v1.65.0 — `_setInputFiles` sends local paths to `this._page.delegate.setInputFilePaths(…)` (lines 768, 779) and everything else to `injected.setInputFiles(node, files)` with `filePayloads` (lines 786-787)); S238 (Playwright `fileUploadUtils.ts` v1.65.0 line 62 — paths become payloads only when the browser is not collocated with the server); S241 (Blink `file_error.cc` at tag 155.0.8059.84 lines 55-57 — `kNotFoundErrorMessage`); S243 (Playwright `browser.ts` v1.65.0 line 86 — `_isBrowserCollocatedWithServer` defaults to `true`; added after the wave); S242 (Puppeteer `ChromeLauncher.ts` at tag puppeteer-v25.16.0 — lines 90-93 keep a caller's `--remote-debugging-*` argument, lines 278-280 `--headless=new` for `headless: true`)
 verified-at: 2026-11-09 (round 98, Linux host, Chromium 155.0.8059.84, puppeteer-core 25.16.0, playwright-core 1.65.0; scored run `.ufo/waves/round-98/scored/c1-live.json`, nonce `tabi-r98-live-044424c8b981`, verdict `clean`, 256 checks, 0 findings, measured revision `b92b161d`)
 recheck: `node scripts/check-client-oopif-uploadmodes-round98.mjs --lane <ABS lane> --expect-driver-sha256 f8e95a982ac06dc42d6d6f0754123277183d85bc7672d341fed1d2191e092aa2 --receipt corpus/evidence/round98/client-oopif-uploadmodes/receipt.json --expect-nonce tabi-r98-live-044424c8b981 --json` → exit 0 (receipt mode: forgeable by a whole consistent receipt; the claim's command is `--live`, see `plans/round-98.md` §Counting command)
 ---
@@ -51,7 +51,7 @@ recorded a `click` on `#s`. Evidence: `corpus/evidence/round98/client-oopif-uplo
 4. Payload objects land as given: name, the passed `mimeType` as `File.type`, the exact bytes.
 5. An absent path: Playwright with `isLocal: true` throws the same `ENOENT … stat '<path>'` as the default
    mode (r97 PLM) and leaves the input untouched. Puppeteer resolves and leaves a phantom entry (name, size
-   0, `type` `text/plain` from the extension) with trusted events; the page only finds out when it reads
+   0, `type` `text/plain`) with trusted events; the page only finds out when it reads
    it — `Blob.text()` rejects with `NotFoundError` and Blink's message (S241). A test that checks
    `files.length` after `uploadFile` cannot tell a missing file from an empty one; read it, or check the
    path exists before the call.
@@ -65,7 +65,9 @@ recorded a `click` on `#s`. Evidence: `corpus/evidence/round98/client-oopif-uplo
   `new Event('change')` from page script (S239, r97) — untrusted by construction.
 - S238: `prepareFilesForUpload` keeps `localPaths` only while `_isBrowserCollocatedWithServer` is true; a
   `connectOverCDP` without `isLocal` sets it false (chromium.ts v1.65.0 lines 162-163, r97), so paths are
-  read into buffers and become payloads. A launched browser keeps the default (collocated). Payloads passed
+  read into buffers and become payloads. A launched browser keeps the default (collocated): the field is
+  initialised `true` on every server-side `Browser` (S243, browser.ts v1.65.0 line 86; added after the wave,
+  R98Critic2 §3). Payloads passed
   by the caller are never turned back into paths.
 - S242: Puppeteer's launcher adds no debugging port of its own when the caller passes
   `--remote-debugging-port=<cdp>`, and passes `--headless=new` for `headless: true`; the driver relies on
@@ -73,6 +75,11 @@ recorded a `click` on `#s`. Evidence: `corpus/evidence/round98/client-oopif-uplo
   for `headless: true`, chromium.ts lines 377-378; on this build that started a browser reporting
   `Chrome/155.0.8059.84`, the same string as `--headless=new`.)
 - S241: the rejection text is Blink's `kNotFoundErrorMessage`, byte-for-byte the string in the receipt.
+- PLLM's ENOENT is thrown by the Playwright **client** (`fs.promises.stat` in
+  `resolvePathsAndDirectoryForInputFiles`, pinned `lib/coreBundle.js` line 62746) before any request reaches
+  the server, with or without `isLocal` — a stack captured by R98Scribe
+  (`.ufo/waves/round-98/w1/R98Scribe-enoent-origin.txt`); so the collocation branch (S238) is never reached
+  for an absent path. Observation from the wave, not a counter check.
 
 ## Limits (`plans/round-98.md` §Declared limits 1-7)
 
@@ -87,8 +94,10 @@ longer than about 60 bytes makes chromium fail to start (setup).
 
 ## Relation to earlier notes
 
-- Extends `client-oopif-uploadfile-round-97.md`: its practitioner point 2 ("Playwright over a default
-  `connectOverCDP` → untrusted") is narrowed by this round's law to "a payload, including the payload a
-  non-collocated path becomes, → untrusted"; its limits 2, 4 and 5 frontier (launch, payloads, isLocal +
-  absent path, the phantom's read) is now measured.
+- Extends `client-oopif-uploadfile-round-97.md`: its practitioner point 2 ("Puppeteer and Playwright with
+  `isLocal: true` → trusted; Playwright over a default `connectOverCDP` → untrusted") holds for the paths it
+  measured; this round's law scopes **both** halves to the input kind — an `isLocal` payload is untrusted
+  (PLLB), a launched-browser path is trusted (PLA). The r97 note carries an appended round-98 correction
+  saying so. Of r97's frontier this round measures the named items: launch, payload objects, `isLocal` with an
+  absent path, the phantom's read; `lastModified`, multiple files, directories and the 50 MB limit stay open.
 - Consistent with `client-oopif-filechooser-round-96.md` (chooser path) — no statement there is contradicted.

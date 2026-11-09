@@ -102,3 +102,21 @@ trusted `input`/`change`, and the click's activation", `chromium-file-chooser-ru
 94-96): trusted `input`/`change` alone do not show a user choice — Puppeteer `uploadFile` and Playwright
 `isLocal` produce them with no chooser and no click — so the rule's other two conjuncts carry the weight.
 The r77 rule stands as written; it is a chooser-path test, not a test that any upload was a user's.
+
+## Correction — round 98 (append-only; R98Connector O7/O8)
+
+1. Practitioner point 2's trust rule ("Puppeteer and Playwright with `isLocal: true` → trusted; Playwright
+   over a default `connectOverCDP` → untrusted") was measured with **paths** only (this note's limit 5: no
+   payload objects). Round 98 shows Playwright's trust follows the input kind: a payload object
+   (`{name, mimeType, buffer}`) gives untrusted `input`/`change` with `connectOverCDP(url, {isLocal: true})`
+   too (PLLB), and on a Playwright-launched browser (PLAB); a path on a launched browser is trusted (PLA).
+   Read point 2 as "an `isLocal` **path** → trusted". Evidence
+   `corpus/evidence/round98/client-oopif-uploadmodes/receipt.json`; `client-oopif-uploadmodes-round-98.md`.
+2. The phantom entry's read, recorded here as a wave observation outside the claim, is counted in round 98
+   (PUR): `Blob.text()` rejects `NotFoundError` with Blink's message (S241).
+3. (R98Scribe F2) The mechanism sentence that attributes PLM's ENOENT to the server-side size check
+   (`filesExceedUploadLimit`, S238 lines 31-33/65) points at the wrong layer: a captured stack shows the throw
+   is the **client's** `fs.promises.stat` in `resolvePathsAndDirectoryForInputFiles` → `convertInputFiles` →
+   `Frame.setInputFiles` (pinned `lib/coreBundle.js` lines 62746/62765/62611), before any request reaches the
+   server, with and without `isLocal` (`.ufo/waves/round-98/w1/R98Scribe-enoent-origin.txt`,
+   `-origin-default.txt`). The observable law (message, input untouched, no events) stands.

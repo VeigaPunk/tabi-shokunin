@@ -1,0 +1,41 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/client-oopif-uploadmodes-round98.mjs	2026-11-09 01:07:19.320029036 -0300
++++ lane2/scripts/client-oopif-uploadmodes-round98.mjs	2026-11-09 01:41:06.922440611 -0300
+@@ -224,6 +224,7 @@
+ // mode: `launch` = the client starts chromium; `connect` = the runner starts chromium and the client
+ // attaches (Puppeteer connect, Playwright connectOverCDP with or without isLocal).
+ // input: `path` (answer file path), `payload` (Playwright payload object), `missing` (absent path).
++const LAUNDER = process.env.TABI_R98_LAUNDER === '1';
+ const ARM = {
+   PUA: { lib: 'puppeteer', mode: 'launch', isLocal: null, input: 'path' },
+   PLA: { lib: 'playwright', mode: 'launch', isLocal: null, input: 'path' },
+@@ -251,11 +252,11 @@
+   currentChildUrl = childUrl;
+   const prof = path.join(scratch, 'leg-' + legId, 'profile');
+   fs.mkdirSync(prof, { recursive: true });
+-  const leg = { leg: legId, arm, rep, lib: a.lib, mode: a.mode, isLocal: a.isLocal, input: a.input, childUrl, parentUrl, browserVersion: null, browserId: null, clientBrowserVersion: null, iframeTargets: null, frames: null, outcome: null, errName: null, errMessage: null, childFiles: null, childEvents: null, childRead: null, parentFiles: null, error: null };
++  const leg = { leg: legId, arm, rep, ACTUAL_process_model: (a.mode === 'launch' && !LAUNDER) ? 'client_launched' : 'runner_started_client_attached', recorded_mode_field: a.mode, lib: a.lib, mode: a.mode, isLocal: a.isLocal, input: a.input, childUrl, parentUrl, browserVersion: null, browserId: null, clientBrowserVersion: null, iframeTargets: null, frames: null, outcome: null, errName: null, errMessage: null, childFiles: null, childEvents: null, childRead: null, parentFiles: null, error: null };
+   let proc = null, raw = null, client = null;
+   try {
+     let page;
+-    if (a.mode === 'launch') {
++    if (a.mode === 'launch' && !LAUNDER) {
+       const args = ['--remote-debugging-port=' + cdpPort, ...BASE_ARGS];
+       try {
+         if (a.lib === 'puppeteer') client = await puppeteer.launch({ executablePath: CHROMIUM, headless: true, userDataDir: prof, args, handleSIGINT: false, handleSIGTERM: false, handleSIGHUP: false, timeout: 30000 });
+@@ -271,13 +272,14 @@
+     leg.browserId = String(ver.webSocketDebuggerUrl || '').split('/').pop() || null;
+     raw = await rawBrowser(ver.webSocketDebuggerUrl);
+     if (a.lib === 'puppeteer') {
+-      if (a.mode === 'connect') client = await puppeteer.connect({ browserURL: 'http://127.0.0.1:' + cdpPort });
++      if (a.mode === 'connect' || LAUNDER) client = await puppeteer.connect({ browserURL: 'http://127.0.0.1:' + cdpPort });
+       leg.clientBrowserVersion = await client.version();
+       page = await client.newPage();
+     } else {
+       if (a.mode === 'connect') client = a.isLocal ? await pwChromium.connectOverCDP('http://127.0.0.1:' + cdpPort, { isLocal: true }) : await pwChromium.connectOverCDP('http://127.0.0.1:' + cdpPort);
++      else if (LAUNDER) client = await pwChromium.connectOverCDP('http://127.0.0.1:' + cdpPort, { isLocal: true });
+       leg.clientBrowserVersion = client.version();
+-      const ctx = a.mode === 'launch' ? await client.newContext() : client.contexts()[0];
++      const ctx = (a.mode === 'launch' && !LAUNDER) ? await client.newContext() : client.contexts()[0];
+       page = await ctx.newPage();
+     }
+     await page.goto(parentUrl, { waitUntil: 'load' });

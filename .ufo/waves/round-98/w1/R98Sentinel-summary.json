@@ -1,0 +1,84 @@
+{
+  "seat": "R98Sentinel",
+  "round": 98,
+  "claim": "C1",
+  "tooling": {
+    "npm_install": "puppeteer-core@25.16.0 playwright-core@1.65.0",
+    "registry": "npm",
+    "channel": "npm registry (--no-audit --no-fund)",
+    "dir": "/fast/scratch/hyaku/tabi-r98/R98Sentinel/deps",
+    "pacman": "none used (all pacman transactions paused host-wide)"
+  },
+  "b_real_live_run": {
+    "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-client-oopif-uploadmodes-round98.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 f8e95a982ac06dc42d6d6f0754123277183d85bc7672d341fed1d2191e092aa2 --live --deps /fast/scratch/hyaku/tabi-r98/R98Sentinel/deps --scratch /fast/scratch/hyaku/tabi-r98/R98Sentinel/a --ports 33674,33675,33676 --json",
+    "exit_code": 0,
+    "verdict": "clean",
+    "checkCount": 256,
+    "findings": 0,
+    "reps": 3,
+    "legs": 24,
+    "artifacts": [
+      "R98Sentinel-reallive-counter.json",
+      "R98Sentinel-reallive-ps-samples.txt",
+      "R98Sentinel-reallive2-proc-samples.txt"
+    ]
+  },
+  "b_confinement": {
+    "distinct_user_data_dirs": 24,
+    "udd_under_scratch_all": true,
+    "udd_breakdown": {
+      "scratch/driver/leg-*/profile (runner-started legs + Puppeteer launch userDataDir)": 18,
+      "scratch/driver/t/playwright_chromiumdev_profile-* (Playwright launch profile, TMPDIR-derived)": 6
+    },
+    "tmp_write_under_scratch": false,
+    "tmp_write_outside_scratch": true,
+    "tmp_write_detail": "Playwright's artifacts dir is bound to os.tmpdir() at MODULE LOAD time (coreBundle.js:40647/44899/45997 ARTIFACTS_FOLDER/2/3 = join(os.tmpdir(),'playwright-artifacts-')). The driver requires playwright-core at line 140, BEFORE it sets process.env.TMPDIR at line 164, so the connectOverCDP legs create /tmp/playwright-artifacts-XXXXXX outside --scratch. Confirmed by a 50Hz /tmp watcher: 12 distinct /tmp/playwright-artifacts-* dirs appeared during one run (4 connectOverCDP arms x 3 reps); they are removed on clean exit, so a before/after diff shows none.",
+    "chromium_left_after_clean_run": 0,
+    "chromium_left_after_SIGTERM_to_counter": 0,
+    "chromium_left_after_SIGKILL_to_counter": 1,
+    "sigkill_detail": "SIGKILL is not catchable, so the counter's own signal handler (which kills the driver group and sweeps --user-data-dir=<driverScratch>/) never runs; the detached driver group survives and the /tmp artifacts dir survives with it. The driver eventually self-cleans. Counter's declared setup control for SIGTERM passes; SIGKILL is not in the frozen control set.",
+    "sigterm_control_verdict": "rc 2 setup, 'counter received SIGTERM; driver group killed, 0 chromium processes swept'"
+  },
+  "a_mode_laundering": {
+    "design": "Scratch lane = a copy of the frozen driver in which PUA/PLA/PLAB attach to a RUNNER-STARTED browser instead of launching one, keeping the recorded mode field 'launch'. The FROZEN counter is run --live against it with the COPY'S OWN sha as --expect-driver-sha256.",
+    "variants": [
+      {
+        "name": "v0-control",
+        "desc": "copy unmodified in behaviour (LAUNDER flag off)",
+        "rc": 0,
+        "verdict": "clean",
+        "findings": 0,
+        "checkCount": 256
+      },
+      {
+        "name": "v1-pw-remote",
+        "desc": "Playwright arms attach via connectOverCDP(url) with isLocal ABSENT (remote)",
+        "rc": 1,
+        "verdict": "findings",
+        "findings": 3,
+        "finding_ids": [
+          "child-events PLA-1",
+          "child-events PLA-2",
+          "child-events PLA-3"
+        ],
+        "detail": "child #s events [[input,false],[change,false]] expected [[input,true],[change,true]] - the remote (non-collocated) attach converts the local path to a payload, so the events become untrusted. The counter DETECTS the semantic change but only via the outcome check, never via the recorded mode field."
+      },
+      {
+        "name": "v2-pw-islocal",
+        "desc": "Playwright arms attach via connectOverCDP(url,{isLocal:true})",
+        "rc": 0,
+        "verdict": "clean",
+        "findings": 0,
+        "checkCount": 256
+      }
+    ],
+    "proof_run": "lane2: same laundering plus an extra receipt field ACTUAL_process_model recording what really happened. rc 0, verdict clean, 0 findings, 256 checks; the receipt shows all 24 legs actually runner_started_client_attached while 9 of them recorded mode='launch'.",
+    "fabricated_browser_id_run": "lane4: every leg's browserId replaced by randomUUID() while the real per-leg browsers stayed. rc 0, verdict clean, 0 findings - the counter's 'fresh-browser' check reads the recorded id string only.",
+    "pin_binding": "With the FROZEN pin, the laundered copy is rejected before it runs: rc 1, finding id 'driver-pin', 'driver not run'.",
+    "conclusion": "The counter binds the driver BYTES (sha256 pin) and the recorded receipt fields. It does NOT bind the process tree: the recorded mode field, the per-leg browser id, and the 'each leg gets its own browser' property are all driver-pin facts, exactly as declared limit 2 states. No counter check can distinguish 'client launched the browser' from 'runner started it and the client attached'."
+  },
+  "transitive_deps": {
+    "finding": "The counter's 'libs' check hashes only the two TOP-LEVEL package directories (node_modules/puppeteer-core, node_modules/playwright-core) and the lockfile integrity string of those two. Tampering a transitive dependency (node_modules/ws/index.js, node_modules/typed-query-selector/package.json) leaves both tree hashes and both integrity strings byte-identical, so 'libs' stays clean. This is the already-declared r97 A1 item 6 limit (transitive packages are not bound), re-confirmed for r98, not a new gap."
+  },
+  "verdict": "neutral"
+}

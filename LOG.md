@@ -4397,3 +4397,34 @@ registry`, corpus/README `## Round 97 coverage`, appended r96 D1 corrections (r9
 `.ufo/waves/round-97/mined/check-driver-positive.sh`, SCORECARD round-97 section and capability row, wave
 evidence and falsification ledger. **C1 VERIFIED on its frozen predicate as narrowed by amendment A1**
 (pending non-author closure).
+
+## Round 98 — 2026-11-09 (attempt 1, Linux host)
+
+L1 `TabiR98`. Base `020ce05f` (the round-97 verifier spot-check commit; lane clean; no earlier r98 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability `client-oopif-uploadmodes-linux`: on a
+file input inside a cross-site iframe, Playwright 1.65.0's event trust follows the input kind (paths trusted
+on a launched browser and with `isLocal`; payload objects untrusted on launched, default and `isLocal`
+browsers); Puppeteer 25.16.0 `launch` uploads with trusted events; the files land with name, size, type and
+readable bytes; Playwright `isLocal` + absent path → ENOENT `stat`; Puppeteer's phantom rejects `Blob.text()`
+with `NotFoundError`. Sourced by S240 (Playwright `dom.ts`), S241 (Blink `file_error.cc` @155.0.8059.84),
+S242 (Puppeteer `ChromeLauncher.ts`).
+
+Motivating evidence: r97 declared limits 2, 4, 5 and R97Exec3's leads (a)-(e); the L1's pre-freeze probe
+(`.ufo/waves/round-98/probes/probe-a.json`).
+
+Freeze commit `b92b161d` (frozenAt 01:20:48): plan, claims.json, driver `f8e95a982ac0`, counter
+`e55581ea758f`, battery `9475fd902375` (87/87), live-killer harness `940712bd324a` (3/3), executed controls
+(no-work base rc 128, r97 receipt rc 1, wrong-library and tampered-tree `--live` rc 1 `libs`, driver-pin rc 1,
+eight setup refusals rc 2, 0 chromium left), probe, staged sources, census-start. Scored commit `172bc0a1`:
+`--live` rc 0, clean, 256 checks, nonce `tabi-r98-live-044424c8b981`. Records commit `acd1e847`.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 2 critic, 1 mutation-tester, 1 revenger, 1 reviewer,
+1 sentinel, 1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 4/12 = 33 %; 0 dead seats; L1
+holds the planner seat. Verdicts: 12 neutral; no amendment.
+
+Records: `corpus/knowledge/client-oopif-uploadmodes-round-98.md`, evidence receipt, S240-S243 + two
+search-log entries, SKILL `## Round 98 gate registry`, README `## Round 98 coverage` + the r97 D1 correction,
+appended corrections to the r97 note (isLocal trust rule scoped to paths; ENOENT is client-side) and the r77
+note (`pick-missing` trusted `input`), `corpus/lessons/round-98.md` (gate, three mined mistakes, wave,
+leads), SCORECARD round-98 section and capability row, wave evidence and falsification ledger. **C1
+VERIFIED on its frozen predicate** (pending non-author closure).

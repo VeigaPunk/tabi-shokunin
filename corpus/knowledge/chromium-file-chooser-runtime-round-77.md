@@ -117,3 +117,10 @@ claim leg (b) failed as frozen, report *Before → after*).
   without a gesture in a throwaway exploration, not a receipt) are not part of this capability.
 - The counter reads receipts; its limit (printed per prior in its `limit` block) is in
   `.ufo/waves/round-77/claims.json`.
+
+## Correction — round 98 (append-only; R98Connector O9)
+
+The `pick-missing` row says "`change` with `[tabi-missing.txt, 0, text/plain]`". The round's committed receipt
+records a trusted `input` and a trusted `change` for that pick; read the row as "`input`/`change`". Round 98's
+PUR legs (Puppeteer `uploadFile` with an absent path into a cross-site iframe) show the same pair and the same
+`NotFoundError` on read (`client-oopif-uploadmodes-round-98.md`).
