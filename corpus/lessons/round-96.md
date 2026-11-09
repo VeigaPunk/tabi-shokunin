@@ -86,3 +86,11 @@ after `setContent`); devtools-protocol `Page.enable {enableFileChooserOpenedEven
 R96Exec3: a counted `ElementHandle.uploadFile` OOPIF capability and launch-mode legs are the r97
 candidates. R96Mut killers M20/M51/M52/M54/M65/M67 and live killers for `driver-exit`/`ports-bound` →
 r97 battery. R96Sentinel: verify the lockfile integrity against the installed tree (`npm ci` + tree hash).
+
+## Correction (round 97, appended; r96 verifier spot-check D1)
+
+The reject above says "Flip: none needed — S230 is cited by the note". That flip text is too strong: S230's
+scope and anchor (frame identity, lines 636-637) do not ground the listener attribution the r96 note makes.
+The decision (no second row) stands; the flip now reads: "none needed for a row; the listener is grounded
+by `crPage.ts` v1.65.0 line 445 and `lib/coreBundle.js` line 39325 in the appended correction to
+`corpus/knowledge/client-oopif-filechooser-round-96.md` (round 97)".

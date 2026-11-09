@@ -80,3 +80,15 @@ Puppeteer outcome is "times out at 3000 ms" on the measured legs — longer wait
 `uploadFile` are outside the counted claim; only PPW proves a chooser opened in the iframe (interception
 enabled there by a second connection); the mechanism above is the source's account; `--receipt` mode is
 forgeable and the `--live` path trusts the host's same-UID process space.
+
+## Correction (round 97, appended; r96 verifier spot-check D1)
+
+The `source:` line above attributes "one `Page.fileChooserOpened` listener per frame session" to S230. S230's
+scope and located quote are frame identity (`crPage.ts` v1.65.0 lines 636-637, `_handleFrameTree`); they do
+not ground the listener. The listener's ground is the bytes themselves: `crPage.ts` v1.65.0 line 445
+(`eventsHelper.addEventListener(this._client, 'Page.fileChooserOpened', event => this._onFileChooserOpened(event))`
+inside `_addRendererListeners`, which every frame session runs), re-opened in round 97 (HTTP 200, 59,431 B,
+sha256 918f0f9beed3, staged `.ufo/waves/round-97/sources/crPage.ts`), and the pinned install's
+`lib/coreBundle.js` line 39325 (r96 §Post-wave amendment A1 item 3). No row is added for it: the URL is
+S230's, and a second scope on the same URL would be a W04 duplicate. Read "S230" in the `source:` line as
+"crPage.ts v1.65.0 line 445 (this correction)" for the listener, and S230 only for frame identity.

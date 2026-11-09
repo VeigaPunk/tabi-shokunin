@@ -1268,3 +1268,20 @@ frame session (S230). `corpus/knowledge/client-oopif-filechooser-round-96.md`; e
 `corpus/evidence/round96/client-oopif-filechooser/receipt.json`; gate `check-client-oopif-chooser-round96`.
 Frontier: Puppeteer `ElementHandle.uploadFile` on an OOPIF input (needs no chooser), `launch` vs
 `connect`, other client versions. Pending non-author closure.
+
+## Round 97 coverage
+
+Capability `client-oopif-uploadfile-linux` (the lane's first measurement of a client's chooser-free
+direct-set upload; r96 measured the chooser path): on Chromium 155.0.8059.84 `--headless=new`, with
+puppeteer-core 25.16.0 and playwright-core 1.65.0 (pinned on version, lockfile integrity, one
+upload-bearing file and a whole-tree sha256) attached over CDP, a file input inside a cross-site
+(`localhost`) iframe is filled by Puppeteer `ElementHandle.uploadFile` and Playwright `setInputFiles`
+alike, but the input's `input`/`change` events are trusted for Puppeteer and for Playwright with
+`connectOverCDP(url, {isLocal: true})`, and untrusted for Playwright's default `connectOverCDP`;
+Puppeteer's clear (`uploadFile()`) fires untrusted events; an absent path is a resolved 0-byte phantom file
+in Puppeteer and an ENOENT error with the input untouched in Playwright. Mechanism (source account, S237,
+S238): Puppeteer sends `DOM.setFileInputFiles` on the handle's own session; Playwright reads files into
+payloads and injects them by page script when the browser is not "collocated". `corpus/knowledge/
+client-oopif-uploadfile-round-97.md`; evidence `corpus/evidence/round97/client-oopif-uploadfile/receipt.json`;
+gate `check-client-oopif-uploadfile-round97`. Frontier: `launch` modes, payload objects, multiple files,
+what a page reads from the phantom file, transitive-package identity. Pending non-author closure.
