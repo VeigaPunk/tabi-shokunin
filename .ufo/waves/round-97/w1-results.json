@@ -1,0 +1,80 @@
+{
+ "lane": "tabi",
+ "round": 97,
+ "wave": "w1",
+ "seats": 12,
+ "results": [
+  {
+   "name": "R97Exec1",
+   "agent": "executor",
+   "output": "{\n  \"report\": \".ufo/waves/round-97/w1/R97Exec1.md\",\n  \"verdict\": \"VERDICT C1: neutral\",\n  \"filesChanged\": [\n    \".ufo/waves/round-97/w1/R97Exec1.md\",\n    \".ufo/waves/round-97/w1/R97Exec1-run1.json\",\n    \".ufo/waves/round-97/w1/R97Exec1-run1-receipt.json\",\n    \".ufo/waves/round-97/w1/R97Exec1-run2.json\",\n    \".ufo/waves/round-97/w1/R97Exec1-run2-receipt.json\",\n    \".ufo/waves/round-97/w1/R97Exec1-battery.json\"\n  ],\n  \"behavior\": \"C1 reproduced cold twice: both --live runs rc 0, verdict clean, checkCount 232, 24 legs, 0 findings; identical outcomes (trusted PUX/PUS/PLL, untrusted PLX/PLS, cleared PUC, phantom PUM, ENOENT PLM). Battery 70/70 killed, rc 0. Fresh npm install reproduces pinned libs including both tree sha256 values (counter libs check passed).\",\n  \"risks\": \"None observed; no setup/port/resource failures.\",\n  \"blockers\": []\n}",
+   "note": null
+  },
+  {
+   "name": "R97Exec2",
+   "agent": "executor",
+   "output": "{\n  \"seat\": \"R97Exec2\",\n  \"milestone\": \"C1 scale and stability\",\n  \"files_changed\": [\n    \".ufo/waves/round-97/w1/R97Exec2.md\",\n    \".ufo/waves/round-97/w1/R97Exec2-reps10.json\",\n    \".ufo/waves/round-97/w1/R97Exec2-reps10-receipt.json\",\n    \".ufo/waves/round-97/w1/R97Exec2-default.json\",\n    \".ufo/waves/round-97/w1/R97Exec2-default-receipt.json\"\n  ],\n  \"behavior\": \"Ran the pinned counting command twice --live (reps=10, 80 legs, exit 0, 736 checks; default reps=3, 24 legs, exit 0, 232 checks), both verdict clean, 0 findings. Per-arm (files,events) outcomes identical across all 104 legs: PUX/PUS/PLL resolve with [[tabi-r97-answer.txt,22]] and [input trusted, change trusted]; PLX/PLS untrusted pair; PUC clears with [T,T,U,U]; PUM resolves with phantom [[tabi-r97-missing.txt,0]] + trusted pair; PLM errors ENOENT with [] and no events; parent #pp always []; cross-site 1 iframe target, same-site none. Anomaly scans: 0 PLX/PLS legs with trusted events, 0 Puppeteer/PLL set legs with untrusted events, 0 PUM rejections. No falsifying leg; kill rule not triggered.\",\n  \"evidence\": \"R97Exec2-reps10.json / R97Exec2-reps10-receipt.json (80 legs, failures []), R97Exec2-default.json / R97Exec2-default-receipt.json (24 legs), R97Exec2.md (full verbatim commands, part of the claim). Verdict line: VERDICT C1: neutral. First default attempt returned setup/exit 2 (port busy while reps10 ran) \u2014 a collision setup refusal, not a finding; clean rerun after.\",\n  \"risks_blockers\": \"None. Scratch /fast/scratch/hyaku/tabi-r97/R97Exec2 removed; no chromium remains on port 32723; no git/jj mutation; no subagents dispatched.\",\n  \"verdict\": \"neutral\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Exec3",
+   "agent": "executor",
+   "output": "{\n  \"seat\": \"R97Exec3\",\n  \"task\": \"Tabi round 97 w1 limit probes (limits 2, 4, 5), 5 arms x 3 reps = 15 legs, cross-site localhost child, ports 32731/32732/32733\",\n  \"filesChanged\": [\n    \".ufo/waves/round-97/w1/R97Exec3.md\",\n    \".ufo/waves/round-97/w1/R97Exec3-probe.mjs\",\n    \".ufo/waves/round-97/w1/R97Exec3-out.json\"\n  ],\n  \"behavior\": \"All five lead arms completed 3/3 deterministically. (a) Playwright launch+setInputFiles -> trusted events (like isLocal, unlike default CDP). (b) isLocal+missing -> ENOENT exactly as PLM, #s empty, no events. (c) Puppeteer launch+uploadFile -> identical to PUX (trusted). (d) PUM phantom: f.name/size/type readable but f.text() and FileReader.readAsText both reject 'A requested file or directory could not be found at the time an operation was processed.' (e) Payload object over default CDP -> untrusted events like PLX.\",\n  \"evidence\": \"R97Exec3-out.json sha256 8fce3d5951609b14f5836abd23fa69771c51a43d1b11195e099597c36a942c32; probe run exit 0, 15 legs, 27s, chromium gone on all three ports; deps puppeteer-core 25.16.0 + playwright-core 1.65.0 via npm (exit 0).\",\n  \"verdict\": \"neutral\",\n  \"risks\": \"None. All arms outside frozen predicate leg set by construction; consistent with neighbours (c==PUX, b==PLM text, e==PLX trust) and contradicts no sentence C1 states. Scratch rm -rf'd; no chromium processes left.\",\n  \"scratch\": \"removed (/fast/scratch/hyaku/tabi-r97/R97Exec3, before yield; receipts copied to lane w1/ first)\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Mut",
+   "agent": "mutation-tester",
+   "output": "{\n  \"seat\": \"R97Mut\",\n  \"claim\": \"C1\",\n  \"verdict\": \"neutral\",\n  \"mutants_total\": 83,\n  \"killed\": 74,\n  \"survived\": 9,\n  \"genuine_survivors\": [\n    \"M40 (drop reps check)\",\n    \"M42 (missingExists === false -> !== true)\",\n    \"M66 (resolved outcome ignores errName/errMessage)\"\n  ],\n  \"equivalent_survivors\": [\n    \"M74 comment-only\",\n    \"M80 eq === -> == on strings\",\n    \"M84 shadowed ARM duplicate key\"\n  ],\n  \"live_only_survivors\": [\n    \"M75 driver-exit\",\n    \"M76 ports-bound\",\n    \"M77 missing-bound\"\n  ],\n  \"killers_verified\": {\n    \"R97Mut-killer-M40-reps.json\": \"frozen rc1 [reps], mutant rc0\",\n    \"R97Mut-killer-M42-missingexists-null.json\": \"frozen rc1 [missing], mutant rc0\",\n    \"R97Mut-killer-M66-resolved-with-err.json\": \"frozen rc1 [outcome], mutant rc0\"\n  },\n  \"baseline\": \"pristine counter positive rc0 clean 229 checks; pristine battery 70/70 rc0\",\n  \"restoration\": \"mirror counter sha256 8571f6b9..4cf0ee0 verified; pristine positive+battery rc0 after sweep; lane untouched; no chromium left; scratch /fast/scratch/hyaku/tabi-r97/R97Mut removed\",\n  \"report\": \".ufo/waves/round-97/w1/R97Mut.md\",\n  \"runner\": \".ufo/waves/round-97/w1/R97Mut-run_mutants.py\",\n  \"results\": \".ufo/waves/round-97/w1/R97Mut-results.json\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Critic1",
+   "agent": "critic",
+   "output": "{\n  \"report\": \".ufo/waves/round-97/w1/R97Critic1.md\",\n  \"verdict\": \"VERDICT C1: neutral\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Critic2",
+   "agent": "critic",
+   "output": "{\n  \"seat\": \"R97Critic2\",\n  \"milestone\": \"Mechanism and source attack\",\n  \"verdict\": \"neutral\",\n  \"report\": \".ufo/waves/round-97/w1/R97Critic2.md\",\n  \"tooling\": {\n    \"channel\": \"npm registry\",\n    \"install\": \"mkdir -p /fast/scratch/hyaku/tabi-r97/R97Critic2/deps && cd deps && npm init -y && npm install --no-audit --no-fund puppeteer-core@25.16.0 playwright-core@1.65.0\",\n    \"versions\": \"puppeteer-core 25.16.0, playwright-core 1.65.0 (26 packages added); scratch removed after report\"\n  }\n}",
+   "note": null
+  },
+  {
+   "name": "R97Critic3",
+   "agent": "critic",
+   "output": "{\n  \"verdict\": \"neutral\",\n  \"report\": \".ufo/waves/round-97/w1/R97Critic3.md (95 lines)\",\n  \"evidence\": \"w1/R97Critic3-trust-probe.out (rc=0, dual-listener agreement on the exact claimed trust split), 7 forged receipts w1/R97Critic3-*.json all scored rc=1 by the frozen counter, plan-vs-rc cross-check with no divergence, check counts reconciled 229/232. Scratch removed, no chromium left on ports 32741-32743.\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Reviewer",
+   "agent": "reviewer",
+   "output": "{\n  \"report\": \".ufo/waves/round-97/w1/R97Reviewer.md\",\n  \"verdict\": \"C1 neutral\",\n  \"summary\": \"Instrument review (D/K/N): node --check OK, hashes match claims. All defect classes fail-closed: no false-pass from runner errors (tripwire K:204+eq), listener race bounded by 400ms settle (observed 232/232 twice), WS/process-group/port-release leaks handled, treeSha256 symlink/ordering safe, scratch guard holds on /proc, setup refusals correct. Independent --live run ports 32751-32753 clean 232 checks; 70/70 battery killed; 9 novel mutants all killed. No falsifies-wording/number.\",\n  \"receipts\": [\n    \".ufo/waves/round-97/w1/R97Reviewer-live.json\",\n    \".ufo/waves/round-97/w1/R97Reviewer-battery.json\"\n  ],\n  \"commands\": [\n    \"node --check D/K/N => 0\",\n    \"counter --receipt receipt-positive nonce tabi-r97-ctl-positive => 0 clean 229\",\n    \"negatives battery => 70/70 ok\",\n    \"counter --live ports 32751,32752,32753 => 0 clean 232\",\n    \"9 novel mutants => all findings\",\n    \"pgrep remote-debugging-port=32753 => empty\"\n  ]\n}",
+   "note": null
+  },
+  {
+   "name": "R97Sentinel",
+   "agent": "sentinel",
+   "output": "{\n  \"seat\": \"R97Sentinel\",\n  \"report\": \".ufo/waves/round-97/w1/R97Sentinel.md\",\n  \"verdict\": \"VERDICT C1: falsifies-wording\",\n  \"summary\": \"Clean --live verdict binds the two top-level package trees (regular files + symlink targets), driver sha, version, and observed 24-leg behaviour. Transitive ws edits: behaviour change on observed legs caught; comment-only and unmeasured multi-file behaviour change pass; forged transitive lock entry passes. Extra file, symlink, playwright comment caught by libs; empty dir passes. Wording: 'whole installed package tree' is narrower than enforced (regular files only), demonstrated by clean run with empty dir added.\",\n  \"runs\": {\n    \"baseline\": \"clean 232/0\",\n    \"baseline-rerun\": \"clean 232/0\",\n    \"ws-comment-only\": \"clean 232/0\",\n    \"ws-strip-files\": \"findings 232/21 leg\",\n    \"ws-multifile-only\": \"clean 232/0\",\n    \"lock-transitive-edit\": \"clean 232/0\",\n    \"pp-extra-file\": \"findings 232/1 libs\",\n    \"pp-empty-dir\": \"clean 232/0\",\n    \"pp-symlink\": \"findings 232/1 libs\",\n    \"pw-comment-only\": \"findings 232/1 libs\"\n  },\n  \"installs\": \"npm registry, scratch only: puppeteer-core@25.16.0, playwright-core@1.65.0 (26 packages); no pacman/sudo/PATH changes\",\n  \"cleanup\": \"scratch removed; no chromium or background jobs left on 32761-32766\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Scout",
+   "agent": "scout",
+   "output": "{\n  \"seat\": \"R97Scout\",\n  \"milestone\": \"Source reconnaissance\",\n  \"verdict\": \"VERDICT C1: neutral\",\n  \"report\": \".ufo/waves/round-97/w1/R97Scout.md\",\n  \"evidence\": \".ufo/waves/round-97/w1/R97Scout-fetch-evidence.txt\",\n  \"summary\": \"Pinned Puppeteer v25.16.0 ElementHandle.ts and Playwright v1.65.0 fileUploadUtils.ts, chromium.ts, dom.ts, injectedScript.ts and crPage.ts were opened and match the claim's citations. The native path (DOM.setFileInputFiles) versus the payload path (JS-dispatched untrusted events) explains the PLX/PUC/PUM/PLM legs. No source contradicts a leg-level statement. Gaps: the trusted-on-native-branch claim is inferred from a Puppeteer comment; the devtools protocol was read from master, not a Chromium 155 pin; five GitHub searches returned 403 and were not retried; the PLL missing-path error likely says access, not stat (unmeasured). The counter and --live were not run by this seat. Tools installed: none. Scratch removed; no Chromium run.\",\n  \"fetch_rows\": 46,\n  \"fetch_http_200\": 41,\n  \"fetch_http_403_unrun\": 5\n}",
+   "note": null
+  },
+  {
+   "name": "R97Scribe",
+   "agent": "scribe",
+   "output": "{\n  \"seat\": \"R97Scribe\",\n  \"milestone\": \"Knowledge note draft\",\n  \"verdict\": \"falsifies-wording\",\n  \"reportPath\": \".ufo/waves/round-97/w1/R97Scribe.md\",\n  \"notePath\": \".ufo/waves/round-97/w1/R97Scribe-note.md\",\n  \"evidence\": [\n    \"corpus/evidence/round97/client-oopif-uploadfile/receipt.json (sha256 6c948131\u20266763)\",\n    \".ufo/waves/round-97/scored/c1-live.json (rc 0, 232 checks, 0 findings)\",\n    \".ufo/waves/round-97/w1/R97Scribe-r97-receipt-check.json (receipt-mode rc 0, 229 checks)\",\n    \".ufo/waves/round-97/w1/R97Scribe-r96-receipt-check.json (r96 receipt-mode rc 0, 163 checks)\"\n  ],\n  \"finding\": \"F1: plans/round-97.md \u00a7Claim states 'fresh browser and profile' and Target.getTargets '(after load, before the call)'; the counter enforces only 24 distinct browser ids. Profile freshness and getTargets timing are driver-code properties pinned by sha only. No leg-level statement is shown false and no number changes.\",\n  \"r96\": \"No r96 statement contradicted; rule 1 (uploadFile OOPIF observation) is now counted by PUX; the r96 recheck reproduces rc 0 / 163 checks.\",\n  \"live\": \"Not re-run by this seat (no assigned port triple); committed scored run used.\",\n  \"sources\": \"S237 ElementHandle.ts 138-150/158-162 (staged lines re-opened), S238 fileUploadUtils.ts 32/62/65, chromium.ts 162-163 \u2014 all verified on staged bytes.\",\n  \"cleanup\": \"scratch /fast/scratch/hyaku/tabi-r97/R97Scribe removed; no chromium started by this seat; no installs; no commits.\"\n}",
+   "note": null
+  },
+  {
+   "name": "R97Connector",
+   "agent": "connector",
+   "output": "{\n  \"report\": \".ufo/waves/round-97/w1/R97Connector.md\",\n  \"verdict\": \"VERDICT C1: neutral\",\n  \"axes\": [\n    \"adjacency\",\n    \"calibration\"\n  ],\n  \"contradictions\": \"none \u2014 no own-lane or sibling statement contradicts C1; the two seat-brief over-generalisations ('setInputFiles fires trusted events', 'uploadFile validates paths') are absent from the corpus\",\n  \"calibration_findings\": [\n    \"r77:80-81 trust law is command-scoped (DOM.setFileInputFiles); C1 corroborates it via Puppeteer and splits the client wrappers (Playwright default carries buffers, not paths)\",\n    \"r77:94-96 three-part refusal rule is narrower-in-scope: C1's PUX/PUS/PUM are genuine uploads with trusted events, no chooser, no click\",\n    \"r96:75 'lockfile integrity echoed' remains literally true for the SRI string; C1 D3's whole-tree sha closes the installed-bytes gap\",\n    \"r97 note:61-62 / README:1282-1284 Playwright injected-script dispatch is outside S238's registered scope; corroborated by R97Critic2:34-45 but uncited\",\n    \"r97 note/README 'in Playwright' for PLM lacks the 'default connectOverCDP' qualifier (plan limit 5 excludes isLocal + absent path)\"\n  ],\n  \"sibling_lanes\": \"zero overlap (exact term set returned no sibling file, rc 1); 8 kaidoku Playwright-as-capture files are tooling look-alikes only\",\n  \"novelty_check\": \"git grep uploadFile|setInputFiles at 607c8b02 -- scripts: only check-record-drift-r81.mjs:104-105 (regex text), no driver; base counter absent (cat-file rc 128)\",\n  \"live_run\": \"none (seat scope; no driver/counter execution, no chromium, no ports)\",\n  \"installs\": \"none\",\n  \"scratch\": \"/fast/scratch/hyaku/tabi-r97/R97Connector created empty and removed; no seat processes remain\"\n}",
+   "note": null
+  }
+ ]
+}

@@ -172,3 +172,62 @@ Exit 0 and `verdict: clean` → C1 after-state met.
    D1-D3 and R95Mut survivors) stay queued in SCORECARD Planned; one claim per round, and none of them
    moves the surface this claim moves. This round's battery carries the analogous classes for its own
    counter.
+
+## Post-wave amendment A1 (addendum §8; recorded after the wave, before filing)
+
+Causes: `.ufo/waves/round-97/w1/R97Scribe.md` (verdict `falsifies-wording`, finding F1) and the
+class-D rows of `.ufo/waves/round-97/w1/R97Critic1.md` (P1, P4, P5, P6, B1, B4; verdict `neutral`). The
+counter bytes, the driver bytes, the scored run and every number are unchanged; R97Critic1 mapped every
+predicate sentence to an enforcing line, and R97Exec1 (×2), R97Exec2 (default + `--reps 10`, 104 legs) and
+R97Reviewer reproduced the after-state clean. This amendment narrows the wording to what the instrument
+enforces:
+
+1. **Process clauses are driver-pin facts, not counter checks (R97Scribe F1; R97Critic1 P1/P4/P6).** "in a
+   fresh browser and profile that the client connects to over its DevTools endpoint (Puppeteer `connect
+   {browserURL}`; Playwright `connectOverCDP(url)`, on PLL `connectOverCDP(url, {isLocal: true})`)",
+   "`/usr/bin/chromium --headless=new`", the call forms (`(await frame.$('#s')).uploadFile(file)`,
+   `frame.locator('#s').setInputFiles(file, {timeout: 5000})`) and "the browser-level `Target.getTargets`
+   (after load, before the call)" are read as: performed by the driver whose sha256 equals the pin, which
+   the counter checks before it runs the driver. The counter itself enforces only their observable
+   consequences: 24 distinct UUID-shaped browser ids (`fresh-browser`), the DevTools and client version
+   strings (`browser`), the frames list (`frames`), the iframe-target set as recorded (`iframe-targets`),
+   and the leg's recorded `lib`/`cross`/`isLocal`/`call` fields (`leg-arm`). A profile directory and the
+   ordering of `getTargets` against the call are not recorded in the receipt.
+2. **Listener placement (R97Critic1 P5).** "`#s` with `input`, `change` and `click` listeners recording
+   `[type, isTrusted]`" is fixture bytes inside the pinned driver; the counter checks the recorded lists
+   exactly. R97Critic3 Q2 (`R97Critic3-trust-probe.out`) re-observed the same split with two independent
+   listeners on `#s`.
+3. **PUC "both calls resolve" (R97Critic1 B4).** Enforced as one `outcome: resolved` plus the exact
+   four-event sequence and `#s` `[]`; that both awaits resolved follows from the pinned driver's single
+   `try` block around them, not from a per-call field.
+4. **"a sha256 over the whole installed package tree" (limit 2; R97Critic1 §Tree-sha).** Read as: sorted
+   `<path>\0<sha256>` lines of every regular file plus `<path>\0link:<target>` lines of every symlink under
+   `node_modules/<name>`; empty directories and non-regular, non-symlink entries contribute no line, and a
+   symlink's target bytes are not hashed.
+5. **`claims.json` `statement` (R97Critic1 §drift).** Its first clause says "verbatim", but the text is a
+   condensation that defers receipt detail to the plan. The plan's §Claim text is the frozen predicate;
+   `claims.json` is a pointer and is not edited after the freeze.
+
+6. **Library identity (R97Sentinel, `.ufo/waves/round-97/w1/R97Sentinel.md`, verdict `falsifies-wording`).**
+   "Identity is pinned on version, lockfile integrity, one upload-bearing file's sha256 and a sha256 over
+   the whole installed package tree" is read as: the two top-level package directories
+   `node_modules/puppeteer-core` and `node_modules/playwright-core` match the pinned version, one file
+   sha256 and the item-4 entry set (an added empty directory scores clean, `R97Sentinel-pp-empty-dir.json`;
+   an extra file, a symlink and a comment-only `coreBundle.js` edit each score `libs`); "lockfile
+   integrity" is the string read from `--deps/package-lock.json` compared with the constant, a self-report
+   not verified against the installed bytes (R97Sentinel confirmed it equals the registry value on its
+   install; the counter does not). Not bound: the 24 transitive packages (a comment-only `ws` edit and a
+   forged transitive lock entry score clean; a `ws` patch that strips `DOM.setFileInputFiles` files is
+   caught by 21 leg findings; a `ws` patch on the unexercised multi-file path scores clean), the root
+   `package.json`/`package-lock.json` beyond the two integrity strings, file modes and the Node runtime.
+
+Wave observations recorded as frontier, not widening (all outside the frozen claim's limits):
+R97Exec3 (a) Playwright `chromium.launch` → trusted events, (b) `isLocal` + absent path → the same ENOENT
+`stat` message, (c) Puppeteer `launch` → same as PUX, (d) reading PUM's phantom entry in the page rejects
+("A requested file or directory could not be found…"), (e) a Playwright payload object over default
+`connectOverCDP` → untrusted events. R97Mut: 83 counter mutants, 9 survivors (3 battery gaps with verified
+killers M40/M42/M66, 3 equivalent, 3 live-only M75-M77) — routed to SCORECARD Planned; the frozen counter
+rejects every killer.
+
+The knowledge note uses the narrowed wording ("its own browser per leg (24 distinct browser ids)"; the
+phantom stated as name + size 0 with the read observation marked outside the claim).

@@ -4365,3 +4365,35 @@ entry, SKILL `## Round 96 gate registry`, corpus/README `## Round 96 coverage`, 
 the r92 and r94 notes, `corpus/lessons/round-96.md` (gate, two mined mistakes, wave, leads), mined
 control-label check, SCORECARD round-96 section and capability row, wave evidence and falsification
 ledger. **C1 VERIFIED on its frozen predicate as narrowed by amendment A1** (pending non-author closure).
+
+## Round 97 — 2026-11-09 (attempt 1, Linux host)
+
+L1 `TabiR97`. Base `607c8b02` (the round-96 verifier spot-check commit; lane clean; no earlier r97 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability `client-oopif-uploadfile-linux`: on a
+file input inside a cross-site iframe, Puppeteer 25.16.0 `uploadFile` fills it with trusted
+`input`/`change`, Playwright 1.65.0 `setInputFiles` over default `connectOverCDP` with untrusted ones and
+with `isLocal: true` trusted ones; Puppeteer's clear fires untrusted events; an absent path resolves as a
+name + size-0 entry in Puppeteer and is ENOENT in Playwright. Sourced by S237 (Puppeteer `ElementHandle.ts`
+v25.16.0) and S238 (Playwright `fileUploadUtils.ts` v1.65.0).
+
+Motivating evidence: r96 declared limit 4 and R96Exec3 (c) (`uploadFile` fills an OOPIF input, uncounted);
+the L1's pre-freeze probes (`.ufo/waves/round-97/probes/`), which found the trust split and the
+absent-path asymmetry.
+
+Freeze commit `4a4e15e3` (frozenAt 00:24:35): plan, claims.json, driver `09f0c2fe2895`, counter
+`8571f6b9971b`, battery `22b63727b75c`, executed controls (incl. wrong-library and tampered-tree `--live`,
+driver-pin, seven setup refusals), probes, staged sources, census-start. Scored commit `be9487f6`: `--live`
+rc 0, clean, 232 checks, nonce `tabi-r97-live-152ce8256675`. Records commit `decbcdfb`.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 3 critic, 1 mutation-tester, 1 reviewer, 1 sentinel,
+1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 5/12 = 42 %; 0 dead seats; L1 holds the
+planner seat. Verdicts: 10 neutral, 2 falsifies-wording (R97Scribe, R97Sentinel) → `plans/round-97.md`
+§Post-wave amendment A1 items 1-6 (counter, driver and numbers unchanged).
+
+Records: `corpus/knowledge/client-oopif-uploadfile-round-97.md` (incl. a producer-signature synthesis
+table, R97Connector), evidence receipt, S237/S238/S239 + two search-log entries, SKILL `## Round 97 gate
+registry`, corpus/README `## Round 97 coverage`, appended r96 D1 corrections (r96 note, r96 lesson),
+`corpus/lessons/round-97.md` (gate, two mined mistakes, wave, leads), mined check
+`.ufo/waves/round-97/mined/check-driver-positive.sh`, SCORECARD round-97 section and capability row, wave
+evidence and falsification ledger. **C1 VERIFIED on its frozen predicate as narrowed by amendment A1**
+(pending non-author closure).

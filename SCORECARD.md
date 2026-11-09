@@ -4576,3 +4576,39 @@ Planned (r97): a counted `ElementHandle.uploadFile` OOPIF capability and Puppete
 legs (R96Exec3); battery cases for the R96Mut survivors M20/M51/M52/M54/M65/M67 and live killers for
 `driver-exit`/`ports-bound`; lockfile integrity verified against the installed tree (R96Sentinel); the r95
 spot-check D1-D3 and R95Mut survivors (carried). Retired: none.
+
+## Round 97 (2026-11-09, Linux host) — C1 capability `client-oopif-uploadfile-linux` (new)
+
+Base `607c8b02` (the round-96 verifier spot-check commit). ONE claim. Freeze commit `4a4e15e3` (plan,
+`claims.json` frozenAt 00:24:35, driver/counter/battery bytes, executed pre-freeze controls, probes, staged
+S237/S238 sources, census-start); scored commit `be9487f6` (`--live` run, nonce
+`tabi-r97-live-152ce8256675`; measured revision `4a4e15e3`, the master tip when the counter ran). Axes at
+start: all six at 9. C1 works coverage (a lowest tie at 9) and is a capability acquisition: the lane's
+first measurement of a client's chooser-free direct-set upload into a cross-site iframe, with event trust.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `client-oopif-uploadfile-linux` (sourced: S237, S238) | `node scripts/check-client-oopif-uploadfile-round97.mjs --lane <ABS lane> --expect-driver-sha256 09f0c2fe2895ee0e035e8107995873328ce74f4e4d6d1ab3c8efd455b8c9e4eb --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CLIENT-OOPIF-UPLOADFILE-R97`, exit 0 iff 0 findings; wording narrowed after the wave by `plans/round-97.md` §Post-wave amendment A1 items 1-5, counter and numbers unchanged) | before (base `607c8b02`): the command does not exist (`git cat-file -e` rc 128); the r96 receipt under the frozen counter → rc 1 (schema, libs, leg-set, …). Controls at freeze: positive rc 0 at 229 checks, battery 70/70, wrong-site rc 1, wrong-library `--live` rc 1 (`libs` only), tampered-tree `--live` rc 1 (`libs`: tree sha256), driver-pin rc 1, seven setup controls rc 2. After: scored `--live` rc 0, clean, 232 checks (`.ufo/waves/round-97/scored/c1-live.json`) | verified (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `client-oopif-uploadfile-linux` | On Chromium 155.0.8059.84 `--headless=new`, with the pinned `--deps` installs, show that a file input inside a cross-site iframe is filled by Puppeteer 25.16.0 `uploadFile` with trusted `input`/`change` and by Playwright 1.65.0 `setInputFiles` with untrusted ones over default `connectOverCDP` (trusted with `isLocal: true`); Puppeteer's clear fires untrusted events; an absent path is a resolved name + size-0 entry in Puppeteer and ENOENT (input untouched) in Playwright | `corpus/evidence/round97/client-oopif-uploadfile/receipt.json`; `.ufo/waves/round-97/scored/c1-live.json`; `corpus/knowledge/client-oopif-uploadfile-round-97.md` | 97 |
+
+Knowledge 109 → 110. Registry 236 → 239 (S237 Puppeteer `ElementHandle.ts`, S238 Playwright
+`fileUploadUtils.ts`, S239 Playwright `injectedScript.ts` — S239 post-wave, note mechanism only). `SKILL.md`
+`## Round 97 gate registry`. Limits: `plans/round-97.md` §Declared limits 1-7 and §Post-wave amendment A1.
+Calibration record: r96 spot-check D1 answered by appended corrections (r96 note, r96 lesson); D3 answered
+in this instrument (whole-tree sha256; freeze control 7); r77 receipt rule read as chooser-path scoped in
+the r97 note's synthesis table (R97Connector).
+
+Planned (r98): battery cases for the R97Mut survivors M40 (`reps`), M42 (`missingExists: null`), M66
+(resolved leg carrying an error) and live killers for `driver-exit`/`ports-bound`/`missing-bound` (M75-M77,
+same class as r96 M20/M51/M52/M54/M65/M67); R97Exec3's leads as counted legs (Playwright `launch` trusted,
+payload objects untrusted, `isLocal` + absent path, the phantom entry's read rejection); transitive-package
+identity (R97Sentinel: a comment-only edit in `ws` scores clean, a behaviour patch is caught by the legs);
+r95 D1-D3 and R95Mut survivors (carried). Retired: none.

@@ -1278,10 +1278,12 @@ upload-bearing file and a whole-tree sha256) attached over CDP, a file input ins
 (`localhost`) iframe is filled by Puppeteer `ElementHandle.uploadFile` and Playwright `setInputFiles`
 alike, but the input's `input`/`change` events are trusted for Puppeteer and for Playwright with
 `connectOverCDP(url, {isLocal: true})`, and untrusted for Playwright's default `connectOverCDP`;
-Puppeteer's clear (`uploadFile()`) fires untrusted events; an absent path is a resolved 0-byte phantom file
-in Puppeteer and an ENOENT error with the input untouched in Playwright. Mechanism (source account, S237,
-S238): Puppeteer sends `DOM.setFileInputFiles` on the handle's own session; Playwright reads files into
-payloads and injects them by page script when the browser is not "collocated". `corpus/knowledge/
+Puppeteer's clear (`uploadFile()`) fires untrusted events; an absent path resolves in Puppeteer with an
+entry named after it and size 0 in `#s.files` (reading it in the page rejects — a wave observation, outside
+the claim), and is an ENOENT error with the input untouched in Playwright's default `connectOverCDP`.
+Mechanism (source account, S237, S238, S239): Puppeteer sends `DOM.setFileInputFiles` on the handle's own
+session; Playwright reads files into payloads and injects them by page script (script-dispatched events)
+when the browser is not "collocated". `corpus/knowledge/
 client-oopif-uploadfile-round-97.md`; evidence `corpus/evidence/round97/client-oopif-uploadfile/receipt.json`;
 gate `check-client-oopif-uploadfile-round97`. Frontier: `launch` modes, payload objects, multiple files,
 what a page reads from the phantom file, transitive-package identity. Pending non-author closure.

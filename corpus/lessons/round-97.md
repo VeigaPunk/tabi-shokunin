@@ -36,6 +36,15 @@ executed controls in commit `4a4e15e3` (`claims.json.frozenAt` 00:24:35 -03:00) 
   outcomes. The same logic is in the pinned `lib/coreBundle.js` (sha256 `4ef83305…`) at lines 21219-21256
   (`prepareFilesForUpload`) and 52379-52380 (`if (!params2.isLocal)`), read by the L1 with `sed -n` on the
   pinned install.
+- **S239** (admit, tier A, `mined`; post-wave, not a claim input) — Playwright
+  `packages/injected/src/injectedScript.ts` at tag `v1.65.0`,
+  https://raw.githubusercontent.com/microsoft/playwright/v1.65.0/packages/injected/src/injectedScript.ts
+  (accessed 2026-11-09 00:39 -03:00 by the L1, HTTP 200, 85,112 B, sha256 `ff78c2368acf`, staged as
+  `.ufo/waves/round-97/sources/injectedScript.ts`). Lines 1027-1028: "input.files = dt.files;" …
+  "input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));" (11 words by `wc -w`);
+  `change` the same way at line 1029. Opened after the wave to close R97Connector's citation gap (S238
+  covers buffer preparation, not the dispatch); R97Scout row 13 and R97Critic2 (bundle decode) located the
+  same lines. It grounds the r97 note's mechanism sentence only; C1 was frozen and scored before it.
 - **Reject (not a new row)** — `chromium.ts` v1.65.0 as its own row: its one relevant statement (lines
   162-163) is quoted in S238's anchor; a separate row would teach nothing S238 does not. Flip: a later claim
   that rests on another part of `chromium.ts` (e.g. `connectOverCDP` headers or `noDefaults`).
@@ -45,8 +54,8 @@ executed controls in commit `4a4e15e3` (`claims.json.frozenAt` 00:24:35 -03:00) 
   a second scope would be a W04 duplicate. Its lines ground the r96 note's appended correction (r96
   spot-check D1). Flip: none needed for a row.
 
-Status/recheck/used-by changes: S237 and S238 are new rows (none → `mined`, 90d, used-by the r97 note).
-No existing row is edited (append-only). Search-log entry appended (`corpus/SOURCES.md`, round-97 line).
+Status/recheck/used-by changes: S237, S238 and S239 are new rows (none → `mined`, 90d, used-by the r97 note).
+No existing row is edited (append-only). Search-log entries appended (`corpus/SOURCES.md`, the two round-97 lines: pre-freeze and post-wave).
 
 r96 spot-check §6: D1 answered by appended corrections to `corpus/knowledge/client-oopif-filechooser-
 round-96.md` and `corpus/lessons/round-96.md` (crPage.ts line 445 + coreBundle.js line 39325 as the
@@ -83,3 +92,28 @@ directory in this lane.
    missed; what it cost was the run. Fix: a 15 s launch window and a port-release wait between legs
    (driver comments; `probe-b.json` 24/24 under the same host). Not counted as shown-to-fail: the window
    change has no failing-before control that does not depend on host load.
+
+## Wave w1 (12 seats; every seat filed; artifacts in `.ufo/waves/round-97/w1/`; `w1-results.json`)
+
+Dispatched by the inline handoff (`w1.ready` 00:25:46; orchestrator WAVE-DONE, all 12 settled). Roles:
+executor ×3, critic ×3, mutation-tester ×1, reviewer ×1, sentinel ×1, scout ×1, scribe ×1, connector ×1;
+attack share (reviewer+critic+mutation-tester) 5/12 = 42 %. Dead seats: 0. Verdicts: 10 neutral, 2
+`falsifies-wording` (R97Scribe F1: process clauses are driver-pin facts; R97Sentinel: "whole installed
+package tree" / "lockfile integrity" identity wording) → `plans/round-97.md` §Post-wave amendment A1 items
+1-6; counter, driver and numbers unchanged. Independent `--live` runs, all clean: R97Exec1 ×2 (232),
+R97Exec2 default (232) and `--reps 10` (736, 80 legs), R97Reviewer (232), R97Sentinel baseline ×2 (232).
+R97Critic3: seven forged receipts all rc 1; a two-listener probe reproduces the trust split. R97Mut: 83
+mutants, 9 survivors (3 battery gaps with verified killers, 3 equivalent, 3 live-only); its
+`R97Mut-results.json` header totals (`survived: 0`) are stale from its first, mis-rooted sweep — the
+per-mutant verdicts (9 SURVIVED) and its report are authoritative (seat-artifact defect, recorded, not
+edited). R97Sentinel: a behaviour-changing transitive `ws` patch is caught by the legs; a comment-only
+transitive edit, a forged transitive lock entry and an added empty directory score clean.
+
+## Leads (not rows this round)
+
+R97Exec3: Playwright `chromium.launch` → trusted events; `isLocal` + absent path → the same ENOENT `stat`
+message; Puppeteer `launch` = PUX; the phantom entry's page read rejects; payload objects → untrusted.
+R97Scout (seat-opened, not re-opened by the L1): pptr.dev `ElementHandle.uploadFile` ("This will not
+validate whether the file paths exists."), puppeteer #10053 / PR #5733, playwright PR #38614 (`isLocal`),
+obscura #384 (a non-Chromium CDP server firing untrusted events). R97Sentinel: hash the transitive closure
+and the root lock, record `node --version`. R97Mut: battery cases M40/M42/M66, live killers M75-M77.

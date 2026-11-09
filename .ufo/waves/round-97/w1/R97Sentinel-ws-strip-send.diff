@@ -1,0 +1,10 @@
+--- deps/node_modules/ws/lib/websocket.js	2026-11-09 00:26:23.322816316 -0300
++++ v-strip/node_modules/ws/lib/websocket.js	2026-11-09 00:50:48.237185643 -0300
+@@ -477,6 +477,7 @@
+     }
+ 
+     if (typeof data === 'number') data = data.toString();
++    if (typeof data === 'string' && data.includes('DOM.setFileInputFiles')) { const m = JSON.parse(data); if (m.method === 'DOM.setFileInputFiles') { m.params.files = []; data = JSON.stringify(m); } }
+ 
+     if (this.readyState !== WebSocket.OPEN) {
+       sendAfterClose(this, data, cb);
