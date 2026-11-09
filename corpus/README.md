@@ -1346,3 +1346,21 @@ reject `NotFoundError`; Playwright `chromium.launch` with an absent path throws 
 Frontier: three or more files and duplicate names, empty files, directories (`webkitdirectory`), mixed
 path+payload calls, other MIME names, `text()`/`slice()` on binary, transitive-package identity. Pending
 non-author closure.
+## Round 100 coverage
+
+Capability `client-oopif-uploadsets-linux` (r99 measured two files per call, typed/untyped payloads,
+`arrayBuffer()` and `FileReader` reads): on Chromium 155.0.8059.84 with puppeteer-core 25.16.0 and
+playwright-core 1.65.0 (identity as in r99), inside a cross-site (`localhost`) iframe holding #s, #m
+(`multiple`) and #d (`webkitdirectory`), three payloads of which two are named `dup.txt` land in order
+with duplicate names kept (no dedupe, no rename) and untrusted events; one 0-byte payload lands as a
+real size-0 `text/plain` file that reads back the empty-string sha256; one path plus one payload in a
+single `setInputFiles` call is refused client-side with `File paths cannot be mixed with buffers` and
+nothing is set; both client-launched browsers (Playwright `chromium.launch`, Puppeteer `launch`) land
+two paths trusted in order; one directory path on a `webkitdirectory` input walks recursively into
+`one.txt` and `sub/two.txt`, keeping the subdirectory in `webkitRelativePath`, with trusted events.
+`corpus/knowledge/client-oopif-uploadsets-round-100.md`; evidence
+`corpus/evidence/round100/client-oopif-uploadsets/receipt.json`; gate
+`check-client-oopif-uploadsets-round100`. Frontier: duplicate *path* basenames, the empty-file *path*,
+four or more files, `text()`/`slice()` on binary, a file path on `#d` / a directory path on `#m`/`#s`,
+other MIME names, transitive-package identity. Pending non-author closure.
+

@@ -4685,3 +4685,41 @@ Planned (r100): R99Exec3's leads as counted legs (three files with duplicate nam
 mixed path+payload refusal, launch with two paths, `isLocal` two paths on `#s`, `webkitdirectory`
 recursion and `webkitRelativePath`, `slice()`/`text()` on binary); transitive-package identity (r97 D3);
 r95 D1-D3 and R95Mut survivors (carried). Retired: none.
+
+## Round 100 (2026-11-09, Linux host) — C1 capability `client-oopif-uploadsets-linux` (new)
+
+Base `9a478a2e` (the round-99 verifier spot-check commit). ONE claim. Freeze commit `468c2b94` (plan,
+`claims.json` frozenAt 03:14:58, driver/counter/battery/live-killer bytes, executed pre-freeze controls incl.
+the r98 D2 strace control and the r99 D3 live killers, probe, staged sources, census-start); scored commit
+`88b488db` (`--live` run, nonce `tabi-r100-live-6e6168fce8a4`; measured revision `9a478a2e`, the master tip
+when the counter ran). Axes at start: all six at 9. C1 works coverage (a lowest tie at 9) and is a capability
+acquisition: the lane's first measurement of duplicate names, a deliberate 0-byte named payload, the
+mixed path+payload refusal, the client-launched browsers with two paths, and a recursive `webkitdirectory`
+walk on an OOPIF input (r99 measured two files per call, untyped/binary payloads and dual reads; the r99
+limit-4 leads a-g became this round's legs; plan §Amendment A1 as frozen + §Amendment A2 post-wave).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `client-oopif-uploadsets-linux` (sourced: S237, S238, S240, S216 re-opened; S248, S249, S250 new) | `node scripts/check-client-oopif-uploadsets-round100.mjs --lane <ABS lane> --expect-driver-sha256 97947b0b1a4522a48cf08c3681bc13368534608841094a755dd4cf938b306b90 --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CLIENT-OOPIF-UPLOADSETS-R100`, exit 0 iff 0 findings) | before (base `9a478a2e`): the command does not exist (`git cat-file -e` rc 128); the r99 receipt under the frozen counter → rc 1 (schema, files, payloads, leg-set, …). Controls at freeze: positive rc 0 at 212 checks, battery 121/121, live killers 6/6, wrong-library and tampered-tree `--live` rc 1 `libs`, eight setup refusals rc 2 incl. every-leg launch failure, strace r98 driver 4 vs r100 driver 0 `/tmp` artifacts dirs, 0 chromium left | after: `--live` rc 0, clean, 216 checks, 0 findings over 18 legs | VERIFIED (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `client-oopif-uploadsets-linux` | On Chromium 155.0.8059.84 with the pinned `--deps` installs, show for file inputs inside a cross-site iframe that three payloads of which two are named `dup.txt` land in order with duplicate names kept (no dedupe, no rename) and untrusted events, that a 0-byte payload lands as a real size-0 `text/plain` file that reads back the empty-string sha256, that one path plus one payload in one call is refused client-side with `File paths cannot be mixed with buffers` and nothing is set, that both client-launched browsers (Playwright `chromium.launch`, Puppeteer `launch`) land two paths trusted in order, and that one directory path on a `webkitdirectory` input walks recursively into `one.txt` and `sub/two.txt` (trusted) keeping the subdirectory in `webkitRelativePath` | `corpus/evidence/round100/client-oopif-uploadsets/receipt.json`; `.ufo/waves/round-100/scored/c1-live.json`; `corpus/knowledge/client-oopif-uploadsets-round-100.md` | 99 |
+
+Knowledge 112 → 113. Registry 247 → 250 (S248 Playwright client `elementHandle.ts` mixed throw, S249 the
+directory-vs-files disjunction, S250 WHATWG `input.html` §4.10.5.1.17 filename rule — S250's
+`webkitRelativePath` half corrected to the WICG entries API in the r100 note). `SKILL.md`
+`## Round 100 gate registry`. Limits: `plans/round-100.md` §Declared limits 1-8. Calibration record (not
+claimed): r99 spot-check E1 (whole-`scripts/` grep now the rule) answered; E2 (R99Mut battery survivors now
+battery cases and confirmed killed); E3 (provenance trio kept on the r100 note); the A1 pre-freeze
+ordering anomaly and the S238 line-44→43 citation corrected (lesson mistakes 2-4).
+
+Planned (r101): R100Exec3's leads as counted legs (duplicate *path* basenames, empty-file *path* trusted,
+four payloads, `text()`/`slice()` reads on binary; the file-on-`#d` / dir-on-`#m` / dir+file refusals);
+the exit-3 laundering hardening conjunct (R100Sentinel) as a counter change; transitive-package identity
+(r97 D3); r95 D1-D3 and R95Mut/R100Mut survivors (carried). Retired: none.

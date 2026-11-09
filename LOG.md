@@ -4465,3 +4465,38 @@ unchanged); claims.json `frozenAmendments` A1. Post-wave records: r77 note corre
 note relation/scope correction (H1/H5), lesson mistakes 4-5 + wave + leads, SCORECARD round-99 section and
 capability row, falsification ledger, census-end. **C1 VERIFIED on its frozen predicate, wording narrowed
 by A1** (pending non-author closure).
+
+## Round 100 — 2026-11-09 (attempt 1, Linux host)
+
+L1 `TabiR100`. Base `9a478a2e` (the round-99 verifier spot-check commit; lane clean; no earlier r100 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability generation `client-oopif-uploadsets-linux`
+(r100: duplicate names kept, a 0-byte payload lands as a real file, one path + one payload refused client-side,
+both client-launched browsers land two paths trusted, a directory walks recursively on a `webkitdirectory`
+input). Sourced by S248-S250 (new) and S237/S238/S240/S216 (re-opened unchanged).
+
+Motivating evidence: r99 declared limits 3-4, R99Exec3's leads (a)-(h) and the r99 spot-check §6 E1-E3; the
+L1's pre-freeze probe (`.ufo/waves/round-100/probes/probe-a-log.txt`, clean 6 arms × 2 reps, counter
+`--reps 1` clean 80 checks in `probe-a-score.json`).
+
+Freeze commit `468c2b94` (frozenAt 03:14:58): plan, claims.json, driver `97947b0b1a45`, counter
+`5c3d56d83377`, battery `39c2b7284512` (121/121), live-killer harness `daf1282a7904` (6/6), executed controls
+(no-work base rc 128, r99 receipt rc 1, wrong-library and tampered-tree `--live` rc 1 `libs`, driver-pin rc 1,
+eight setup refusals rc 2 incl. every-leg launch failure, strace r98 driver 4 vs r100 driver 0 `/tmp`
+artifacts dirs, 0 chromium left), probe, staged sources, census-start. Scored commit `88b488db`: `--live` rc
+0, clean, 216 checks, nonce `tabi-r100-live-6e6168fce8a4`. Records commit `ce29c653`.
+
+r99 spot-check §6: E1 whole-`scripts/` grep is now the rule (the r99-scoped glob's failure is answered in the
+freeze text); E2 R99Mut receipt-mode survivors are battery cases (`missing-exists-zero`,
+`iframe-targetid-empty`, `resolved-errmessage-only`, `resolved-errname-only`, `files-d-key-dropped`); E3 the
+r100 note keeps the provenance trio.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 2 critic, 1 mutation-tester, 1 revenger, 1 reviewer,
+1 sentinel, 1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 4/12 = 33 %; 0 dead seats; L1
+holds the planner seat. Verdicts: 10 neutral, 2 falsifies-wording (R100Critic1 W2 limit-8 first clause —
+narrowed by plan §Amendment A1 as frozen and re-confirmed; R100Critic2 the §Claim "Sourced" attribution of
+the `webkitRelativePath` definition to S250 plus the `pw-elementHandle.ts` fetch-log gap and the
+`fileUploadUtils.ts` 44-vs-43 line — narrowed by plan §Amendment A2 post-wave). Post-wave records: r100
+note (with the append-only `webkitRelativePath` correction and the size-0-by-producer table from
+R100Connector), lesson mistakes 1-4 + wave + leads, SCORECARD round-100 section and capability row,
+falsification ledger, census-end. **C1 VERIFIED on its frozen predicate, wording narrowed by A1 (as frozen)
+and A2 (post-wave)** (pending non-author closure).
