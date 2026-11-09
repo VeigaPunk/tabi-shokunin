@@ -113,3 +113,24 @@ nothing was discarded. The wave was not re-dispatched.
   orchestrator kill. Recorded as missing, not reconstructed.
 
 Every seat's C1 verdict is `neutral` (`.ufo/waves/round-93/claim-falsification.tsv`).
+
+## Gate runs at the round tip (`c46317ab`)
+
+- C1 counting command re-run at the tip: exit 0, `clean`, 101 checks, 0 findings, revision `c46317ab`,
+  nonce `tabi-r93-live-5a0efa9cd6e5` (`.ufo/waves/round-93/scored/c1-live-final.json`); instrument
+  sha256 3/3 OK against `controls/instrument-sha256.txt` (`sha256sum -c` from the lane root).
+- Freeze stamp: `node scripts/check-freeze-stamp-round93.mjs --lane <ABS lane> --round 93 --json` → exit 0,
+  `clean`, frozenAt 20:47:56 ≤ committed 20:48:00 (`scored/freeze-stamp-r93.json`).
+- LOG section claims (mined mistake 1 at the tip): `node scripts/check-log-section-claims-round93.mjs
+  --lane <ABS lane> --rev master --rounds 83,…,93 --json` → exit 0, `clean`, 0 findings
+  (`scored/log-claims-tip.json`); at base `192535d7` the same gate exits 1 (`mined/log-claims-base.json`).
+- Append-only, `192535d7..master`: LOG.md, SCORECARD.md, corpus/README.md, SKILL.md `ok`; corpus/SOURCES.md
+  `rewritten` at line 246 → exit 1 (`scored/append-only-r93.json`). Cause: S231/S232 are inserted as rows
+  inside the Registry table, above the file's trailing `## Paths` section, so base bytes are no longer a
+  byte prefix of tip bytes. `git diff --numstat 192535d7 master -- corpus/SOURCES.md` → `2 0` (two lines
+  added, none deleted or changed). The byte-prefix gate does not model a mid-file table insert; the
+  registry is append-only by row (CORPUS.md rule 2), which the numstat shows. Disclosed, not re-scoped.
+- Census end: `scripts/sources-census.sh validate --root <fleet> tabi` → exit 0, `tabi ok`, 232 rows
+  (`.ufo/waves/round-93/census-end.txt`; W04 cross-scope duplicate-URL warnings only).
+- No chromium left on this round's ports (`pgrep -f remote-debugging-port=1956` empty).
+- Pre-file ledger: `prefile-falsification.py --lane tabi --round 93` → `pass claims=1 rows=15 attack_seats=7 findings=0`, exit 0 (`scored/prefile.txt`).
