@@ -1317,3 +1317,32 @@ browser is not collocated. `corpus/knowledge/client-oopif-uploadmodes-round-98.m
 Frontier: launch legs with an absent path, multiple files and `multiple` inputs, non-text payloads and
 other MIME types, FileReader/form-submission reads of the phantom, transitive-package identity. Pending
 non-author closure.
+
+## Correction — round 97 coverage summary, `isLocal` scope (round 99; append-only)
+
+The `## Round 97 coverage` paragraph above (lines 1279-1280) says the events are trusted "for Playwright with
+`connectOverCDP(url, {isLocal: true})`" without saying which input kind. Round 98 measured that the trust
+follows the input kind, not the attach mode: with `isLocal` a **path** gives trusted `input`/`change` (r98
+PLL), a **payload object** gives untrusted ones (r98 PLLB), and a client-launched browser behaves the same way
+(r98 PLA vs PLAB). Read the r97 sentence as "paths, with `isLocal`". Evidence:
+`corpus/evidence/round98/client-oopif-uploadmodes/receipt.json` legs PLL-1..3 and PLLB-1..3; the r97 note's
+own appended scoping (`corpus/knowledge/client-oopif-uploadfile-round-97.md`, round-98 correction). Routed by
+the r98 verifier spot-check §6 D1.
+
+## Round 99 coverage
+
+Capability `client-oopif-uploadsets-linux` (r98 measured one file per call on an input without `multiple`,
+typed payloads, `text()` reads): on Chromium 155.0.8059.84 with puppeteer-core 25.16.0 and playwright-core
+1.65.0 (identity as in r98), inside a cross-site (`localhost`) iframe, two files on an input without
+`multiple` are refused by both clients with a plain `Error` (Playwright "Non-multiple file input can only
+accept single file", Puppeteer "Multiple file uploads only work with <input type=file multiple>") and
+nothing is set; two files on a `multiple` input land in order, trusted from paths (Playwright `isLocal`,
+Puppeteer `connect`) and untrusted from payloads; an untyped payload's type comes from its name (`.png` →
+`image/png`, an unregistered extension → `application/octet-stream`); binary bytes survive `arrayBuffer()`
+and `FileReader`; Puppeteer `launch` with an absent path leaves the trusted 0-byte phantom both readers
+reject `NotFoundError`; Playwright `chromium.launch` with an absent path throws `ENOENT … stat`.
+`corpus/knowledge/client-oopif-uploadsets-round-99.md`; evidence
+`corpus/evidence/round99/client-oopif-uploadsets/receipt.json`; gate `check-client-oopif-uploadsets-round99`.
+Frontier: three or more files and duplicate names, empty files, directories (`webkitdirectory`), mixed
+path+payload calls, other MIME names, `text()`/`slice()` on binary, transitive-package identity. Pending
+non-author closure.
