@@ -1287,3 +1287,33 @@ when the browser is not "collocated". `corpus/knowledge/
 client-oopif-uploadfile-round-97.md`; evidence `corpus/evidence/round97/client-oopif-uploadfile/receipt.json`;
 gate `check-client-oopif-uploadfile-round97`. Frontier: `launch` modes, payload objects, multiple files,
 what a page reads from the phantom file, transitive-package identity. Pending non-author closure.
+
+## Correction — round 97 coverage summary (round 98; append-only)
+
+The round 97 section above says the clients are "pinned on version, lockfile integrity, one upload-bearing
+file and a whole-tree sha256". Per `plans/round-97.md` §Post-wave amendment A1 items 4 and 6 (and the r97
+spot-check D1), read it as: the two top-level package directories `node_modules/puppeteer-core` and
+`node_modules/playwright-core` match the pinned version, one file's sha256 and the sorted entry set (one
+`<path>\0<sha256>` line per regular file, one `<path>\0link:<target>` line per symlink; empty directories add
+nothing). "Lockfile integrity" is the string read from `--deps/package-lock.json` and compared with a
+constant — a self-report, not verified against the installed bytes. Not bound: the transitive packages (a
+comment-only `ws` edit scores clean, R97Sentinel), the root `package.json`/lock beyond the two strings, file
+modes and the Node runtime. The section's other statements stand.
+
+## Round 98 coverage
+
+Capability `client-oopif-uploadmodes-linux` (r97 measured paths on runner-started, attached browsers only):
+on Chromium 155.0.8059.84 with puppeteer-core 25.16.0 and playwright-core 1.65.0 (identity as in the r97
+correction above), a file input inside a cross-site (`localhost`) iframe gets trusted `input`/`change` from
+a path on a Puppeteer-launched browser, a Playwright-launched browser and `connectOverCDP(url, {isLocal:
+true})`, and untrusted ones from a Playwright payload object on a launched browser, default
+`connectOverCDP` and `isLocal` alike; the files land as `[name, size, type]` with readable bytes; Playwright
+`isLocal` with an absent path throws `ENOENT … stat` and leaves the input untouched; Puppeteer's absent-path
+phantom (`size 0`, `text/plain`) rejects `Blob.text()` with `NotFoundError` and Blink's message. "launch" vs
+"connect" is a driver-pin fact. Mechanism (source account, S240, S238, S241, S242): Playwright sets local
+paths through the protocol and payloads through injected script; paths become payloads only when the
+browser is not collocated. `corpus/knowledge/client-oopif-uploadmodes-round-98.md`; evidence
+`corpus/evidence/round98/client-oopif-uploadmodes/receipt.json`; gate `check-client-oopif-uploadmodes-round98`.
+Frontier: launch legs with an absent path, multiple files and `multiple` inputs, non-text payloads and
+other MIME types, FileReader/form-submission reads of the phantom, transitive-package identity. Pending
+non-author closure.
