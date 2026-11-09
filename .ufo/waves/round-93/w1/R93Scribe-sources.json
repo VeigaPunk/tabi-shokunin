@@ -1,0 +1,61 @@
+{
+  "seat": "R93Scribe",
+  "purpose": "re-fetch the two Blink sources the note cites (S231, S232) from chromium.googlesource.com at tag 155.0.8059.84 and compare sha256 with the staged copies committed in the freeze commit",
+  "upstream": {
+    "S231": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/inspector/inspector_dom_agent.cc?format=TEXT",
+    "S232": "https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/dom/dom_node_ids.cc?format=TEXT"
+  },
+  "method": "curl -fsSL <url> -o <file>.b64 && base64 -d <file>.b64 > <file>.cc && sha256sum <file>.cc ; staged copy compared with sha256sum .ufo/waves/round-93/sources/<file> and with .ufo/waves/round-93/sources/sha256.txt",
+  "results": [
+    {
+      "source": "S232",
+      "file": "dom_node_ids.cc",
+      "upstreamSha256": "33f40333b67fb9a00071dcd69131671ac007da23c3755f0c2777bcbdb4d40e3b",
+      "stagedSha256": "33f40333b67fb9a00071dcd69131671ac007da23c3755f0c2777bcbdb4d40e3b",
+      "sha256TxtSha256": "33f40333b67fb9a00071dcd69131671ac007da23c3755f0c2777bcbdb4d40e3b",
+      "match": true,
+      "upstreamLines": 81
+    },
+    {
+      "source": "S231",
+      "file": "inspector_dom_agent.cc",
+      "upstreamSha256": "e7c983b4b00f47757dbb29c69a129693b8ac61a2e0e60643aa124bbae203c84f",
+      "stagedSha256": "e7c983b4b00f47757dbb29c69a129693b8ac61a2e0e60643aa124bbae203c84f",
+      "sha256TxtSha256": "e7c983b4b00f47757dbb29c69a129693b8ac61a2e0e60643aa124bbae203c84f",
+      "match": true,
+      "upstreamLines": 3642
+    }
+  ],
+  "locatedQuotes": [
+    {
+      "source": "S231",
+      "file": "inspector_dom_agent.cc",
+      "lines": "645-649",
+      "quote": "node = DOMNodeIds::NodeForId(backend_node_id.value()); ... \"No node found for given backend id\"",
+      "use": "AssertNode resolves a backendNodeId in the RECEIVING renderer's map; a miss answers 'No node found for given backend id'"
+    },
+    {
+      "source": "S231",
+      "file": "inspector_dom_agent.cc",
+      "lines": "1806-1809",
+      "quote": "html_input_element->FormControlType() != FormControlType::kInputFile ... \"Node is not a file input element\"",
+      "use": "the observed error means the id RESOLVED to a non-file-input node"
+    },
+    {
+      "source": "S232",
+      "file": "dom_node_ids.cc",
+      "lines": "18, 21-26, 28-34",
+      "quote": "DOMNodeId g_last_id = 0; ... return ++g_last_id; ... DEFINE_STATIC_LOCAL(Persistent<RefType>, map_instance, ...)",
+      "use": "one process-static id counter and one process-static id->node map per renderer process"
+    },
+    {
+      "source": "S232",
+      "file": "dom_node_ids.cc",
+      "lines": "48-61, 69-78",
+      "quote": "DOMNodeId DOMNodeIds::IdForNode(Node* node) ... Node* DOMNodeIds::NodeForId(DOMNodeId id)",
+      "use": "ids are minted and looked up in that same per-process map"
+    }
+  ],
+  "scratch": "/fast/scratch/hyaku/tabi-r93/R93Scribe (removed before yield)",
+  "tools": "curl + base64 + sha256sum from the host base install; no packages installed or upgraded"
+}

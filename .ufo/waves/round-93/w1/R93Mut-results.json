@@ -1,0 +1,786 @@
+{
+  "counter": "/fast/scratch/hyaku/tabi-r93/R93Mut/lane/scripts/check-cross-session-answer-round93.mjs",
+  "pristineSha256": "3c721b668e553050ed6450d7b2e1881a864d191ef243ce410c37d5f04e36f1e3",
+  "restoredSha256": "3c721b668e553050ed6450d7b2e1881a864d191ef243ce410c37d5f04e36f1e3",
+  "baselineRc": 0,
+  "restoredRc": 0,
+  "totalMutants": 54,
+  "killed": 40,
+  "survived": 14,
+  "survivors": [
+    "m-driverpin-dropfile",
+    "m-ports-hi-const",
+    "m-childurl-nosearch",
+    "m-parenturl-userinfo-drop",
+    "m-iframes-x-ge1",
+    "m-chooser-backend-ge0",
+    "m-chooser-nobackendpos",
+    "m-chooser-noframeidtype",
+    "m-iframes-x-nobitlen",
+    "m-describepage-x-nosession",
+    "m-crossanswer-s-nofiles",
+    "m-verdict-alwaysclean",
+    "m-live-driverpin-off",
+    "m-refuse-exit0"
+  ],
+  "results": [
+    {
+      "id": "baseline-pristine",
+      "line": null,
+      "diff": "none",
+      "rc": 0,
+      "killed": null,
+      "failed": []
+    },
+    {
+      "id": "m-schema-ne",
+      "line": 108,
+      "old": "receipt.schema === SCHEMA",
+      "new": "receipt.schema !== SCHEMA",
+      "diff": "- receipt.schema === SCHEMA\n+ receipt.schema !== SCHEMA",
+      "mutantSha256": "d3106d8fba96dbd0f03605622ddaa48736e8719fda89d97e0d64c48720378a23",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive",
+        "do-nothing-r92-receipt"
+      ]
+    },
+    {
+      "id": "m-nonce-ne",
+      "line": 109,
+      "old": "receipt.nonce === expectNonce",
+      "new": "receipt.nonce !== expectNonce",
+      "diff": "- receipt.nonce === expectNonce\n+ receipt.nonce !== expectNonce",
+      "mutantSha256": "0545bdcdfc0b64246b0379ad7c3f80292a710e6a2cff2889950df1b7cfb86683",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive",
+        "wrong-nonce"
+      ]
+    },
+    {
+      "id": "m-driverpin-dropfile",
+      "line": 110,
+      "old": "receipt.driverSha256 === pin && driverSha === pin",
+      "new": "receipt.driverSha256 === pin",
+      "diff": "- receipt.driverSha256 === pin && driverSha === pin\n+ receipt.driverSha256 === pin",
+      "mutantSha256": "4ff35c3fdc058b16e8d4df6ffc8ef38981b7880d5049636c745fbea124a22c9e",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-chromium-dropincludes",
+      "line": 111,
+      "old": "typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG)",
+      "new": "typeof receipt.chromium === 'string'",
+      "diff": "- typeof receipt.chromium === 'string' && receipt.chromium.includes(CHROMIUM_TAG)\n+ typeof receipt.chromium === 'string'",
+      "mutantSha256": "45d1e21cf7d2b3c992d71cb04e12f1583250004683898bcd4153dceeb35416f6",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "chromium-other"
+      ]
+    },
+    {
+      "id": "m-crossthost-ne",
+      "line": 112,
+      "old": "receipt.crossHost === 'localhost'",
+      "new": "receipt.crossHost !== 'localhost'",
+      "diff": "- receipt.crossHost === 'localhost'\n+ receipt.crossHost !== 'localhost'",
+      "mutantSha256": "64b0d34ba7dac324284e24641da8e91deaad119734fc4988e6267d31169d0807",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive",
+        "cross-host-same-site"
+      ]
+    },
+    {
+      "id": "m-reps-ne",
+      "line": 113,
+      "old": "receipt.reps === reps",
+      "new": "receipt.reps !== reps",
+      "diff": "- receipt.reps === reps\n+ receipt.reps !== reps",
+      "mutantSha256": "9b8286299eddcff0e85c078fba2f51e70efc4cd462501a29cdb1eac257f4b987",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive",
+        "reps-identity"
+      ]
+    },
+    {
+      "id": "m-answer-true",
+      "line": 114,
+      "old": "eq(receipt.answer, { name: ANSWER[0], size: ANSWER[1] })",
+      "new": "true",
+      "diff": "- eq(receipt.answer, { name: ANSWER[0], size: ANSWER[1] })\n+ true",
+      "mutantSha256": "39ca89069f561b9ac0a499a07e750ec3e7b803beef7b9017fd14285070fd4046",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "answer-identity"
+      ]
+    },
+    {
+      "id": "m-ports-nodistinct",
+      "line": 116,
+      "old": " && new Set([ports.http, ports.child, ports.cdp]).size === 3",
+      "new": "",
+      "diff": "-  && new Set([ports.http, ports.child, ports.cdp]).size === 3\n+ ",
+      "mutantSha256": "01ad35e967099fb398240132078cb2b6c033788ebc3019dcf01a2f1117cc2dba",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "ports-collide"
+      ]
+    },
+    {
+      "id": "m-ports-hi-const",
+      "line": 116,
+      "old": "p <= 65535",
+      "new": "p <= 99999",
+      "diff": "- p <= 65535\n+ p <= 99999",
+      "mutantSha256": "517e851fd8d61b126926342304be6ff043b306358074f0f07d2cc3ef2c4f09e7",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-legset-true",
+      "line": 120,
+      "old": "eq(legs.map((l) => (isObj(l) ? l.leg : null)), want)",
+      "new": "true",
+      "diff": "- eq(legs.map((l) => (isObj(l) ? l.leg : null)), want)\n+ true",
+      "mutantSha256": "8d3a8f33f482e5f8f92a41c19184e28622d1add0f66e9fba2a303ad2a91e44aa",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "drop-leg",
+        "dup-leg-contradictory",
+        "leg-order-swapped",
+        "fabricated-leg-label"
+      ]
+    },
+    {
+      "id": "m-failures-nolength",
+      "line": 122,
+      "old": "Array.isArray(receipt.failures) && receipt.failures.length === 0",
+      "new": "Array.isArray(receipt.failures)",
+      "diff": "- Array.isArray(receipt.failures) && receipt.failures.length === 0\n+ Array.isArray(receipt.failures)",
+      "mutantSha256": "2b5256d923449a30ff2e78b9b0a84a5dc7faf8235b19cd83b5196db5eee19b25",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "failures-listed-legs-clean"
+      ]
+    },
+    {
+      "id": "m-failures-noerrlegs",
+      "line": 122,
+      "old": " && errLegs.length === 0",
+      "new": "",
+      "diff": "-  && errLegs.length === 0\n+ ",
+      "mutantSha256": "5a6ade16698a1f05740ead3953c949ae77b1a9790a6ae6053b57cce4c8579700",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "leg-error-failures-empty"
+      ]
+    },
+    {
+      "id": "m-freshbrowser-nodistinct",
+      "line": 124,
+      "old": " && new Set(ids).size === ids.length",
+      "new": "",
+      "diff": "-  && new Set(ids).size === ids.length\n+ ",
+      "mutantSha256": "f789d9cfd5ea501426fd09ad1c906697bf884cd12a0b1fe7caca45d1e5bcc2bb",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "browser-reused"
+      ]
+    },
+    {
+      "id": "m-legarm-norep",
+      "line": 131,
+      "old": "l.arm === arm && l.rep === Number(m[2])",
+      "new": "l.arm === arm",
+      "diff": "- l.arm === arm && l.rep === Number(m[2])\n+ l.arm === arm",
+      "mutantSha256": "99fcbf1b5561374cd8067b560f9ffabb53fad8db691e6e6bcdcc64c46c47401f",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "rep-relabel"
+      ]
+    },
+    {
+      "id": "m-legerror-ne",
+      "line": 134,
+      "old": "l.error === null",
+      "new": "l.error !== null",
+      "diff": "- l.error === null\n+ l.error !== null",
+      "mutantSha256": "9fccfcba41f38fe8d1fd92ae01946779d5397e095c09e5147fc6a4bbb3bac21b",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-browserver-ne",
+      "line": 135,
+      "old": "l.browserVersion === BROWSER",
+      "new": "l.browserVersion !== BROWSER",
+      "diff": "- l.browserVersion === BROWSER\n+ l.browserVersion !== BROWSER",
+      "mutantSha256": "0bfa156379b1eb50342b6074644d365666fc6ed93d77bb0ea7f2ea3af2a21ca6",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-childhost-ne",
+      "line": 136,
+      "old": "l.childHost === host",
+      "new": "l.childHost !== host",
+      "diff": "- l.childHost === host\n+ l.childHost !== host",
+      "mutantSha256": "5a384b077da3696167a123c0558c7c681142096f686f3b59e478d6b98139de4b",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-childurl-proto-https",
+      "line": 139,
+      "old": "cu.protocol === 'http:'",
+      "new": "cu.protocol === 'https:'",
+      "diff": "- cu.protocol === 'http:'\n+ cu.protocol === 'https:'",
+      "mutantSha256": "b797329deb2ded4011969be0bf3e3bedfc2b6cf33429dfc57b39b53aa24be4cc",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-childurl-nosearch",
+      "line": 139,
+      "old": " && cu.search === '?leg=' + id",
+      "new": "",
+      "diff": "-  && cu.search === '?leg=' + id\n+ ",
+      "mutantSha256": "1b8bd8d4dc4082b39fc3c30167f4f972fdebd38cf1eca307a67d155e14587fe5",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-childurl-path-parent",
+      "line": 139,
+      "old": "cu.pathname === '/child.html'",
+      "new": "cu.pathname === '/parent.html'",
+      "diff": "- cu.pathname === '/child.html'\n+ cu.pathname === '/parent.html'",
+      "mutantSha256": "6fe704d8739317321b482d128c1bcf57f8114ee16fda4ef38d4e3fbfe2454587",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-parenturl-nouserinfo",
+      "line": 140,
+      "old": " && cu.username === '' && cu.password === ''",
+      "new": "",
+      "diff": "-  && cu.username === '' && cu.password === ''\n+ ",
+      "mutantSha256": "226aecefb1659bfb5cee038b8ad8f715bfe6630ff5e247688196961baf849460",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "child-url-userinfo"
+      ]
+    },
+    {
+      "id": "m-parenturl-userinfo-drop",
+      "line": 140,
+      "old": " && pu.username === '' && pu.password === ''",
+      "new": "",
+      "diff": "-  && pu.username === '' && pu.password === ''\n+ ",
+      "mutantSha256": "7ddbfb31095219bf092b6f79c0fd3a203f0562e90ad648a9331d771928b33ff0",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-host-brancheswap",
+      "line": 133,
+      "old": "arm === 'X' ? 'localhost' : '127.0.0.1'",
+      "new": "arm === 'X' ? '127.0.0.1' : 'localhost'",
+      "diff": "- arm === 'X' ? 'localhost' : '127.0.0.1'\n+ arm === 'X' ? '127.0.0.1' : 'localhost'",
+      "mutantSha256": "d233ac49ca5fd94a742c40e7bf9d096acf2df8cb99854c3f95ed1f28ffe3bbb1",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-session-brancheswap",
+      "line": 144,
+      "old": "arm === 'X' ? 'iframe' : 'page'",
+      "new": "arm === 'X' ? 'page' : 'iframe'",
+      "diff": "- arm === 'X' ? 'iframe' : 'page'\n+ arm === 'X' ? 'page' : 'iframe'",
+      "mutantSha256": "97498fc609eae9b232b2516229837d837e97c2943b53ff7d2dbf99fc36a5f12c",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-iframes-x-ge1",
+      "line": 146,
+      "old": "attachedIframes.length === 1",
+      "new": "attachedIframes.length >= 1",
+      "diff": "- attachedIframes.length === 1\n+ attachedIframes.length >= 1",
+      "mutantSha256": "5a10808e0dd526053eae5ae872ed393c43ac8435c3a82126bccffa33eefa614e",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-iframes-x-nourl",
+      "line": 146,
+      "old": " && bit[0].url === l.childUrl",
+      "new": "",
+      "diff": "-  && bit[0].url === l.childUrl\n+ ",
+      "mutantSha256": "d2403c7ff48de1f61592f02d5afb5d7200f7d41996012aa32ddb05d9f00737f8",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-target-url-wrong"
+      ]
+    },
+    {
+      "id": "m-iframes-x-noframeid",
+      "line": 146,
+      "old": " && attachedIframes[0].targetId === l.childFrameId",
+      "new": "",
+      "diff": "-  && attachedIframes[0].targetId === l.childFrameId\n+ ",
+      "mutantSha256": "ab8143506a1639293155ed42012437f833b37ba0975dfea32b7c55f81390d630",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-target-not-child-frame"
+      ]
+    },
+    {
+      "id": "m-iframes-s-le1",
+      "line": 148,
+      "old": "attachedIframes.length === 0",
+      "new": "attachedIframes.length <= 1",
+      "diff": "- attachedIframes.length === 0\n+ attachedIframes.length <= 1",
+      "mutantSha256": "e9506c5198b5e9e92544958843694d530737f9a5a126a0d00d783efa5f3b010b",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "s-has-iframe-target"
+      ]
+    },
+    {
+      "id": "m-chooser-count-ge1",
+      "line": 151,
+      "old": "choosers.length === 1",
+      "new": "choosers.length >= 1",
+      "diff": "- choosers.length === 1\n+ choosers.length >= 1",
+      "mutantSha256": "f464759921a4d08dd1af887cdb82759e7c876637477bc06c10574f2452db9802",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "dup-chooser"
+      ]
+    },
+    {
+      "id": "m-chooser-backend-ge0",
+      "line": 151,
+      "old": "c0.backendNodeId > 0",
+      "new": "c0.backendNodeId >= 0",
+      "diff": "- c0.backendNodeId > 0\n+ c0.backendNodeId >= 0",
+      "mutantSha256": "3b62ef59401f3bf0214b3ea8dfad7207fa5ad5137868eef6b01d8125e0d40f26",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-chooser-noframe",
+      "line": 151,
+      "old": " && c0.frameId === l.childFrameId",
+      "new": "",
+      "diff": "-  && c0.frameId === l.childFrameId\n+ ",
+      "mutantSha256": "1e48eaa78f9d925053859984de7bfd551ddbf5f85e1f6d76a71df64ebbd842c2",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "chooser-wrong-frame"
+      ]
+    },
+    {
+      "id": "m-chooser-nobackendpos",
+      "line": 151,
+      "old": " && c0.backendNodeId > 0",
+      "new": "",
+      "diff": "-  && c0.backendNodeId > 0\n+ ",
+      "mutantSha256": "d728908ff3f4ecd76e9bfaa7c9657d41a54c3e18e32111fb5ef5c0e9ce5836d6",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-chooser-noframeidtype",
+      "line": 151,
+      "old": "typeof l.childFrameId === 'string' && l.childFrameId.length > 0 && ",
+      "new": "",
+      "diff": "- typeof l.childFrameId === 'string' && l.childFrameId.length > 0 && \n+ ",
+      "mutantSha256": "7583f2ad55290ab35c85ebe43a2b09b9e7be08ff0d4029d26878f375a69b635e",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-describechooser-notype",
+      "line": 106,
+      "old": " && attr(shape, 'type') === 'file'",
+      "new": "",
+      "diff": "-  && attr(shape, 'type') === 'file'\n+ ",
+      "mutantSha256": "504f6f8165eb9df4f6b15e354fb625af7c445a317ce9beee13fd0355a4216787",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "describe-chooser-text-input"
+      ]
+    },
+    {
+      "id": "m-describechooser-nosession",
+      "line": 152,
+      "old": " && l.describeChooser.session === session",
+      "new": "",
+      "diff": "-  && l.describeChooser.session === session\n+ ",
+      "mutantSha256": "22ca200f0c064f1f9a8860d829ab45e3b0c2dd36592a2df54bbbba70ae7bd301",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "describe-chooser-wrong-session"
+      ]
+    },
+    {
+      "id": "m-iframes-x-nobitlen",
+      "line": 146,
+      "old": " && !!bit && bit.length === 1",
+      "new": "",
+      "diff": "-  && !!bit && bit.length === 1\n+ ",
+      "mutantSha256": "2a2f58a2c1b280dbcbfaf6d684bf5810a46fb5087f7536cba954924af7d76be2",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-describepage-x-nosession",
+      "line": 155,
+      "old": "isObj(dp) && dp.session === 'page' && dp.error === null && dp.nodeName === '#document'",
+      "new": "isObj(dp) && dp.error === null && dp.nodeName === '#document'",
+      "diff": "- isObj(dp) && dp.session === 'page' && dp.error === null && dp.nodeName === '#document'\n+ isObj(dp) && dp.error === null && dp.nodeName === '#document'",
+      "mutantSha256": "aa961305e7a016d5ff8708bf9cedac19903e03597b3dcff0098faf7a7201accb",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-pierce-x-le1",
+      "line": 156,
+      "old": "l.pagePierceInputS === 0",
+      "new": "l.pagePierceInputS <= 1",
+      "diff": "- l.pagePierceInputS === 0\n+ l.pagePierceInputS <= 1",
+      "mutantSha256": "931574e21f7dd152949cbd8963a402286ffe572ca26428352c724d9d81e08c37",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-pierce-sees-input",
+        "x-pierce-null"
+      ]
+    },
+    {
+      "id": "m-pierce-x-le1",
+      "line": 156,
+      "old": "l.pagePierceInputS === 0",
+      "new": "l.pagePierceInputS <= 1",
+      "diff": "- l.pagePierceInputS === 0\n+ l.pagePierceInputS <= 1",
+      "mutantSha256": "931574e21f7dd152949cbd8963a402286ffe572ca26428352c724d9d81e08c37",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-pierce-sees-input",
+        "x-pierce-null"
+      ]
+    },
+    {
+      "id": "m-pierce-s-le1",
+      "line": 160,
+      "old": "l.pagePierceInputS === 1",
+      "new": "l.pagePierceInputS <= 1",
+      "diff": "- l.pagePierceInputS === 1\n+ l.pagePierceInputS <= 1",
+      "mutantSha256": "1873d259bbeb28dab0542bded4309fc6bb69d89302d4377158479a6b48a678be",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "s-pierce-zero"
+      ]
+    },
+    {
+      "id": "m-crossanswer-x-noerr",
+      "line": 157,
+      "old": "l.crossAnswer.error === CROSS_ERROR",
+      "new": "true",
+      "diff": "- l.crossAnswer.error === CROSS_ERROR\n+ true",
+      "mutantSha256": "0b9ac809963a3ee0860a902a6153f0929c024b5e7163a3a5761d1b67e14d0b62",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-cross-answer-ok",
+        "x-cross-answer-other-error",
+        "producer-pass-ignored"
+      ]
+    },
+    {
+      "id": "m-crossanswer-x-nofiles",
+      "line": 157,
+      "old": " && eq(l.filesAfterCross, [])",
+      "new": "",
+      "diff": "-  && eq(l.filesAfterCross, [])\n+ ",
+      "mutantSha256": "703518b7c1291d02bb0709c96642bbf4060a950009fc922cf59e81fdc4bd6390",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-cross-answer-delivered"
+      ]
+    },
+    {
+      "id": "m-crossanswer-s-nofiles",
+      "line": 161,
+      "old": "l.crossAnswer === null && l.filesAfterCross === null",
+      "new": "l.crossAnswer === null",
+      "diff": "- l.crossAnswer === null && l.filesAfterCross === null\n+ l.crossAnswer === null",
+      "mutantSha256": "019741eed8c019b6f8af3e651d5e47f81ca6123673c0ac6f8fe52f442936c499",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-answer-leg-noerr",
+      "line": 163,
+      "old": " && l.answer.error === null",
+      "new": "",
+      "diff": "-  && l.answer.error === null\n+ ",
+      "mutantSha256": "92ef4be4cb87f4f09a97469746feec01ca78bdeb8120d3e17138f2230f2b8079",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "answer-error"
+      ]
+    },
+    {
+      "id": "m-answer-leg-nosession",
+      "line": 163,
+      "old": "l.answer.session === session && ",
+      "new": "",
+      "diff": "- l.answer.session === session && \n+ ",
+      "mutantSha256": "b732f0e324a09f030ef0860e88d8c6e8c2b0a34f6925e260fd0b9db2ec6b5fd1",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "x-answer-on-page"
+      ]
+    },
+    {
+      "id": "m-childfiles-isarray",
+      "line": 164,
+      "old": "eq(l.childFiles, [ANSWER])",
+      "new": "Array.isArray(l.childFiles)",
+      "diff": "- eq(l.childFiles, [ANSWER])\n+ Array.isArray(l.childFiles)",
+      "mutantSha256": "336d0d6b1447a2886d9c583f1ab3b317a6739f40d86b53274833a9ffe516c356",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "empty-files",
+        "extra-file",
+        "wrong-size"
+      ]
+    },
+    {
+      "id": "m-childclick-len",
+      "line": 165,
+      "old": "eq(l.childClicks, [{ target: 's', isTrusted: true }])",
+      "new": "Array.isArray(l.childClicks) && l.childClicks.length === 1",
+      "diff": "- eq(l.childClicks, [{ target: 's', isTrusted: true }])\n+ Array.isArray(l.childClicks) && l.childClicks.length === 1",
+      "mutantSha256": "8a9f2424e36cf7c037aac5ccaf373d0d750c081b4c816365057e7932c952ba20",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "click-untrusted"
+      ]
+    },
+    {
+      "id": "m-exit-always0",
+      "line": 170,
+      "old": "process.exit(findings.length ? 1 : 0);",
+      "new": "process.exit(0);",
+      "diff": "- process.exit(findings.length ? 1 : 0);\n+ process.exit(0);",
+      "mutantSha256": "389404e73c06dae5b604315f43b742d6bac6ad85d74d25d2fc1916d0cf63961d",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "do-nothing-r92-receipt",
+        "x-page-describe-is-input",
+        "x-page-describe-error",
+        "x-page-describe-html",
+        "x-pierce-sees-input",
+        "x-pierce-null",
+        "x-cross-answer-ok",
+        "x-cross-answer-other-error",
+        "x-cross-answer-delivered",
+        "x-cross-answer-missing",
+        "x-cross-answer-on-iframe",
+        "s-cross-answer-present",
+        "s-page-describe-document",
+        "s-pierce-zero",
+        "s-pierce-two",
+        "describe-chooser-div",
+        "describe-chooser-text-input",
+        "describe-chooser-other-id",
+        "describe-chooser-wrong-session",
+        "describe-chooser-error",
+        "x-chooser-on-page",
+        "s-chooser-on-iframe",
+        "dup-chooser",
+        "no-chooser",
+        "chooser-null-backend",
+        "chooser-wrong-frame",
+        "s-has-iframe-target",
+        "s-browser-iframe-target",
+        "x-no-iframe-target",
+        "x-two-iframes",
+        "x-target-url-wrong",
+        "x-target-not-child-frame",
+        "answer-error",
+        "x-answer-on-page",
+        "answer-missing",
+        "empty-files",
+        "extra-file",
+        "wrong-size",
+        "click-untrusted",
+        "click-missed-child",
+        "drop-leg",
+        "dup-leg-contradictory",
+        "leg-order-swapped",
+        "fabricated-leg-label",
+        "non-object-leg",
+        "arm-relabel",
+        "rep-relabel",
+        "wrong-nonce",
+        "driver-sha-forged",
+        "chromium-other",
+        "cross-host-same-site",
+        "reps-identity",
+        "answer-identity",
+        "ports-collide",
+        "parent-url-other-leg",
+        "child-url-userinfo",
+        "child-url-https",
+        "x-child-host-same-site",
+        "browser-version-leg",
+        "browser-reused",
+        "failures-listed-legs-clean",
+        "leg-error-failures-empty",
+        "leg-error",
+        "producer-pass-ignored"
+      ]
+    },
+    {
+      "id": "m-verdict-alwaysclean",
+      "line": 168,
+      "old": "verdict: findings.length ? 'findings' : 'clean'",
+      "new": "verdict: 'clean'",
+      "diff": "- verdict: findings.length ? 'findings' : 'clean'\n+ verdict: 'clean'",
+      "mutantSha256": "4f6e443e895099b0988b74090b1eb13066ed631f4b867d8edc8c78ec96b23566",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-isinput-nodename-file",
+      "line": 106,
+      "old": "shape.nodeName === 'INPUT'",
+      "new": "shape.nodeName !== 'INPUT'",
+      "diff": "- shape.nodeName === 'INPUT'\n+ shape.nodeName !== 'INPUT'",
+      "mutantSha256": "a117947365d342a9537dd7c9ad7fb86fa5987e82fb0a8f96b0b9506a5c4fa2bb",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "positive"
+      ]
+    },
+    {
+      "id": "m-isinput-noerrornull",
+      "line": 106,
+      "old": "shape.error === null && ",
+      "new": "",
+      "diff": "- shape.error === null && \n+ ",
+      "mutantSha256": "f128a6694b75008f86678aa7a92a4c0ef10852d0089f6369723cdf11ec0b8869",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "describe-chooser-error"
+      ]
+    },
+    {
+      "id": "m-legshape-true",
+      "line": 127,
+      "old": "check('leg-shape', false, null",
+      "new": "check('leg-shape', true, null",
+      "diff": "- check('leg-shape', false, null\n+ check('leg-shape', true, null",
+      "mutantSha256": "6a6b8f9694d7cb298ceace21c8087f8db863e7203efb490c4327072444b3946f",
+      "rc": 1,
+      "killed": true,
+      "batteryFailed": [
+        "non-object-leg"
+      ]
+    },
+    {
+      "id": "m-live-driverpin-off",
+      "line": 73,
+      "old": "if (driverSha !== pin) {",
+      "new": "if (false) {",
+      "diff": "- if (driverSha !== pin) {\n+ if (false) {",
+      "mutantSha256": "d7ead5af3281bd0b089bff2f8c4d0ef76d65381d9881e1c70b6b7e47d8fd0529",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    },
+    {
+      "id": "m-refuse-exit0",
+      "line": 45,
+      "old": "process.exit(2);",
+      "new": "process.exit(0);",
+      "diff": "- process.exit(2);\n+ process.exit(0);",
+      "mutantSha256": "26e488dfc1e5ac90adfafd40a906a0eb30d29aa0826dede805a8cfa397d32a83",
+      "rc": 0,
+      "killed": false,
+      "batteryFailed": []
+    }
+  ]
+}

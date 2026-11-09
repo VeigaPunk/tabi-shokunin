@@ -4442,3 +4442,35 @@ The round-92 section above cites "§Wave clarifications W1-W5". `plans/round-92.
 `localhost`/`127.0.0.1` split to S228's "scheme plus eTLD+1". Neither host has a registrable domain,
 so the split comes from the WHATWG scheme-and-host fallback (S229). Read the r92 section's limit
 pointer as "W1-W6" (r92 spot-check §8 item 3). The section above is not rewritten.
+
+## Round 93 (2026-11-08, Linux host) — C1 capability `chromium-oopif-backendnode-scope-linux` (new)
+
+Base `192535d7` (the round-92 verifier spot-check commit). ONE claim. Freeze commit `7a7f39f3`
+(plan, `claims.json`, driver/counter/battery bytes, pre-freeze controls, staged sources); scored commit
+`bf0bd622` (`--live` run, nonce `tabi-r93-live-b39038e077b0`). Axes at start: all six at 9. C1 works
+coverage (a lowest tie at 9) and is a capability acquisition: what a file chooser's `backendNodeId`
+names on the CDP session OTHER than the one it arrived on (r92 declared limit 5).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-oopif-backendnode-scope-linux` (sourced: S231/S232) | `node scripts/check-cross-session-answer-round93.mjs --lane <ABS lane> --expect-driver-sha256 a0deddda855a3eb48f9dd02f6d01eee0f607e9ab319dd74c6182c1d9ecc9a4a0 --live --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CROSS-SESSION-ANSWER-R93`, exit 0 iff 0 findings) | before (base `192535d7`): the command does not exist (`git cat-file -e` rc 128); the r92 receipt under the frozen counter → rc 1 (10 finding ids). Controls at freeze: wrong-site live run rc 1, positive rc 0 at 101 checks, busy-port setup rc 2, battery 65/65. After (`bf0bd622`): rc 0, `clean`, 101 checks, 0 findings, 6 legs; reproduced clean by R93Exec1 ×2, R93Exec2 ×3 + a 10-rep run (311 checks), R93Sentinel ×1 | VERIFIED on the frozen predicate (ledger `.ufo/waves/round-93/claim-falsification.tsv`, 15 rows, all `neutral`); pending non-author closure |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below. Measured commit: `bf0bd62299c2` (scored run; the receipt's `revision` field records
+`7a7f39f3`, the master tip when the counter ran).
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-oopif-backendnode-scope-linux` | On Chromium 155.0.8059.84 `--headless=new`, show that a cross-site iframe chooser's `backendNodeId` is renderer-scoped: on the page session it names a `#document` (not the input), the page-session `setFileInputFiles` fails with `Node is not a file input element` and delivers nothing, while the iframe session names the input and answers; same-site control on the page session | `corpus/evidence/round93/chromium-oopif-backendnode-scope/receipt.json`; `.ufo/waves/round-93/scored/c1-live.json`; `corpus/knowledge/chromium-oopif-backendnode-scope-round-93.md` | 93 |
+
+Knowledge 105 → 106. Registry 230 → 232 (S231 Blink `inspector_dom_agent.cc`, S232 Blink
+`dom_node_ids.cc`, both at tag 155.0.8059.84). `SKILL.md` `## Round 93 gate registry`. Limits:
+`plans/round-93.md` §Declared limits 1-6.
+
+Planned (r94): counter maps a signalled driver (`driverRun.signal`) to `setup` and the driver runs in a
+detached group the counter kills on its own signals (R93Sentinel S4/S5); battery cases for the
+R93Mut survivors (out-of-range port, S-arm `filesAfterCross` non-null, driver-file pin, `verdict`
+field); receipt fields binding B on describe/cross/answer and the page `#document`'s
+`documentURL` (R93Critic1 hardening, R93Critic3's parent-document reading). Retired: none.

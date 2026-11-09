@@ -4229,3 +4229,41 @@ appended r91 capability-row correction; QUALITY 165; `corpus/lessons/round-89.md
 carried by round 92; README `## Round 92 coverage`; SKILL `## Round 92 gate registry`; the
 append-only gate `scripts/check-append-only-round92.mjs` (R92Exec2). **C1 VERIFIED on its frozen
 predicate.**
+
+## Round 93 — 2026-11-08 (attempts 1–2, Linux host)
+
+L1 `TabiR93` (attempt 1, ended when the orchestrator session was killed) and `TabiR93a2` (attempt 2,
+integration and filing). Base `192535d7` (the round-92 verifier spot-check commit; lane clean). ONE
+claim: C1 coverage — the NEW capability `chromium-oopif-backendnode-scope-linux`: what a cross-site
+iframe chooser's `backendNodeId` names when sent on the PAGE session (r92 declared limit 5). Sourced by
+S231 (Blink `inspector_dom_agent.cc`: `AssertNode` → `DOMNodeIds::NodeForId`; `setFileInputFiles`
+error string) and S232 (Blink `dom_node_ids.cc`: process-static id counter and map), both opened this
+round.
+
+Freeze commit `7a7f39f3` (`claims.json.frozenAt` 20:47:56, committed 20:48:00): `plans/round-93.md`
+(claim, limits 1-6, controls, counting command), `.ufo/waves/round-93/claims.json`, the driver
+`chrome-cdp-cross-session-answer-round93.mjs` (pin `a0deddda855a`), counter
+`check-cross-session-answer-round93.mjs`, battery `negatives-cross-session-answer-round93.mjs`, staged
+sources and the executed controls (base has no counter rc 128; r92 receipt rc 1; wrong-site live run
+rc 1; positive rc 0 at 101 checks; busy-port setup rc 2; battery 65/65). Scored commit `bf0bd622`:
+`--live` rc 0, clean, 101 checks, nonce `tabi-r93-live-b39038e077b0`. Records commit `9fac89c3`
+(attempt 1): knowledge note, evidence receipt, S231/S232, SKILL r93 gate registry, README late
+coverage r90-92, SCORECARD W6 correction, the freeze-stamp and log-section-claims gates.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 3 critic, 1 mutation-tester, 1 reviewer,
+1 sentinel, 1 scout, 1 scribe, 1 connector; attack seats reviewer+critic×3+mutation-tester = 5/12,
+42 %; the L1 holds the planner seat). The orchestrator session was killed mid-wave; the wave was
+finalized with `output: null` for every seat and every seat's report was read from the wave dir.
+Eleven seats filed reports; R93Scout left only its re-fetched source bytes (`R93Scout-sources/`, sha256
+of the two cited files equal to the staged copies), no narrative. Wave outcome: every seat's C1
+verdict is `neutral`; clean live reproductions by R93Exec1 ×2, R93Exec2 ×3 + 10 reps (311 checks),
+R93Sentinel ×1; R93Critic2's 4 procedure variants keep `#document` and the exact error 15/15 X legs;
+R93Critic3 (outside the claim, limit 3) shows the page-session B = 2 is the parent's own `#document`
+root 3/3; R93Critic1's 10 receipt-mode forgeries fall under limits 3-6; R93Mut kills 39/53 distinct
+mutants (14 battery gaps); R93Reviewer F1-F6 notes; R93Sentinel S4/S5 hygiene defects routed to r94.
+No predicate, counter, driver, battery, pin or control was changed after data.
+
+Records (attempt 2): `corpus/lessons/round-93.md` (gate, two mined mistakes, corrections, wave and
+gate runs); SCORECARD round-93 section and capability row; README `## Round 93 coverage`; the wave
+evidence `w1/`, `w1-results.json` and the falsification ledger. **C1 VERIFIED on its frozen
+predicate** (pending non-author closure).

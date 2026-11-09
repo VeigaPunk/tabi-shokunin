@@ -1,0 +1,42 @@
+# R93Mut — C1 counter mutation sweep (round 93, w1)
+
+- Seat: R93Mut (leaf; no subagent dispatch, no git/jj mutation, no lane edits)
+- Lane copy: `/fast/scratch/hyaku/tabi-r93/R93Mut/lane/` — pristine copy of counter, battery, driver and `corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json` at the same relative paths (battery resolves counter + r92 receipt from `--lane`). The real lane was never touched.
+- Frozen pins verified before any mutation: counter sha256 `3c721b668e553050ed6450d7b2e1881a864d191ef243ce410c37d5f04e36f1e3`, driver `a0deddda855a3eb48f9dd02f6d01eee0f607e9ab319dd74c6182c1d9ecc9a4a0`, battery `c8c15cc7368025201c949af2defd23fb048a8d17c4ba20a49659d46f3d88f6f5` (all match spec).
+- Baseline (pristine bytes): `node <battery> --lane /fast/scratch/hyaku/tabi-r93/R93Mut/lane --receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-93/controls/receipt-positive.json --expect-nonce tabi-r93-ctl-positive --expect-driver-sha256 a0deddda... --scratch /fast/scratch/hyaku/tabi-r93/R93Mut/neg --json` → rc 0, 65/65 cases ok. Exit code taken as the kill signal (rc≠0 = killed; rc 0 = survived).
+
+## Result — kill rate 40/54 (74%) — 39/53 distinct
+One mutant id (`m-pierce-x-le1`) was generated twice from a script-edit duplication; it is one distinct mutant — distinct total is 53, killed 39, same 14 survivors. Full per-mutant evidence (id, line, diff, rc, killed, battery `failed` list, mutant sha256): `.ufo/waves/round-93/w1/R93Mut-results.json`.
+
+## Survivors (battery gaps — none falsifies the C1 wording)
+
+1. `m-driverpin-dropfile` (L110: drop `&& driverSha === pin`) — spec wording clause "sha256 checked before it runs". Battery never exercises it: battery runs in `--receipt` mode, where the only `driver-pin` case (`driver-sha-forged`) mutates the *receipt's* sha, which the remaining conjunct still catches. The file-sha conjunct guards a different path — a receipt whose own sha matches the pin while the driver file on disk differs. The battery has no case with a counter whose driver file is mis-pinned. Live-run exposure: the live run would still pass a wrong-driver run — but that would be a *different driver producing different evidence*, not a leg-level statement of the predicate false; the `driver-pin` finding is simply absent. Gap, not a wording falsifier (the live receipt reader still binds `receipt.driverSha256 === pin`, and the scored receipt's sha matches the pinned driver).
+2. `m-ports-hi-const` (L116: `65535 → 99999`) — clause "three distinct ports in 1024..65535". Battery has no out-of-range-port case at all (only `ports-collide`). A receipt with port > 65535 would pass. But the driver itself validates `--ports` ranges before running (its usage refusal path), so on a live run the receipt cannot carry such a port. Not live-reachable; battery gap only.
+3. `m-childurl-nosearch` (L139: drop `cu.search === '?leg=' + id`) — clause "paths and `?leg=<id>` queries". Battery has no child-url-query case (`parent-url-other-leg` exists for the parent URL, nothing for the child query). A live receipt with a wrong `?leg=` could pass. However the query is produced by the driver from the same leg label it writes everywhere else, so a *live* inconsistency would need driver misbehaviour, not a counter flaw the wording depends on. Battery gap.
+4. `m-parenturl-userinfo-drop` (L140: drop `pu.username/password === ''`) — clause "without userinfo" (parent URL). Battery has `child-url-userinfo` (child only). Note `m-parenturl-nouserinfo` (dropping the *child* check) was killed — misnamed, its target was the child-url line. Same reasoning as (3): driver-generated URLs; not live-reachable without driver misbehaviour. Battery gap.
+5. `m-iframes-x-ge1` (L146: `length === 1 → length >= 1` for attached iframes) — clause "exactly one attached `iframe` target". Battery has `x-two-iframes` but that mutator pushes to BOTH `attached` and `browserIframeTargets`, so the untouched `bit.length === 1` conjunct still catches it. No battery case isolates the attached-list count. On a live run, an attached list of 2 with a clean browser-targets list is not producible by the driver. Battery gap — but note this is the sharpest one: a two-attached-targets leg passing the counter would contradict "exactly one" wording, yet it cannot arise from the pinned driver (the driver reports the browser's actual target list, and the S/X arm shapes are structural). Gap, not a live falsifier.
+6. `m-describepage-x-nosession` (L155: drop `dp.session === 'page'`) — clause "`DOM.describeNode {backendNodeId: B}` on the PAGE session returns … a `#document` node". Battery has no case flipping `describePage.session` for X legs (`x-cross-answer-on-iframe` covers `crossAnswer.session` instead). Same caveat: driver stamps the session it actually queried. Battery gap.
+7. `m-crossanswer-s-nofiles` (L161: drop `l.filesAfterCross === null` in S arm) — clause for S: "no cross-session answer is sent". Battery `s-cross-answer-present` sets `crossAnswer` present, caught by the first conjunct. A receipt with `crossAnswer === null` but `filesAfterCross !== null` would pass. Driver-written receipts set both from the same branch. Battery gap.
+8. `m-verdict-alwaysclean` (L168: `verdict: 'clean'`) — battery checks only rc and finding ids, never `verdict`. The scored artifact's verdict field is not a predicate clause; the kill rule keys on exit code / findings. A counter that lies about `verdict` while keeping exit code + findings correct preserves the claim's counting command result. Battery gap (cosmetic).
+9. `m-live-driverpin-off` (L73: `if (driverSha !== pin)` → `if (false)`) — battery only runs `--receipt` mode, so live-only guards (driver pin before run, driver exit-2 → setup) are structurally unexercised by the battery; they belong to the live control (setup-busyport) family, not the negatives battery. The freeze controls ran these paths separately (`rc.txt`, `counter-setup-busyport.json`). Battery gap by design.
+10. `m-refuse-exit0` (L45: refuse exits 2 → 0) — same reason as (9): every battery invocation passes valid flags, so `refuse` never fires. Uncovered by battery, exercised by the setup control. Battery gap by design.
+
+11. `m-chooser-backend-ge0` (`> 0 → >= 0`), `m-chooser-nobackendpos` (drop `backendNodeId > 0`), `m-chooser-noframeidtype` (drop childFrameId string/length check), `m-iframes-x-nobitlen` (drop browser-targets length check) — battery cases cover chooser session/frameId/count and target counts together (`dup-chooser`, `chooser-wrong-frame`, `x-two-iframes`), so single-conjunct drops survive. All guarded quantities come from the driver's actual CDP observations; driver-produced receipts cannot carry a B<=0 or a second target while keeping the sibling conjuncts clean. Battery gaps, not live-reachable.
+
+## Restoration evidence
+
+- Pristine sha256 `3c721b…e3` asserted at start; every mutant written only to the scratch copy; finally-clause restores pristine bytes.
+- Post-sweep `sha256sum /fast/scratch/hyaku/tabi-r93/R93Mut/lane/scripts/check-cross-session-answer-round93.mjs` → `3c721b668e553050ed6450d7b2e1881a864d191ef243ce410c37d5f04e36f1e3` (exact match). Battery re-run on restored bytes → rc 0.
+- SCRATCH root `/fast/scratch/hyaku/tabi-r93/R93Mut/` removed with `rm -rf` immediately after copying `R93Mut-results.json` into `.ufo/waves/round-93/w1/`. No Chromium was launched; no ports consumed; `pgrep` check N/A (no browser processes started).
+
+## --live exposure assessment
+
+**No survivor maps to a wording clause the live run could get wrong.** Every surviving mutant guards a condition the pinned driver cannot produce (§5, §2, §3, §4, §6, §7, §11) or a path the battery structurally never exercises (§1, §9, §10) — and the freeze-time `rc.txt` controls (setup-busyport, wrong-site) did exercise those paths. The core predicate clauses — X-page `#document` naming, exact `CROSS_ERROR`, pierce counts 0/1, single chooser on the right session, target identity, delivered answer shape — were all killed by the battery, i.e. the battery does pin the wording's centre.
+
+## Wording verdict
+
+VERDICT C1: neutral
+- Artifact: `.ufo/waves/round-93/w1/R93Mut-results.json` (pristine/restored sha256, baseline rc 0, 54 runs, 40 killed, survivors, restored rc 0)
+- No tool installs were needed (node/python3 already present); nothing recorded in RULES.md-relevant channels.
+
+Report: .ufo/waves/round-93/w1/R93Mut.md

@@ -1197,3 +1197,15 @@ auto-attach and its file chooser arrives and is answered on that iframe session;
 `corpus/knowledge/chromium-crosssite-iframe-chooser-round-92.md`; evidence
 `corpus/evidence/round92/chromium-crosssite-iframe-chooser/receipt.json`; gate
 `check-iframe-chooser-round92`. Admitted (`corpus/lessons/round-92-verifier-spotcheck.md`).
+
+## Round 93 coverage
+
+Capability `chromium-oopif-backendnode-scope-linux`: the `backendNodeId` B of a cross-site
+(`localhost`) iframe's file chooser, sent on the PAGE session, names a `#document` node there
+(`DOM.describeNode`), the page session's pierced document holds 0 `INPUT#s`, and
+`DOM.setFileInputFiles(B)` on the page session fails with exactly `Node is not a file input element`
+and delivers nothing; the same B on the iframe session names the `INPUT` and answers. Same-site arm:
+page session names the `INPUT` and answers. Ids are per renderer process (S231/S232).
+`corpus/knowledge/chromium-oopif-backendnode-scope-round-93.md`; evidence
+`corpus/evidence/round93/chromium-oopif-backendnode-scope/receipt.json`; gate
+`check-cross-session-answer-round93`. Pending non-author closure.

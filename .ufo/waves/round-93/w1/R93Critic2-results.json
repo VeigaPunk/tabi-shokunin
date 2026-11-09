@@ -1,0 +1,1234 @@
+{
+  "seat": "R93Critic2",
+  "probe": "R93Critic2-probe.mjs --variant=<a|b|c|d|base>; one variable per run; lane driver untouched (sha256 a0dedd... verified pre-copy)",
+  "pinnedDriverSha256": "a0deddda855a3eb48f9dd02f6d01eee0f607e9ab319dd74c6182c1d9ecc9a4a0",
+  "probeSha256": {
+    "a_b_d_and_base_runs": "ebefe6d32bf4a8585116692eec19a5e985dea1cec6c50e1722a077bbdba9f4d3",
+    "c_fixed_run": "76e7390a084872a47095b132cb1c7c42d0aff52b113cd492eb57a68adc377281",
+    "note": "Only diff between the two probe builds: in variant (c) S-legs the correct-session answer was initially skipped by a guard bug (if VARIANT!=='c'); fixed to if (!(VARIANT==='c' && csid!==ps)). X-leg behavior identical in both builds. Both c receipts preserved."
+  },
+  "ports": {
+    "http": 19421,
+    "child": 19422,
+    "cdp": 19423
+  },
+  "commands": [
+    {
+      "variant": "base",
+      "cmd": "TMPDIR=/fast/scratch/hyaku/tabi-r93/R93Critic2 node .ufo/waves/round-93/w1/R93Critic2-probe.mjs --variant=base --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --nonce tabi-r93-critic2base --scratch /fast/scratch/hyaku/tabi-r93/R93Critic2/base-out --out /fast/scratch/hyaku/tabi-r93/R93Critic2/base-receipt.json --http-port 19421 --child-port 19422 --cdp-port 19423 --reps 3",
+      "rc": 0
+    },
+    {
+      "variant": "a",
+      "cmd": "same with --variant=a --nonce tabi-r93-critic2a --scratch .../var-a --out .../var-a-receipt.json",
+      "rc": 0
+    },
+    {
+      "variant": "b",
+      "cmd": "same with --variant=b --nonce tabi-r93-critic2b --scratch .../var-b --out .../var-b-receipt.json",
+      "rc": 0
+    },
+    {
+      "variant": "c_firstdraft",
+      "cmd": "same with --variant=c --nonce tabi-r93-critic2c --scratch .../var-c --out .../var-c-receipt.json",
+      "rc": 0,
+      "note": "X legs valid; S legs discarded (guard bug skipped S answer; final [] is a probe artifact, NOT a law reading)"
+    },
+    {
+      "variant": "c_fixed",
+      "cmd": "same with --variant=c --nonce tabi-r93-critic2c2 --scratch .../var-c2 --out .../var-c2-receipt.json (probe after S-guard fix)",
+      "rc": 0
+    },
+    {
+      "variant": "d",
+      "cmd": "same with --variant=d --nonce tabi-r93-critic2d --scratch .../var-d --out .../var-d-receipt.json",
+      "rc": 0
+    }
+  ],
+  "variants": [
+    {
+      "variant": "base",
+      "label": "base (pinned procedure, probe rebuild)",
+      "nonce": "tabi-r93-critic2base",
+      "driverSha256": "ebefe6d32bf4a8585116692eec19a5e985dea1cec6c50e1722a077bbdba9f4d3",
+      "chromium": "Chromium 155.0.8059.84 Arch Linux",
+      "receipt": "base-receipt.json",
+      "scratch": "/fast/scratch/hyaku/tabi-r93/R93Critic2/base",
+      "legs": [
+        {
+          "leg": "X-1",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-1",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-2",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-2",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 4,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-3",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-3",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        }
+      ]
+    },
+    {
+      "variant": "a",
+      "label": "(a) DOM.enable+DOM.getDocument on page session BEFORE click",
+      "nonce": "tabi-r93-critic2a",
+      "driverSha256": "ebefe6d32bf4a8585116692eec19a5e985dea1cec6c50e1722a077bbdba9f4d3",
+      "chromium": "Chromium 155.0.8059.84 Arch Linux",
+      "receipt": "var-a-receipt.json",
+      "scratch": "/fast/scratch/hyaku/tabi-r93/R93Critic2/var-a",
+      "legs": [
+        {
+          "leg": "X-1",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        },
+        {
+          "leg": "S-1",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        },
+        {
+          "leg": "X-2",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        },
+        {
+          "leg": "S-2",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        },
+        {
+          "leg": "X-3",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        },
+        {
+          "leg": "S-3",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": {
+            "domEnable": "ok (no error field)",
+            "domGetDocumentError": null,
+            "domGetDocumentNodeName": "#document"
+          },
+          "legError": null
+        }
+      ]
+    },
+    {
+      "variant": "b",
+      "label": "(b) nodeId via page-session DOM.pushNodesByBackendIdsToFrontend",
+      "nonce": "tabi-r93-critic2b",
+      "driverSha256": "ebefe6d32bf4a8585116692eec19a5e985dea1cec6c50e1722a077bbdba9f4d3",
+      "chromium": "Chromium 155.0.8059.84 Arch Linux",
+      "receipt": "var-b-receipt.json",
+      "scratch": "/fast/scratch/hyaku/tabi-r93/R93Critic2/var-b",
+      "legs": [
+        {
+          "leg": "X-1",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "pushError": null,
+            "nodeIds": [
+              1
+            ],
+            "nodeIdUsed": 1
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-1",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-2",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "pushError": null,
+            "nodeIds": [
+              1
+            ],
+            "nodeIdUsed": 1
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-2",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-3",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "pushError": null,
+            "nodeIds": [
+              1
+            ],
+            "nodeIdUsed": 1
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-3",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        }
+      ]
+    },
+    {
+      "variant": "c",
+      "label": "(c) iframe-session answer FIRST, then cross-session call",
+      "nonce": "tabi-r93-critic2c2",
+      "driverSha256": "76e7390a084872a47095b132cb1c7c42d0aff52b113cd492eb57a68adc377281",
+      "chromium": "Chromium 155.0.8059.84 Arch Linux",
+      "receipt": "var-c2-receipt.json",
+      "scratch": "/fast/scratch/hyaku/tabi-r93/R93Critic2/var-c2",
+      "legs": [
+        {
+          "leg": "X-1",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "order": "after-correct-answer"
+          },
+          "filesAfterCross": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-1",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-2",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "order": "after-correct-answer"
+          },
+          "filesAfterCross": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-2",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-3",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element",
+            "order": "after-correct-answer"
+          },
+          "filesAfterCross": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-3",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        }
+      ]
+    },
+    {
+      "variant": "d",
+      "label": "(d) 5 extra elements before iframe",
+      "nonce": "tabi-r93-critic2d",
+      "driverSha256": "ebefe6d32bf4a8585116692eec19a5e985dea1cec6c50e1722a077bbdba9f4d3",
+      "chromium": "Chromium 155.0.8059.84 Arch Linux",
+      "receipt": "var-d-receipt.json",
+      "scratch": "/fast/scratch/hyaku/tabi-r93/R93Critic2/var-d",
+      "legs": [
+        {
+          "leg": "X-1",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-1",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-2",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-2",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "X-3",
+          "arm": "X",
+          "chooserSession": "iframe",
+          "backendNodeId": 2,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "#document",
+          "describePageAttributes": [],
+          "describePageError": null,
+          "pagePierceInputS": 0,
+          "crossAnswer": {
+            "session": "page",
+            "error": "Node is not a file input element"
+          },
+          "filesAfterCross": [],
+          "answer": {
+            "session": "iframe",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        },
+        {
+          "leg": "S-3",
+          "arm": "S",
+          "chooserSession": "page",
+          "backendNodeId": 5,
+          "describeChooserNodeName": "INPUT",
+          "describeChooserAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageNodeName": "INPUT",
+          "describePageAttributes": [
+            "type",
+            "file",
+            "id",
+            "s"
+          ],
+          "describePageError": null,
+          "pagePierceInputS": 1,
+          "crossAnswer": null,
+          "filesAfterCross": null,
+          "answer": {
+            "session": "page",
+            "error": null
+          },
+          "childFiles": [
+            [
+              "tabi-r93-answer.txt",
+              22
+            ]
+          ],
+          "variantA": null,
+          "legError": null
+        }
+      ]
+    }
+  ],
+  "discarded_firstdraft_c": {
+    "receipt": "var-c-receipt.json (preserved as R93Critic2-var-c-firstdraft-receipt.json)",
+    "S_legs_explanation": "Probe guard `if (VARIANT !== 'c')` skipped the correct-session answer on same-session S legs; S final [] is fully explained by the skipped answer call, carries no information about the law. X legs of firstdraft match fixed run exactly."
+  },
+  "interpretation": {
+    "stableAcrossVariants": [
+      "X describePage nodeName == #document (3/3 every variant incl. base)",
+      "X describeChooser == INPUT[type=file,id=s] (3/3 every variant)",
+      "X pagePierceInputS == 0 (3/3 every variant)",
+      "X crossAnswer error == 'Node is not a file input element' (3/3 every variant a,b,c,d incl. b-nodeId path and c-reversed order)",
+      "X filesAfterCross == [] when cross precedes correct answer (base,a,b,d); == [answer] only trivially in c where correct answer already delivered",
+      "X final childFiles == [[tabi-r93-answer.txt,22]] (3/3 every variant)",
+      "S describePage == INPUT[type=file,id=s], pierce == 1, final == [[tabi-r93-answer.txt,22]] (3/3 every variant incl. fixed c)"
+    ],
+    "procedureSpecific": [
+      "'#document' identity is NOT procedure-specific: it survives pre-enabling the DOM domain (a), survives switching the cross-call handle from backendNodeId to pushNodesByBackendIdsToFrontend nodeId (b, pushError null, nodeIds [1]), survives reversed answer order (c), survives 5 extra parent elements (d). B==2 on every X leg in every variant.",
+      "The (b) nodeId path needed no extra DOM.enable: pushNodesByBackendIdsToFrontend returned nodeIds [1] without error and the nodeId cross-call gave the same Blink error. So the result is not an artifact of omitting DOM.enable (pinned procedure never calls it) \u2014 method works either way.",
+      "Variant (c) filesAfterCross is order-confounded by construction: after the correct answer the input already holds the file, so 'no file delivered by cross' cannot be read there; the cross error string still holds. Frozen limit 4 ('reverse order is unmeasured') is exactly the right boundary."
+    ],
+    "falsification": "No variant falsified any frozen C1 wording clause on a pinned-procedure leg, and no variant falsified a wording clause outside the pinned procedure either except where the procedure itself (c order, S-guard bug) made the reading uninterpretable; those are declared-unmeasured or probe artifacts, not wording falsifiers. The '#document' clause, the exact cross error string, the empty-after-cross reading (in pinned order), the INPUT-on-chooser-session reading, and the S-arm INPUT reading all held in every interpretable leg (24/24 interpretable legs across 5 run sets incl. base)."
+  },
+  "VERDICT C1": "neutral (see R93Critic2.md)"
+}
