@@ -1256,10 +1256,11 @@ input.
 
 Capability `client-oopif-filechooser-linux` (the lane's first client-library chooser surface; r92-r95
 measured raw CDP only): on Chromium 155.0.8059.84 `--headless=new`, with puppeteer-core 25.16.0 and
-playwright-core 1.65.0 attached over CDP, a file chooser opened by an `<input type=file>` inside a
-cross-site (`localhost`) iframe is never seen by Puppeteer's `page.waitForFileChooser({timeout: 3000})`
-(`TimeoutError`, nothing filled) — even when a second raw CDP connection intercepting on that iframe's
-own session receives the `Page.fileChooserOpened` — while the same call resolves for a same-site child,
+playwright-core 1.65.0 (the `--deps` trees whose pinned fields match) attached over CDP, a file chooser
+opened by an `<input type=file>` inside a cross-site (`localhost`) iframe ends Puppeteer's
+`page.waitForFileChooser({timeout: 3000})` in `TimeoutError` with nothing filled on every measured leg —
+while, on the witness legs, a second raw CDP connection intercepting on that iframe's own session
+receives the `Page.fileChooserOpened` — whereas the same call resolves for a same-site child,
 and Playwright's `page.waitForEvent('filechooser')` resolves and `setFiles` fills the child for both.
 Mechanism (source account, S236): Puppeteer binds its chooser listener and
 `Page.setInterceptFileChooserDialog` to the page's primary target session only; Playwright listens per

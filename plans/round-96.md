@@ -149,3 +149,48 @@ Exit 0 and `verdict: clean` → C1 after-state met.
 2. D1-D3 (mined-gate isolated fixtures, `receiptCommitted` on scored outputs, LOG unparsed token) and the
    17 R95Mut survivors stay queued in SCORECARD Planned; one claim per round, and none of them moves the
    coverage surface this claim moves.
+
+## Post-wave amendment A1 (addendum §8; recorded after the wave, before filing)
+
+Causes: `.ufo/waves/round-96/w1/R96Scribe.md` (verdict `falsifies-wording`, findings 2-4) read the
+§Claim "Surface moved" prose — "Puppeteer v25.16.0 never resolves `page.waitForFileChooser()` for a
+chooser opened inside a cross-site iframe — even when a separate CDP connection proves the chooser opened
+in that iframe" — against the instrument; `.ufo/waves/round-96/w1/R96Sentinel.md` (verdict
+`falsifies-wording`) showed the predicate's library subject is enforced only through three pinned
+fields (item 4). The counter bytes, the driver bytes, the scored run and every number are unchanged;
+R96Critic1 mapped every predicate sentence to an enforcing line. This amendment narrows the wording to
+what the instrument enforces (items 1-3: the prose; item 4: the predicate's library subject):
+
+1. **"never resolves" (R96Scribe item 2)** is read as: on the 6 cross-site Puppeteer legs of the
+   counting command (PPX ×3, PPW ×3; `connect`, `timeout: 3000`, one Chromium build, `localhost` vs
+   `127.0.0.1`), the wait ended with `TimeoutError` and the exact 3000 ms message. Longer waits, `launch`
+   and later events stay outside the claim (limits 2 and 4). R96Exec3's 15000 ms and `launch` probes
+   (also timeouts, 3/3 each) and R96Critic2's sweep (no other CDP path in v25.16.0 resolves a chooser) are
+   recorded as wave observations, not as widening.
+2. **"a chooser opened inside a cross-site iframe" (R96Scribe items 2 and 4)** is proven only on the PPW
+   legs, by the witness, as limit 4 already states; on PPX the claim is the timeout and the empty child.
+3. **Playwright mechanism citation (R96Scribe item 3).** "S230 (Playwright `crPage.ts` v1.65.0,
+   per-frame-session listener)": the S230 row's located quote is lines 636-637 (`_handleFrameTree`), not
+   the listener. The per-frame-session listener is read in the pinned bytes `lib/coreBundle.js` line
+   39325 (one `Page.fileChooserOpened` listener per `CRFrameSession`) and lines 39147-39148 / 39857-39863
+   (interception fanned out to every frame session) — R96Critic2 §4, re-located by the L1 with `sed -n`
+   on the pinned install — and in source by R96Scout (S-i, crPage.ts v1.65.0 line 445). It stays the
+   source's account (limit 5); no row is added for it this round.
+4. **Library identity (R96Sentinel, `.ufo/waves/round-96/w1/R96Sentinel.md`, verdict `falsifies-wording`).**
+   The predicate's subject "puppeteer-core 25.16.0 / playwright-core 1.65.0" is enforced as: the client
+   loaded from `--deps` whose `package.json` version, `package-lock.json` integrity string (echoed, not
+   verified against the installed tree) and one chooser-bearing file's sha256 equal the pins. Variant C
+   (a comment-only edit to `lib/puppeteer/cdp/CdpSession.js`, every pin identical) scored `clean`;
+   variant A (a `Connection.js` patch that re-emits OOPIF choosers on the primary session, every pin
+   identical) scored 12 leg findings (`pp-timeout`, `child-files` on PPX/PPW) — so the counter binds
+   BEHAVIOUR of whatever tree is at `--deps`, and identity only through the three fields. The claim is
+   narrowed to: a clean `--live` verdict states the leg outcomes of the `--deps` tree whose three pinned
+   fields match; that this tree is the published npm artifact is trusted (limit 2 extended: the lockfile
+   integrity is not verified against the installed bytes, transitive packages are unhashed). Not
+   retroactive: every `--live` run cited this round (scored, tip, R96Exec1 ×2, R96Exec2 ×2, R96Sentinel
+   baseline) used a fresh `npm install` from the registry, and those installs reproduced the pinned
+   values (R96Exec1, R96Critic2, R96Sentinel record the matching sha256s). The counter's own bytes are
+   pinned in `claims.json.instruments`, not on its command line (R96Sentinel finding 6; unchanged between
+   `75fe36dc` and `3f0e422a`).
+
+The knowledge note uses the narrowed wording (title, §Why, §Limits).

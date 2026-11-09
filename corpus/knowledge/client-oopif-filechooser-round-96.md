@@ -4,7 +4,7 @@ verified-at: 2026-11-08 (round 96, Linux host, Chromium 155.0.8059.84 `--headles
 recheck: `node scripts/check-client-oopif-chooser-round96.mjs --lane <ABS lane> --expect-driver-sha256 4020e57ef865e5eed506796238bb981bb4dbcb226e8fe80eb52728585ce63b91 --receipt corpus/evidence/round96/client-oopif-filechooser/receipt.json --expect-nonce tabi-r96-live-c1225d318ea6 --json` → exit 0, `verdict: clean`, 163 checks (receipt mode on a byte copy of `.ufo/waves/round-96/scored/live-receipt.json`, sha256 `aad4611df158…`; the claim's counting command is the `--live` form in `plans/round-96.md` §Counting command, which needs an npm install of the two pinned clients)
 ---
 
-# Puppeteer's `waitForFileChooser` never sees a cross-site iframe's chooser; Playwright's `filechooser` does
+# Puppeteer 25.16.0's `waitForFileChooser` times out on a cross-site iframe's chooser; Playwright 1.65.0's `filechooser` resolves it
 
 Capability `client-oopif-filechooser-linux` (new, first-working round 96). Rounds 92-95 measured raw CDP:
 a file chooser opened by an `<input type=file>` inside a cross-site (out-of-process) iframe is reported
@@ -44,24 +44,39 @@ Puppeteer's `CdpPage` wires its page-level events once, on the primary target's 
 `clientEmitter.on('Page.fileChooserOpened', this.#onFileChooser.bind(this));` (line 361), and
 `waitForFileChooser` turns interception on with `this.#primaryTargetClient.send('Page.setInterceptFileChooserDialog', …)`
 (lines 561-562). CDP delivers events per session, and Chromium reports an OOPIF's chooser on the iframe's
-session (r92-r95), so the deferred never settles. Playwright registers the listener in every frame
-session (S230), adopts the chooser's node in the choosing frame's context and answers by `objectId`.
+session (r92-r95), so the wait's deferred is not settled within the measured 3000 ms. Playwright registers
+the listener in every frame session: S230 (`crPage.ts` v1.65.0) for the source, and in the pinned bundle
+`lib/coreBundle.js` (sha256 `4ef83305…`) each `CRFrameSession` adds its own
+`eventsHelper.addEventListener(this._client, "Page.fileChooserOpened", …)` (line 39325) and
+`updateFileChooserInterception` fans out to every frame session (lines 39147-39148, 39857-39863) — read
+in the pinned bytes by the wave critic R96Critic2 (`.ufo/waves/round-96/w1/R96Critic2.md` §4).
+
+## Wave observations outside the claim (limit probes, R96Exec3, 3 reps each, cross-site child)
+
+Not part of the frozen claim; recorded as frontier evidence (`.ufo/waves/round-96/w1/R96Exec3.md`,
+`R96Exec3-out.json`): Puppeteer `launch` (instead of `connect`) also times out at 3000 ms; Puppeteer
+`connect` with a 15000 ms wait also times out; Puppeteer `(await frame.$('#s')).uploadFile(file)` on the
+cross-site child fills it with no chooser involved; Playwright `chromium.launch` also resolves and fills.
 
 ## Practitioner rules
 
 1. Automating uploads with Puppeteer 25.16.0: do **not** rely on `page.waitForFileChooser` when the input
-   may live in a cross-site iframe — it fails silently by timeout. Whether `ElementHandle.uploadFile` (S213,
-   no chooser involved) works on an OOPIF input is **not measured here**.
+   may live in a cross-site iframe — in every measured leg it failed silently by timeout. The wave's limit
+   probe saw `ElementHandle.uploadFile` (S213, no chooser involved) fill an OOPIF input 3/3; that is a
+   seat observation, not a frozen, counted law.
 2. A raw CDP client that wants OOPIF choosers must enable `Page.setInterceptFileChooserDialog` and listen
    on the iframe's own session (r92-r95; PPW witness here).
 3. Playwright 1.65.0 handles the cross-site case through its public API (PWX).
 
-## Limits (`plans/round-96.md` §Declared limits 1-6)
+## Limits (`plans/round-96.md` §Declared limits 1-6 and §Post-wave amendment A1)
 
 One Chromium build, headless only; two client versions, attached with `connect`/`connectOverCDP` (their
-own `launch` paths unmeasured); lockfile integrity + one chooser-bearing file sha256 pinned per package,
-the rest of the install trusted; `localhost` vs `127.0.0.1` as the only cross-site pair; the Puppeteer
-outcome is "times out at 3000 ms" — a longer wait, frame-level APIs and `uploadFile` are unmeasured; only
-PPW proves a chooser opened in the iframe (interception enabled there by a second connection); the
-mechanism above is the source's account; `--receipt` mode is forgeable and the `--live` path trusts the
-host's same-UID process space.
+own `launch` paths unmeasured by the counter); the library identity is the `--deps` tree whose version,
+lockfile integrity string (echoed, not verified against the installed bytes) and one chooser-bearing
+file sha256 match the pins — the rest of the install, transitive packages included, is trusted (A1
+item 4: a comment-only edit elsewhere in puppeteer-core still scores clean, while a behaviour patch with
+identical pins scores 12 leg findings); `localhost` vs `127.0.0.1` as the only cross-site pair; the
+Puppeteer outcome is "times out at 3000 ms" on the measured legs — longer waits, frame-level APIs and
+`uploadFile` are outside the counted claim; only PPW proves a chooser opened in the iframe (interception
+enabled there by a second connection); the mechanism above is the source's account; `--receipt` mode is
+forgeable and the `--live` path trusts the host's same-UID process space.

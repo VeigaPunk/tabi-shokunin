@@ -1,0 +1,35 @@
+--- a/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js	2026-11-08 23:50:21.867690507 -0300
++++ patched-a/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js	2026-11-08 23:52:14.187614642 -0300
+@@ -11,6 +11,8 @@
+ import { createProtocolErrorMessage } from '../util/ErrorLike.js';
+ import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
+ import { CdpCDPSession } from './CdpSession.js';
++// r96 SENTINEL PATCH (scratch only): forward OOPIF file-chooser events to the parent session and enable interception on iframe sessions.
++const fcParentOf = new Map();
+ /**
+  * @public
+  */
+@@ -154,6 +156,10 @@
+             const sessionId = object.params.sessionId;
+             const session = new CdpCDPSession(this, object.params.targetInfo.type, sessionId, object.sessionId, this.#rawErrors, this.#logger);
+             this.#sessions.set(sessionId, session);
++            fcParentOf.set(sessionId, object.sessionId);
++            if (object.params.targetInfo.type === 'iframe') {
++                session.send('Page.enable').then(() => session.send('Page.setInterceptFileChooserDialog', { enabled: true })).catch(() => { });
++            }
+             this.emit(CDPSessionEvent.SessionAttached, session);
+             const parentSession = this.#sessions.get(object.sessionId);
+             if (parentSession) {
+@@ -172,6 +178,12 @@
+                 }
+             }
+         }
++        if (object.method === 'Page.fileChooserOpened' && object.sessionId && fcParentOf.has(object.sessionId)) {
++            const parentOfChooser = this.#sessions.get(fcParentOf.get(object.sessionId));
++            if (parentOfChooser) {
++                parentOfChooser.emit('Page.fileChooserOpened', object.params);
++            }
++        }
+         if (object.sessionId) {
+             const session = this.#sessions.get(object.sessionId);
+             if (session) {

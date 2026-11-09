@@ -124,3 +124,13 @@ parent, which held no file inputs. A parent with six file inputs (each with a UA
 reaches past B = 302 (P286-1: parent input ids 290-310), and B then resolves to a parent file input, a
 `#text` or the shadow `file-upload-button` (`corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`).
 The deciding fact is which node the parent renderer holds at id B, as this note's own wave finding says.
+
+## Correction — round 96 (append-only; R96Connector)
+
+Line 52-53 ("Production clients route by the frame's own session (Playwright `crPage.ts`, S230, r92)")
+is plural with a Playwright-only citation. It holds for Playwright 1.65.0. It does not hold for
+Puppeteer 25.16.0, a production client that binds its `Page.fileChooserOpened` listener and
+`Page.setInterceptFileChooserDialog` to the page's primary target session only (S236, `Page.ts` lines
+339, 361, 561-562): on a cross-site iframe chooser its `page.waitForFileChooser` times out while a raw
+witness on the iframe's session receives the event (`corpus/knowledge/client-oopif-filechooser-round-96.md`,
+legs PPW-1..3). Read the sentence as "Playwright's Chromium client routes by the frame's own session".

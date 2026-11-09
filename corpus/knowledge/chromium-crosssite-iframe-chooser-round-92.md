@@ -155,3 +155,12 @@ r92 fixture, whose parent page owns no file input. Round 95 shows the page-sessi
 parent renderer holds a file input at id B (`corpus/knowledge/chromium-oopif-backendnode-misdelivery-round-95.md`,
 leg P286-1). Line 105's limit ("answering in X on the page session is untested") is stale: rounds 93, 94
 and 95 measured it (error, collision/miss, misdelivery).
+
+## Correction — round 96 (append-only; R96Connector)
+
+Rule 3's parenthesis (S230: Playwright treats an OOPIF as "already attached in the parent session") is
+about target attachment and frame identity, not event delivery: the OOPIF's `Page.fileChooserOpened`
+still arrives on the iframe's own session (this note's table, line 41). A client that listens only on
+the page session misses it — Puppeteer 25.16.0's `page.waitForFileChooser` times out on a cross-site
+iframe chooser, while Playwright 1.65.0, which listens per frame session, resolves it
+(`corpus/knowledge/client-oopif-filechooser-round-96.md`).

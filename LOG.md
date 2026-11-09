@@ -4335,3 +4335,33 @@ summary correction, appended corrections in the r92/r93/r94 notes, `corpus/lesso
 three mined mistakes, wave), mined gate `scripts/check-scored-receipts-round95.mjs`, SCORECARD round-95
 section and capability row, wave evidence and falsification ledger. **C1 VERIFIED on its frozen predicate
 as narrowed by amendment A1** (pending non-author closure).
+
+## Round 96 — 2026-11-08/09 (attempt 1, Linux host)
+
+L1 `TabiR96`. Base `b16b3aa1` (the round-95 verifier spot-check commit; lane clean; no earlier r96 attempt
+in `.ufo/watchdog.log`). ONE claim: C1 coverage — the NEW capability `client-oopif-filechooser-linux`, the
+lane's first client-library chooser surface: with puppeteer-core 25.16.0 attached over CDP,
+`page.waitForFileChooser({timeout: 3000})` ends `TimeoutError` with nothing filled when the input lives in a
+cross-site iframe (a raw witness on the iframe session sees the chooser), resolves same-site; Playwright
+1.65.0's `filechooser` resolves and fills for both. Sourced by S236 (Puppeteer `Page.ts` v25.16.0 lines
+339/361/561-562: listener and interception on the primary target session only).
+
+Motivating evidence: R95Critic3's lead (`.ufo/waves/round-95/w1/R95Critic3.md`) and r95 limit 4 ("client
+libraries unmeasured"); the L1's pre-freeze probes (`.ufo/waves/round-96/probes/`).
+
+Freeze commit `ba611b22` (frozenAt 23:47:33): plan, claims.json, driver `4020e57ef865`, counter
+`778d429fe090`, battery `950c3ca2e557`, executed controls (incl. wrong-library `--live`, unwritable-scratch
+setup), probes, staged S236. Scored commit `75fe36dc`: `--live` rc 0, clean, 165 checks, nonce
+`tabi-r96-live-c1225d318ea6`; tip re-run at `3f0e422a` clean 165.
+
+Round shape: ONE v1 wave `w1`, 12 seats (3 executor, 3 critic, 1 mutation-tester, 1 reviewer, 1 sentinel,
+1 scout, 1 scribe, 1 connector); reviewer+critic+mutation-tester 5/12 = 42 %; 0 dead seats; L1 holds the
+planner seat. Verdicts: 10 neutral, 2 falsifies-wording (R96Scribe, R96Sentinel) → `plans/round-96.md`
+§Post-wave amendment A1 items 1-4 (counter, driver and numbers unchanged). Eight independent `--live` runs
+clean (scored, tip, R96Exec1 ×2, R96Exec2 ×2, R96Sentinel baseline, and the L1 positive control).
+
+Records: `corpus/knowledge/client-oopif-filechooser-round-96.md`, evidence receipt, S236 + search-log
+entry, SKILL `## Round 96 gate registry`, corpus/README `## Round 96 coverage`, appended corrections in
+the r92 and r94 notes, `corpus/lessons/round-96.md` (gate, two mined mistakes, wave, leads), mined
+control-label check, SCORECARD round-96 section and capability row, wave evidence and falsification
+ledger. **C1 VERIFIED on its frozen predicate as narrowed by amendment A1** (pending non-author closure).

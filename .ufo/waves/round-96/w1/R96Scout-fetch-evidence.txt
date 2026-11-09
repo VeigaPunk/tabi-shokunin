@@ -1,0 +1,65 @@
+# R96Scout fetch evidence (scout seat; fetched 2026-11-08 local, ls mtime Nov 8 23:50)
+# sha256 of raw fetched files:
+ebf0d886a74447f0031f68b04fff80a7f37739c97e1f04d7531b57f74d53b7e6  pp-Page.ts
+e7f2f6b8ea8b1a23e240ba761388c99c437156d00d7c3ba357589ec76c2daf90  pp-Page-v25.16.0.ts
+3d53ef407120b91ef1c0d24f7006245f43eaaa5b57f67d8887b4058c484b5dd9  pp-FrameManager.ts
+a58bb19a755fa5147e4dcaf227d98191b44ef41b1b657aa82e43f0e744d0071c  pp-FileChooser.ts
+38712edcb964f2490be7f9141ab7f85df89358ca28721524fa63b6d626c6d2f2  pw-crPage.ts
+918f0f9beed354c579d00f5656662e36264043b3b59c420d4369fd15b119dd99  pw-crPage-v1.65.0.ts
+29962bdc2b827b65d0ad7d976293cf1f4b18bea28ae54512e0601a62870b24a1  pw-filechooser-spec.ts
+9679a5667c80ee9cf3746acbb1e5b2133344523890372dbc5fe344a67033d807  pw-fc-client.ts
+e576a5299e4072bdd900390a8ef14546784544ff11450e3607f9e54b545a4f74  pp-issue10216.json
+c3b66d0700eef75d6ddb60b705a6dc93351d6e435e72c1a3d52567cb92cb5836  pp-issue10216-comments.json
+c95e8b8d8d6543d86c478e52629643dad7f64d1b9dfbbe714f15402b578e27fe  pp-pr15625-full.json
+ce38aac704a71f6f400c35739ebc535c999a206e790c1452b38f15a0ff362008  pp-issue10017-full.json
+72a401f0c5685bb346e7c056fa846d2636303f39b53eab03212e8cb98d2a20c4  pw-issue28023.json
+cb4b0a40e03fddfdc4191f832259b9fed6684c303842c55d8c6fe1702f9a5efb  dp-browser.json
+768a47e82d54c7646b58df863fbd8b5aaa1576f0324c749a6567ecb2dad3d4ac  cr155-page_handler.cc
+
+## puppeteer main Page.ts (line:text)
+352:   * Sets up listeners for the primary target. The primary target can change
+378:    clientEmitter.on('Page.fileChooserOpened', this.#onFileChooser.bind(this));
+496:    if (!event.backendNodeId) {
+581:        'Page.setInterceptFileChooserDialog',
+## puppeteer v25.16.0 Page.ts
+361:    clientEmitter.on('Page.fileChooserOpened', this.#onFileChooser.bind(this));
+477:    if (!event.backendNodeId) {
+562:        'Page.setInterceptFileChooserDialog',
+## puppeteer v25.16.0 FrameManager.ts (filechooser/Page.enable hits)
+239:        client.send('Page.enable'),
+## playwright v1.65.0 crPage.ts
+224:    await this._forAllFrameSessions(frame => frame._updateFileChooserInterception(false));
+442:  private _addRendererListeners() {
+445:      eventsHelper.addEventListener(this._client, 'Page.fileChooserOpened', event => this._onFileChooserOpened(event)),
+503:        this._addRendererListeners();
+786:      const frameSession = new FrameSession(this._crPage, session, targetId, this);
+968:  async _onFileChooserOpened(event: Protocol.Page.fileChooserOpenedPayload) {
+1115:    await this._client.send('Page.setInterceptFileChooserDialog', { enabled }).catch(() => {}); // target can be closed.
+## playwright v1.65.0 crPage (async _initialize line)
+472:  async _initialize(hasUIWindow: boolean) {
+## playwright tests/page/page-filechooser.spec.ts
+80:test('FC-004 should emit event for iframe', async ({ page, server }) => {
+146:test('FC-009 should not throw when filechooser belongs to iframe', async ({ page, server, browserName }) => {
+342:test('FC-024 should emit event after navigation', async ({ page, server, browserName, browserMajorVersion }) => {
+363:test('FC-025 should trigger listener added before navigation', async ({ page, server, browserMajorVersion, isElectron }) => {
+354:  await page.goto(server.CROSS_PROCESS_PREFIX + '/empty.html');
+368:  await page.goto(server.CROSS_PROCESS_PREFIX + '/empty.html');
+## devtools-protocol (browser_protocol.json master)
+Page.enable.enableFileChooserOpenedEvent True | If true, the `Page.fileChooserOpened` event will be emitted regardless of the state set by `Page.setInterceptFileChooserDialog` command (default: false).
+fileChooserOpened.frameId | Id of the frame containing input node.
+fileChooserOpened.mode | Input mode.
+fileChooserOpened.backendNodeId | Input node id. Only present for file choosers opened via an `<input type="file">` element.
+## chromium 155 page_handler.cc
+533:std::vector<PageHandler*> PageHandler::EnabledForWebContents(
+665:Response PageHandler::Enable(
+666:    std::optional<bool> enable_file_chooser_opened_event) {
+## puppeteer issue 10216 comments/closing
+2023-05-23T06:23:22Z OrKoN | Could you please provide a complete reproducible example? Without seeing the test page it is a guess work. Is the iframe an out-of-process iframe? if it is, it would not work because you wait for the dialog on the page and that part is not ready to deal with OOPIFs.
+2023-05-23T08:45:30Z OrKoN | Closing in favour of https://github.com/puppeteer/puppeteer/issues/10017 as it is a general issue of lacking support for OOPIFs which we need to address.
+## puppeteer issue 10017 body (first 300 chars)
+[Feature]: Support network events, bindings, preload scripts, interception and dialogs for OOPIFs | ### Feature description Multiple bugs have been filed that report that request events/interception don't work for OOPIFs: https://github.com/puppeteer/puppeteer/issues/9699 https://github.com/puppeteer/puppeteer/issues/9567 This is due to the fact that OOPIF support was added at a later point and th
+## pr 15625 body excerpt
+**What kind of change does this PR introduce?** A bug fix. **Did you add tests for your changes?** Yes, added an integration test (`should not throw unhandled rejection when file picker is opened without an input element`) in `test/src/input.test.ts`. **If relevant, did you update the documentation?** Not needed. **Summary** Related to #7234 When `Page.setInterceptFileChooserDialog({enabled: true})` is active and a page opens a File System Access API picker (`window.showOpenFilePicker()`, `window.showSaveFilePicker()`, or `window.showDirectoryPicker()`), Chromium intercepts/aborts the picker and emits `Page.fileChooserOpened` without a `backendNodeId` (`crbug.com/1332511`, `crbug.com/1518120`). Previously, `CdpPage.#onFileChooser` passed `event.backendNodeId` (`undefined`) directly to `frame.worlds[MAIN_WORLD].adoptBackendNode(...)`, causing an unhandled promise rejection (`ProtocolError
+## playwright issue 28023
+[internal] 'should emit filechooser event for iframe' is flaky on Chromium | Investigation: - <img width="250" alt="image" src="https://github.com/microsoft/playwright/assets/17984549/a12f0fdb-3fb6-47fe-bcd0-13d1e9d9f482"> - `Page.fileChooserOpened` CDP event does not fire. - Adding a delay between `setContent` and the `click` makes it work 100/100 times. <img width="809" al
+## release page

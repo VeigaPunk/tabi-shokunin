@@ -4545,3 +4545,34 @@ non-iframe attached targets); the branch-misdelivery clause's flake risk (R95Exe
 `--reps 10`, P(0 in a default run) ≈ 0.01-0.05) — a fixture that pins the misdelivery phase or a
 counted rate; R95Critic3's lead: Puppeteer 25.16.0 `waitForFileChooser` never sees an OOPIF chooser
 (listener and interception on the page session only) — a client-library capability. Retired: none.
+
+## Round 96 (2026-11-08, Linux host) — C1 capability `client-oopif-filechooser-linux` (new)
+
+Base `b16b3aa1` (the round-95 verifier spot-check commit). ONE claim. Freeze commit `ba611b22` (plan,
+`claims.json` frozenAt 23:47:33, driver/counter/battery bytes, executed pre-freeze controls, probes,
+staged S236 source); scored commit `75fe36dc` (`--live` run, nonce `tabi-r96-live-c1225d318ea6`; measured
+revision `ba611b22`). Axes at start: all six at 9. C1 works coverage (a lowest tie at 9) and is a
+capability acquisition: the lane's first measurement of production CDP client libraries against a
+cross-site iframe's file chooser.
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `client-oopif-filechooser-linux` (sourced: S236) | `node scripts/check-client-oopif-chooser-round96.mjs --lane <ABS lane> --expect-driver-sha256 4020e57ef865e5eed506796238bb981bb4dbcb226e8fe80eb52728585ce63b91 --live --deps <ABS npm install of puppeteer-core@25.16.0 playwright-core@1.65.0> --scratch <ABS> --ports <http,child,cdp> --json` (predicate `C1-CLIENT-OOPIF-CHOOSER-R96`, exit 0 iff 0 findings; wording narrowed after the wave by `plans/round-96.md` §Post-wave amendment A1 items 1-4, counter and numbers unchanged) | before (base `b16b3aa1`): the command does not exist (`git cat-file -e` rc 128); the r95 receipt under the frozen counter → rc 1 (schema, libs, leg-set, …). Controls at freeze: positive rc 0 at 163 checks, battery 63/63, wrong-site rc 1, wrong-library `--live` rc 1 (`libs` only), seven setup controls rc 2. After: scored `--live` rc 0, clean, 165 checks (`.ufo/waves/round-96/scored/c1-live.json`), tip re-run clean 165 | verified (pending non-author closure) |
+
+Score delta: coverage 9 → 9 on the scalar (the lane re-pins no scalar per round), plus one capability
+row below.
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `client-oopif-filechooser-linux` | On Chromium 155.0.8059.84 `--headless=new`, show with the pinned `--deps` installs that Puppeteer 25.16.0's `page.waitForFileChooser({timeout: 3000})` ends `TimeoutError` with nothing filled for a cross-site iframe's chooser (a raw witness on the iframe session receives it) and resolves same-site, while Playwright 1.65.0's `filechooser` resolves and fills the child for both | `corpus/evidence/round96/client-oopif-filechooser/receipt.json`; `.ufo/waves/round-96/scored/c1-live.json`; `corpus/knowledge/client-oopif-filechooser-round-96.md` | 96 |
+
+Knowledge 108 → 109. Registry 235 → 236 (S236 Puppeteer `Page.ts` at tag puppeteer-v25.16.0). `SKILL.md`
+`## Round 96 gate registry`. Limits: `plans/round-96.md` §Declared limits 1-6 and §Post-wave amendment A1.
+Calibration record: appended corrections in the r92 and r94 notes (R96Connector).
+
+Planned (r97): a counted `ElementHandle.uploadFile` OOPIF capability and Puppeteer/Playwright `launch`
+legs (R96Exec3); battery cases for the R96Mut survivors M20/M51/M52/M54/M65/M67 and live killers for
+`driver-exit`/`ports-bound`; lockfile integrity verified against the installed tree (R96Sentinel); the r95
+spot-check D1-D3 and R95Mut survivors (carried). Retired: none.

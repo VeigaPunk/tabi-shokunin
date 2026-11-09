@@ -64,3 +64,25 @@ directory in this lane.
    `rc.txt` → rc 0 (`mined/labels-committed.txt`); on the same file with the control-10 line removed (what
    the clobbered script would have produced, `mined/rc-without-control10.txt`) → rc 1 `MISSING
    setup-receipt-dir` (`mined/labels-mutant.txt`).
+
+## Wave w1 (12 seats; every seat filed; artifacts in `.ufo/waves/round-96/w1/`; `w1-results.json`)
+
+executor ×3 (R96Exec1 2 cold `--live` clean 165 + battery 63/63; R96Exec2 `--reps 10` clean 515 checks,
+PPX/PPW 20/20 timeout, default clean; R96Exec3 limit probes — `launch` and a 15000 ms wait also time out,
+`uploadFile` fills the OOPIF input, Playwright `launch` resolves), mutation-tester (R96Mut 70 mutants: 43
+killed, 19 positive-break, 8 survived — 6 receipt-mode battery gaps with verified killer receipts, 2
+`--live`-only checks), critic ×3 (R96Critic1 wording map, none wider; R96Critic2 S236 exact, no other CDP
+path, Playwright listener confirmed in the pinned bundle; R96Critic3 controls, freeze order, do-nothing
+forgeries killed), reviewer (6 low/info defects, none false-clean), sentinel (`--deps` substitution →
+`falsifies-wording`, amendment A1 item 4), scout (17 sources opened, none contradicts), scribe (note draft;
+`falsifies-wording` on the prose → amendment A1 items 1-3), connector (r94:52 and r92:66-67 over-general
+prose → appended corrections).
+
+## Leads (not rows this round)
+
+R96Scout: Puppeteer issue #10216 (maintainer, 2023: "you wait for the dialog on the page and that part is
+not ready to deal with OOPIFs") and tracking issue #10017; Playwright issue #28023 (chooser event flaky
+after `setContent`); devtools-protocol `Page.enable {enableFileChooserOpenedEvent}` (experimental).
+R96Exec3: a counted `ElementHandle.uploadFile` OOPIF capability and launch-mode legs are the r97
+candidates. R96Mut killers M20/M51/M52/M54/M65/M67 and live killers for `driver-exit`/`ports-bound` →
+r97 battery. R96Sentinel: verify the lockfile integrity against the installed tree (`npm ci` + tree hash).
