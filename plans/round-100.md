@@ -238,16 +238,23 @@ Exit 0 and `verdict: clean` → C1 after-state met.
 3. **E3** (provenance trio on every new knowledge entry): the r100 note opens with `source:`, `verified-at:`
    and `recheck:` and cites S248-S250 alongside the URL and anchor, exactly as the r99 note did.
 
-## Amendment A1 (post-wave, 2026-11-09; narrowing only — predicate, counter, kill rule and target unchanged)
+## Amendment A1 (as frozen, 2026-11-09 03:14 -03:00; narrowing only — predicate, counter, kill rule and target unchanged)
 
-Addendum §8 choice (i): two wave artifacts show sentences of the frozen text that claim more than is true or
-than the instrument enforces. Both are narrowed here to what holds; the frozen text above stays as written.
+A1 was written before the wave ran (mtime 03:09:49, freeze commit `468c2b94` 03:15:17) as the L1's own
+pre-instrument narrowing, naming the two overclaims the frozen text carried from the r99 shape: the
+unscoped "no lane instrument has ever" history sentence (grep over `scripts/` finds the r77/r78
+chooser instruments — the E1 rule from the r99 spot-check), and limit 8's first clause (the
+every-leg launch-failed refusal discards receipt-level findings). The wave's R100Critic1 independently
+confirmed both as cali-falsify-wording (W1/W2), which is the L1's confirmation of the narrowing, not a
+new amendment. The lesson records the ordering anomaly as a process mistake (Amendment A1 must land in
+a post-wave commit, not the freeze commit).
 
-1. **Surface moved** (R100Critic1 W1). The sentence "No lane instrument has ever put two files into one input"
-   was scoped out by a glob; the whole-`scripts/` grep finds `chrome-cdp-filechooser-round77.mjs` and
+1. **Surface moved.** The sentence "No lane instrument has ever put two files into one input" was
+   scoped out by a glob; the whole-`scripts/` grep finds `chrome-cdp-filechooser-round77.mjs` and
    `…round78.mjs`. Narrowed to: "Within the client-oopif r95-r99 drivers, no call puts three files, two
-   files with a duplicate name, or a 0-byte file into one input; the r77/r78 raw-chooser instruments are
-   outside the production-client surface, which is the coverage move this round."
+   files with a duplicate name, or a deliberate 0-byte *named payload* file into one input (the
+   absent-path phantom is a 0-byte File too — see the r100 note's correction); the r77/r78 raw-chooser
+   instruments are outside the production-client surface, which is the coverage move this round."
 2. **Limit 8, first clause** (R100Critic1 W2). The every-leg launch-failed refusal discards receipt-level
    findings. Narrowed to: "When at least one leg is not launch-failed, a failure of any check other than
    `driver-exit`/`failures` gives `findings` (rc 1); when every leg is launch-failed the counter gives
@@ -256,3 +263,20 @@ than the instrument enforces. Both are narrowed here to what holds; the frozen t
 
 Neither narrowing touches a predicate bullet, the counting command or a control: the scored run
 (`.ufo/waves/round-100/scored/c1-live.json`, clean) is judged on the same frozen predicate.
+
+## Amendment A2 (post-wave, 2026-11-09; narrowing only — predicate, counter, kill rule and target unchanged)
+
+Addendum §8 choice (i): two wave artifacts show sentences of the frozen text that claim more than is true or
+than the instrument enforces. Both are narrowed here to what holds; the frozen text above stays as written.
+
+1. **S238 line citation** (R100Critic2). The frozen §Claim cites `fileUploadUtils.ts` "line 44" for the
+   exactly-one-category throw; in the staged v1.65.0 file the throw is line 43 (line 44 is blank).
+   Narrowed to: the §Claim's line 44 reads line 43; line 80 (mimeType fallback) and line 62 (collocation
+   branch) are exact as written.
+2. **S250 "plus the `webkitRelativePath` definition"** (R100Critic2, R100Scout). The staged WHATWG
+   `input.html` contains zero occurrences of `webkit`, `webkitRelativePath` or `webkitdirectory`;
+   the attribute's normative home is the WICG entries API and Blink's `file.idl`. Narrowed to: S250
+   carries only the File Upload state's filename rule ("Filenames must not contain path components…");
+   the attribute's definition is carried by the r100 note's append-only correction, not by S250.
+
+Neither narrowing touches a predicate bullet, the counting command or a control.
